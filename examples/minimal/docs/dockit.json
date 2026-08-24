@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "project": {"name": "Example-FP", "description": "A minimal DocKit-FP project."},
+  "theme": {"accent": "#0f766e", "accent_secondary": "#0891b2"}
+}

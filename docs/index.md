@@ -14,6 +14,7 @@ keeps its own words, releases and visual identity.
 
 ## Start here
 
+- [Build your first documentation site](beginners-guide.md)
 - [Configure a modern project](configuration.md)
 - [Keep older documentation accurate](historical-docs.md)
 - [Choose a project identity without CSS forks](themes.md)

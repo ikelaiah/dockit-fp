@@ -25,6 +25,8 @@ For API extraction from Pascal source, use [PasWeave](https://github.com/ikelaia
 
 # 🚀 Quick start
 
+New to DocKit-FP? Follow the short, copyable [beginner's guide](docs/beginners-guide.md).
+
 ## 1. Install DocKit-FP
 
 Pin a released version rather than using `main`.
@@ -59,10 +61,12 @@ This should create a minimal documentation structure such as:
 ```text
 docs/
 ├── dockit.json
-├── versions.json
 ├── layout.json
 └── index.md
 ```
+
+`versions.json` is added later, when you prepare an immutable release for
+publication.
 
 If your project already contains Markdown documentation, you may create these files manually instead.
 

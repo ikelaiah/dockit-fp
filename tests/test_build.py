@@ -13,7 +13,10 @@ class BuildSiteTests(unittest.TestCase):
             root = Path(temporary)
             docs = root / "docs"
             (docs / "guides").mkdir(parents=True)
-            (docs / "index.md").write_text("# Welcome\n\nA **safe** start with $x^2$.", encoding="utf-8")
+            (docs / "index.md").write_text(
+                "# Welcome\n\nA **safe** start with $x^2$.\n\n## Quick start\n\nBegin here.",
+                encoding="utf-8",
+            )
             (docs / "guides" / "pascal.md").write_text(
                 "# Pascal\n\n```pascal\nWriteLn('hello');\n```", encoding="utf-8"
             )
@@ -37,6 +40,10 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('style="--dk-accent:#0f766e;--dk-accent-secondary:#0891b2"', home)
             self.assertIn("System", home)
             self.assertIn("search-index.json", home)
+            self.assertIn('class="brand-mark"', home)
+            self.assertIn('class="capability-strip"', home)
+            self.assertIn('aria-controls="search-results"', home)
+            self.assertIn('href="#quick-start"', home)
             self.assertIn("assets/katex/katex.min.css", home)
             self.assertIn('class="math-inline" data-tex="x^2"', home)
             self.assertTrue((root / "site" / "assets" / "katex" / "katex.min.js").exists())

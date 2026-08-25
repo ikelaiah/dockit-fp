@@ -1,7 +1,7 @@
 # Your first DocKit-FP site
 
 This guide takes a small Free Pascal project from no documentation site to a
-local preview. You need Python 3.11 or newer. Git is only needed when you are
+local preview. You need Python 3.10 or newer. Git is only needed when you are
 ready to publish a versioned release.
 
 ## 1. Install and initialise

@@ -53,12 +53,16 @@ def _doctor(root: Path) -> list[str]:
         try:
             manifest = load_manifest(root)
             messages.append(f"Versions: {len(manifest.versions)} declared; current {manifest.current}")
+            messages.append("Status: versioned release configured")
+            messages.append("Next: run dockit-fp check-release before publishing.")
             if shutil.which("git") is None:
                 messages.append("ERROR: Git is required for build-all")
         except DocKitError as error:
             messages.append(f"ERROR: {error}")
     else:
         messages.append("Versions: no versions.json (single-release preview only)")
+        messages.append("Status: preview-ready")
+        messages.append("Next: edit docs/index.md, then run dockit-fp check.")
     return messages
 
 
@@ -80,6 +84,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "init":
             _init(root)
             print(f"Initialised {root / 'docs'}")
+            print("Next: edit docs/index.md, then run dockit-fp check.")
         elif args.command == "build":
             release = args.release
             if release is None and (root / "docs" / "versions.json").exists():

@@ -15,6 +15,6 @@ An optional banner has a project-relative safe path and meaningful `alt` text.
 Use it for identity, not for structural customisation.
 
 The shared layout intentionally keeps the documentation tree on the left and
-page context on the right. The right rail shows the release, section and page;
-the article adds a reading-progress indicator and previous/next-page links.
+the page outline on the right. The article adds a reading-progress indicator
+and previous/next-page links.
 Code blocks include a copy control when the browser permits clipboard access.

@@ -17,4 +17,5 @@ keeps its own words, releases and visual identity.
 - [Configure a modern project](configuration.md)
 - [Keep older documentation accurate](historical-docs.md)
 - [Choose a project identity without CSS forks](themes.md)
+- [Write offline-friendly mathematics](math.md)
 - [Publish safely to GitHub Pages](github-pages.md)

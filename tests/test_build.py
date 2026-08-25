@@ -13,7 +13,7 @@ class BuildSiteTests(unittest.TestCase):
             root = Path(temporary)
             docs = root / "docs"
             (docs / "guides").mkdir(parents=True)
-            (docs / "index.md").write_text("# Welcome\n\nA **safe** start.", encoding="utf-8")
+            (docs / "index.md").write_text("# Welcome\n\nA **safe** start with $x^2$.", encoding="utf-8")
             (docs / "guides" / "pascal.md").write_text(
                 "# Pascal\n\n```pascal\nWriteLn('hello');\n```", encoding="utf-8"
             )
@@ -37,6 +37,10 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('style="--dk-accent:#0f766e;--dk-accent-secondary:#0891b2"', home)
             self.assertIn("System", home)
             self.assertIn("search-index.json", home)
+            self.assertIn("assets/katex/katex.min.css", home)
+            self.assertIn('class="math-inline" data-tex="x^2"', home)
+            self.assertTrue((root / "site" / "assets" / "katex" / "katex.min.js").exists())
+            self.assertTrue((root / "site" / "assets" / "katex" / "LICENSE").exists())
             self.assertTrue((root / "site" / "guides" / "pascal.html").exists())
             search = json.loads((root / "site" / "search-index.json").read_text(encoding="utf-8"))
             self.assertEqual(["index.html", "guides/pascal.html"], [entry["url"] for entry in search])

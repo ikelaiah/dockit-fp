@@ -16,6 +16,7 @@ LIST = re.compile(r"^\s*[-*+]\s+(.+)$")
 ORDERED = re.compile(r"^\s*\d+[.)]\s+(.+)$")
 LINK = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 CODE = re.compile(r"`([^`]+)`")
+INLINE_MATH = re.compile(r"(?<!\\)\$([^$\n]+)\$")
 
 
 @dataclass(frozen=True)
@@ -40,7 +41,11 @@ def _inline(value: str, resolve: LinkResolver) -> str:
     escaped = LINK.sub(lambda match: f'<a href="{html.escape(resolve(html.unescape(match.group(2))), quote=True)}">{match.group(1)}</a>', escaped)
     escaped = CODE.sub(r"<code>\1</code>", escaped)
     escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
-    return re.sub(r"(?<!\*)\*([^*]+)\*", r"<em>\1</em>", escaped)
+    escaped = re.sub(r"(?<!\*)\*([^*]+)\*", r"<em>\1</em>", escaped)
+    return INLINE_MATH.sub(
+        lambda match: f'<span class="math-inline" data-tex="{html.escape(html.unescape(match.group(1)), quote=True)}"></span>',
+        escaped,
+    )
 
 
 def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown:
@@ -73,8 +78,24 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
                 index += 1
             if index == len(lines):
                 raise DocKitError("Markdown: unclosed fenced code block")
-            output.append(f'<pre class="language-{html.escape(language, quote=True)}"><code>{html.escape("\n".join(code))}</code></pre>')
+            tex = "\n".join(code)
+            if language == "math":
+                output.append(f'<div class="math-display" data-tex="{html.escape(tex, quote=True)}"></div>')
+            else:
+                output.append(f'<pre class="language-{html.escape(language, quote=True)}"><code>{html.escape(tex)}</code></pre>')
             plain.extend(code)
+        elif line.strip() == "$$":
+            flush_paragraph()
+            index += 1
+            tex: list[str] = []
+            while index < len(lines) and lines[index].strip() != "$$":
+                tex.append(lines[index])
+                index += 1
+            if index == len(lines):
+                raise DocKitError("Markdown: unclosed display math block")
+            value = "\n".join(tex)
+            output.append(f'<div class="math-display" data-tex="{html.escape(value, quote=True)}"></div>')
+            plain.extend(tex)
         elif heading:
             flush_paragraph()
             level, text = len(heading.group(1)), _plain(heading.group(2))

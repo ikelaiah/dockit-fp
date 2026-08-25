@@ -10,7 +10,7 @@ import posixpath
 import shutil
 from urllib.parse import urlsplit
 
-from .assets import SITE_CSS, SITE_JS
+from .assets import MATH_JS, SITE_CSS, SITE_JS
 from .config import load_config
 from .errors import DocKitError
 from .markdown import render_markdown
@@ -49,7 +49,7 @@ def _shell(*, body: str, page: Page, config, current_route: str, version_options
     ) for section in dict.fromkeys(item.section for item in config.pages))
     banner_html = f'<img class="banner" src="{html.escape(banner, quote=True)}" alt="{html.escape(config.banner_alt or "", quote=True)}">' if banner else ""
     style = f"--dk-accent:{config.accent};--dk-accent-secondary:{config.accent_secondary}"
-    return f'''<!doctype html><html lang="en" style="{style}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{html.escape(config.description, quote=True)}"><title>{html.escape(page.title)} — {html.escape(config.name)}</title><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/site.css'), quote=True)}"></head><body><header class="site-header"><div class="topbar"><a class="brand" href="{html.escape(_relative(current_route, 'index.html'), quote=True)}">{html.escape(config.name)} <span>docs</span></a><input id="search" type="search" placeholder="Search this version" aria-label="Search documentation" autocomplete="off" data-search-index="{html.escape(_relative(current_route, 'search-index.json'), quote=True)}"><select id="version-select" aria-label="Documentation version">{version_options}</select><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div id="search-results" class="search-results" role="region" aria-live="polite" hidden></div></header><details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details><div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav><main class="prose" id="content">{banner_html}{body}</main><aside class="toc">{html.escape(config.name)}<br>Free Pascal / Lazarus</aside></div><script src="{html.escape(_relative(current_route, 'assets/site.js'), quote=True)}"></script></body></html>'''
+    return f'''<!doctype html><html lang="en" style="{style}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{html.escape(config.description, quote=True)}"><title>{html.escape(page.title)} — {html.escape(config.name)}</title><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/site.css'), quote=True)}"><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/katex/katex.min.css'), quote=True)}"></head><body><header class="site-header"><div class="topbar"><a class="brand" href="{html.escape(_relative(current_route, 'index.html'), quote=True)}">{html.escape(config.name)} <span>docs</span></a><input id="search" type="search" placeholder="Search this version" aria-label="Search documentation" autocomplete="off" data-search-index="{html.escape(_relative(current_route, 'search-index.json'), quote=True)}"><select id="version-select" aria-label="Documentation version">{version_options}</select><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div id="search-results" class="search-results" role="region" aria-live="polite" hidden></div></header><details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details><div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav><main class="prose" id="content">{banner_html}{body}</main><aside class="toc">{html.escape(config.name)}<br>Free Pascal / Lazarus</aside></div><script src="{html.escape(_relative(current_route, 'assets/katex/katex.min.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/math.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/site.js'), quote=True)}"></script></body></html>'''
 
 
 def build_site(*, root: Path, output: Path, release: str, versions: tuple[tuple[str, str], ...] = ()) -> BuildResult:
@@ -62,6 +62,8 @@ def build_site(*, root: Path, output: Path, release: str, versions: tuple[tuple[
     assets.mkdir()
     (assets / "site.css").write_text(SITE_CSS, encoding="utf-8")
     (assets / "site.js").write_text(SITE_JS, encoding="utf-8")
+    (assets / "math.js").write_text(MATH_JS, encoding="utf-8")
+    shutil.copytree(Path(__file__).parent / "vendor" / "katex", assets / "katex")
     banner = None
     if config.banner:
         suffix = Path(config.banner).suffix.lower()

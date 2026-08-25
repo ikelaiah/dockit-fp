@@ -7,6 +7,7 @@ Built for Free Pascal and Lazarus libraries that want:
 - 📱 a responsive documentation website;
 - 🌓 System / Light / Dark themes;
 - 🎨 project-specific colour identity;
+- ∑ bundled offline KaTeX mathematics;
 - 🔎 navigation and search;
 - 🏷️ version selectors;
 - 🕰️ preserved historical documentation;

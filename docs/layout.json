@@ -6,7 +6,8 @@
       "pages": [
         {"title": "Overview", "path": "index.md"},
         {"title": "Configuration", "path": "configuration.md"},
-        {"title": "Themes", "path": "themes.md"}
+        {"title": "Themes", "path": "themes.md"},
+        {"title": "Mathematics", "path": "math.md"}
       ]
     },
     {

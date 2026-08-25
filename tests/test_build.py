@@ -42,6 +42,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn("search-index.json", home)
             self.assertIn('class="brand-mark"', home)
             self.assertIn('class="capability-strip"', home)
+            self.assertGreater(home.index('class="capability-strip"'), home.index('A <strong>safe</strong> start'))
             self.assertIn('aria-controls="search-results"', home)
             self.assertIn('href="#quick-start"', home)
             self.assertIn("assets/katex/katex.min.css", home)
@@ -66,6 +67,21 @@ class BuildSiteTests(unittest.TestCase):
             self.assertEqual("README.md", result.home_document)
             self.assertIn("Old documentation", (root / "site" / "index.html").read_text(encoding="utf-8"))
             self.assertTrue((root / "site" / "CHEATSHEET.html").exists())
+
+    def test_places_home_capabilities_outside_an_initial_admonition(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home\n\n> [!IMPORTANT] Read this first.\n\nWelcome.", encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            page = (root / "site" / "index.html").read_text(encoding="utf-8")
+            callout_start = page.index('<aside class="admonition')
+            callout_end = page.index("</aside>", callout_start)
+            strip_start = page.index('class="capability-strip"')
+            self.assertFalse(callout_start < strip_start < callout_end)
 
     def test_rejects_broken_heading_fragments_and_unsafe_links(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

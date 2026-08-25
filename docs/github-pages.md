@@ -15,3 +15,7 @@ jobs:
 The workflow checks configuration and immutable release metadata, builds every
 version and uploads only a successfully validated site. Ensure checkout has
 access to all release tags.
+
+DocKit-FP itself calls this workflow from `deploy-docs.yml`. Its deployment is
+triggered by a `v*` release tag (or manually), so a live Pages site always
+corresponds to an immutable entry in `docs/versions.json`.

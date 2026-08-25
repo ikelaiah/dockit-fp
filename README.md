@@ -1,18 +1,18 @@
-# DocKit-FP
+# 🧰 DocKit-FP
 
 DocKit-FP is a Free Pascal-oriented toolkit for building, validating and publishing modern, versioned documentation sites from Markdown and historical Git releases.
 
-It is designed for Free Pascal and Lazarus libraries that want:
+Built for Free Pascal and Lazarus libraries that want:
 
-* a responsive documentation website;
-* System / Light / Dark themes;
-* project-specific colour identity;
-* navigation and search;
-* version selectors;
-* preserved historical documentation;
-* GitHub Pages publishing;
-* documentation validation;
-* minimal duplicated infrastructure.
+- 📱 a responsive documentation website;
+- 🌓 System / Light / Dark themes;
+- 🎨 project-specific colour identity;
+- 🔎 navigation and search;
+- 🏷️ version selectors;
+- 🕰️ preserved historical documentation;
+- 🚀 GitHub Pages publishing;
+- ✅ documentation validation;
+- ✂️ minimal duplicated infrastructure.
 
 DocKit-FP builds the documentation site.
 
@@ -22,7 +22,7 @@ For API extraction from Pascal source, use [PasWeave](https://github.com/ikelaia
 
 ---
 
-# Quick start
+# 🚀 Quick start
 
 ## 1. Install DocKit-FP
 
@@ -45,7 +45,7 @@ Use a released version in CI whenever possible.
 
 ---
 
-# 2. Initialise documentation
+# 2. 🏁 Initialise documentation
 
 From the root of your Free Pascal project:
 
@@ -69,7 +69,7 @@ DocKit-FP should never overwrite existing documentation without explicit permiss
 
 ---
 
-# 3. Project configuration
+# 3. 🎨 Project configuration
 
 Create:
 
@@ -105,7 +105,7 @@ Use theme tokens instead.
 
 ---
 
-# 4. Add documentation
+# 4. ✍️ Add documentation
 
 A typical project may look like:
 
@@ -134,7 +134,7 @@ DocKit-FP does not move them into a central repository.
 
 ---
 
-# 5. Configure navigation
+# 5. 🧭 Configure navigation
 
 Modern documentation can define explicit navigation using:
 
@@ -191,7 +191,7 @@ DocKit-FP validates that configured documents exist.
 
 ---
 
-# 6. Build the documentation
+# 6. 🏗️ Build the documentation
 
 Build the current documentation:
 
@@ -215,7 +215,7 @@ or the appropriate versioned path.
 
 ---
 
-# 7. Check documentation
+# 7. ✅ Check documentation
 
 Before publishing:
 
@@ -242,7 +242,7 @@ navigation page "guides/hash.md" does not exist
 
 ---
 
-# Versioned documentation
+# 🕰️ Versioned documentation
 
 One of DocKit-FP's main features is preserving documentation for historical releases.
 
@@ -283,7 +283,7 @@ The version selector is generated from this manifest.
 
 ---
 
-# 9. Build all releases
+# 9. 🏗️ Build all releases
 
 Run:
 
@@ -312,7 +312,7 @@ v1.2.0
 
 ---
 
-# Historical documentation policy
+# 🏛️ Historical documentation policy
 
 DocKit-FP intentionally preserves historical documentation.
 
@@ -331,7 +331,7 @@ This allows the documentation site to show how the project evolved over time.
 
 ---
 
-# Legacy releases
+# 📚 Legacy releases
 
 Older releases do not need to contain DocKit-FP configuration.
 
@@ -374,7 +374,7 @@ Historical content is never invented merely to create a homepage.
 
 ---
 
-# Project colours
+# 🎨 Project colours
 
 Each project can retain its own visual identity.
 
@@ -419,7 +419,7 @@ Projects should not normally copy or fork DocKit-FP's structural CSS.
 
 ---
 
-# Themes
+# 🌓 Themes
 
 Every DocKit-FP site supports:
 
@@ -435,7 +435,7 @@ Project accent colours are mapped appropriately into both light and dark modes.
 
 ---
 
-# Responsive design
+# 📱 Responsive design
 
 DocKit-FP provides the responsive site shell centrally.
 
@@ -464,7 +464,7 @@ DocKit-FP handles:
 
 ---
 
-# GitHub Pages
+# 🚀 GitHub Pages
 
 A project should ideally need only a small workflow.
 
@@ -504,7 +504,7 @@ for production documentation.
 
 ---
 
-# Why pin DocKit-FP?
+# 📌 Why pin DocKit-FP?
 
 Do this:
 
@@ -524,7 +524,7 @@ Upgrade deliberately.
 
 ---
 
-# Updating DocKit-FP
+# ⬆️ Updating DocKit-FP
 
 Suppose your project currently uses:
 
@@ -551,7 +551,7 @@ Treat DocKit-FP upgrades like ordinary dependencies.
 
 ---
 
-# Using DocKit-FP with an existing project
+# 🔁 Using DocKit-FP with an existing project
 
 If your repository already contains documentation:
 
@@ -577,7 +577,7 @@ You can introduce explicit navigation gradually.
 
 ---
 
-# Migrating a repository that copied an older documentation engine
+# 🧳 Migrating a repository that copied an older documentation engine
 
 Some projects may currently contain:
 
@@ -606,7 +606,7 @@ Prove equivalence before removing it.
 
 ---
 
-# Starting a completely new Free Pascal library
+# 🌱 Starting a completely new Free Pascal library
 
 For a new project, the intended flow is:
 
@@ -655,7 +655,7 @@ dockit-fp build-all
 
 ---
 
-# Using PasWeave together with DocKit-FP
+# 🧵 Using PasWeave together with DocKit-FP
 
 DocKit-FP does not extract documentation from Pascal source.
 
@@ -692,7 +692,7 @@ This separation keeps both tools focused:
 
 ---
 
-# What stays in your project?
+# 🧱 What stays in your project?
 
 Your Free Pascal repository owns:
 
@@ -724,7 +724,7 @@ That division is intentional.
 
 ---
 
-# What should NOT be copied?
+# 🚫 What should NOT be copied?
 
 Do not copy these from DocKit-FP into every project:
 
@@ -745,7 +745,7 @@ Then consuming repositories can upgrade deliberately.
 
 ---
 
-# Recommended project structure
+# 🗂️ Recommended project structure
 
 A typical Free Pascal library may eventually look like:
 
@@ -785,7 +785,7 @@ No local documentation engine should normally be necessary.
 
 ---
 
-# The short version
+# ⚡ The short version
 
 For an existing Free Pascal repository:
 

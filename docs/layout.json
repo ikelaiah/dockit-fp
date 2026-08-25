@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "navigation": [
+    {
+      "title": "Get started",
+      "pages": [
+        {"title": "Overview", "path": "index.md"},
+        {"title": "Configuration", "path": "configuration.md"},
+        {"title": "Themes", "path": "themes.md"}
+      ]
+    },
+    {
+      "title": "Working with releases",
+      "pages": [
+        {"title": "Historical documentation", "path": "historical-docs.md"},
+        {"title": "GitHub Pages", "path": "github-pages.md"},
+        {"title": "Migration", "path": "migration.md"}
+      ]
+    },
+    {
+      "title": "Ecosystem",
+      "pages": [
+        {"title": "PasWeave integration", "path": "pasweave-integration.md"},
+        {"title": "Architecture", "path": "architecture.md"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "project": {
+    "name": "DocKit-FP",
+    "description": "Versioned documentation sites for Free Pascal projects.",
+    "repository_url": "https://github.com/ikelaiah/dockit-fp",
+    "site_url": "https://ikelaiah.github.io/dockit-fp"
+  },
+  "theme": {
+    "accent": "#4f46e5",
+    "accent_secondary": "#0891b2"
+  }
+}

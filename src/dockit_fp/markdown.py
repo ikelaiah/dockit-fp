@@ -87,7 +87,7 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             plain.append(text)
         elif line.startswith("> [!") and "]" in line:
             flush_paragraph()
-            kind, text = line[3:].split("]", 1)
+            kind, text = line[4:].split("]", 1)
             kind = kind.strip().lower()
             if kind not in {"note", "tip", "important", "warning"}:
                 raise DocKitError(f"Markdown: unsupported admonition {kind!r}")

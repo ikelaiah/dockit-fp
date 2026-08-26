@@ -29,3 +29,11 @@ each published release manifest on immutable tags while upgrading.
 No migration is required. Existing homepages retain their v0.5.0 output.
 Adopt the optional `homepage` object only when you want to replace capability
 cards or control homepage sections.
+
+## v0.6.0 to v0.7.0
+
+Modern documentation trees now require every `docs/**/*.md` file to be listed
+in `layout.json`. Run `dockit-fp check`; add each reported path to an
+appropriate section, or remove documentation that should no longer ship.
+Existing Markdown rendering remains compatible, and definition lists are an
+optional authoring feature.

@@ -53,6 +53,9 @@ class CliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             self.assertEqual(0, main(["init", "--root", str(root)]))
-            self.assertEqual(0, main(["check", "--root", str(root)]))
+            output = io.StringIO()
+            with redirect_stdout(output):
+                self.assertEqual(0, main(["check", "--root", str(root)]))
+            self.assertIn("Documentation check passed: 1 section(s), 1 page(s)", output.getvalue())
             self.assertEqual(0, main(["build", "--root", str(root), "--output", str(root / "site")]))
             self.assertTrue((root / "site" / "index.html").exists())

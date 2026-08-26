@@ -24,7 +24,9 @@ Navigation is rendered in the order written: each object is one left-side
 section, and each page is rendered in its listed order. To regroup or reorder
 pages, edit only `navigation`; every section must have a title and at least one
 existing Markdown page. Errors name the section or page and tell you whether to
-add, create or correct it.
+add, create or correct it. Modern configurations must list every Markdown file
+under `docs/`; `dockit-fp check` identifies an unlisted path and reports the
+section and page totals so navigation changes are easy to review.
 
 `dockit.json` also supports project identity without copied CSS:
 

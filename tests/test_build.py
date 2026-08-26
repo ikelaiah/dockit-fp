@@ -66,6 +66,8 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('<span>Pascal</span>', home)
             self.assertGreater(home.index('class="capability-strip"'), home.index('A <strong>safe</strong> start'))
             self.assertIn('aria-controls="search-results"', home)
+            self.assertIn('aria-describedby="search-help"', home)
+            self.assertIn('id="search-help"', home)
             self.assertIn('href="#quick-start"', home)
             self.assertIn("assets/katex/katex.min.css", home)
             self.assertIn('class="math-inline" data-tex="x^2"', home)
@@ -77,6 +79,9 @@ class BuildSiteTests(unittest.TestCase):
             site_js = (root / "site" / "assets" / "site.js").read_text(encoding="utf-8")
             self.assertIn("copy-code", site_js)
             self.assertIn("ArrowDown", site_js)
+            self.assertIn("function rank", site_js)
+            self.assertIn("event.key==='Home'", site_js)
+            self.assertIn("event.key==='End'", site_js)
             search = json.loads((root / "site" / "search-index.json").read_text(encoding="utf-8"))
             self.assertEqual(["index.html", "guides/pascal.html"], [entry["url"] for entry in search])
 

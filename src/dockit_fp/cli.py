@@ -34,10 +34,10 @@ def _init(root: Path) -> None:
     (docs / "index.md").write_text(f"# {root.name or 'MyLibrary-FP'}\n\nWelcome to the documentation.\n", encoding="utf-8")
 
 
-def _check(root: Path) -> int:
+def _check(root: Path):
     with tempfile.TemporaryDirectory(prefix="dockit-fp-check-") as temporary:
         result = build_site(root=root, output=Path(temporary) / "site", release="preview")
-    return result.page_count
+    return result
 
 
 def _doctor(root: Path) -> list[str]:
@@ -99,7 +99,8 @@ def main(argv: list[str] | None = None) -> int:
             result = build_all(root=root, output=output)
             print(f"Built {result.release_count} release(s), {result.page_count} page(s) total")
         elif args.command == "check":
-            print(f"Documentation check passed: {_check(root)} page(s)")
+            result = _check(root)
+            print(f"Documentation check passed: {result.section_count} section(s), {result.page_count} page(s)")
         elif args.command == "check-release":
             manifest = check_release(root)
             print(f"Release check passed: {len(manifest.versions)} immutable release(s)")

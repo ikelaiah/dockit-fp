@@ -8,6 +8,7 @@
         {"title": "Beginner's guide", "path": "beginners-guide.md"},
         {"title": "Configuration", "path": "configuration.md"},
         {"title": "Homepage recipes", "path": "homepage-recipes.md"},
+        {"title": "Authoring recipes", "path": "authoring-recipes.md"},
         {"title": "Themes", "path": "themes.md"},
         {"title": "Mathematics", "path": "math.md"}
       ]
@@ -24,13 +25,23 @@
       "title": "Ecosystem",
       "pages": [
         {"title": "PasWeave integration", "path": "pasweave-integration.md"},
-        {"title": "Architecture", "path": "architecture.md"}
+        {"title": "Architecture", "path": "architecture.md"},
+        {"title": "Architecture analysis", "path": "architecture-analysis.md"},
+        {"title": "Project specification", "path": "spec.md"}
       ]
     },
     {
       "title": "Customisation",
       "pages": [
         {"title": "Sections and identity", "path": "customisation.md"}
+      ]
+    },
+    {
+      "title": "Project decisions",
+      "pages": [
+        {"title": "Boundaries", "path": "decisions/0001-boundaries.md"},
+        {"title": "History and customisation", "path": "decisions/0002-history-and-customisation.md"},
+        {"title": "Release-tag publication", "path": "decisions/0003-publish-from-release-tags.md"}
       ]
     }
   ]

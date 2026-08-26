@@ -26,3 +26,12 @@ class MarkdownTests(unittest.TestCase):
         self.assertIn('class="math-inline" data-tex="x^2"', rendered.html)
         self.assertIn('class="math-display" data-tex="\\int_0^1 x dx"', rendered.html)
         self.assertIn('class="math-display" data-tex="\\frac{a}{b}"', rendered.html)
+
+    def test_renders_safe_definition_lists_for_reference_prose(self) -> None:
+        rendered = render_markdown(
+            "Widget\n: A reusable **component**.\n\nUnsafe <term>\n: Escaped <description>.",
+            lambda target: target,
+        )
+
+        self.assertIn("<dl><dt>Widget</dt><dd>A reusable <strong>component</strong>.</dd>", rendered.html)
+        self.assertIn("<dt>Unsafe &lt;term&gt;</dt><dd>Escaped &lt;description&gt;.</dd>", rendered.html)

@@ -36,6 +36,11 @@ class PublishingWorkflowTests(unittest.TestCase):
 
         self.assertIn("actions/upload-pages-artifact@v5", publish)
 
+    def test_publish_workflow_uses_deploy_pages_v5_node_24_major(self) -> None:
+        publish = (self.root / ".github" / "workflows" / "publish-docs.yml").read_text(encoding="utf-8")
+
+        self.assertIn("actions/deploy-pages@v5", publish)
+
     def test_examples_pin_the_release_and_select_the_intended_mode(self) -> None:
         single = (self.root / "examples" / "single-version" / ".github" / "workflows" / "documentation.yml").read_text(encoding="utf-8")
         historical = (self.root / "examples" / "historical" / ".github" / "workflows" / "documentation.yml").read_text(encoding="utf-8")

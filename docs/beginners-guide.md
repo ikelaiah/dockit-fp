@@ -149,6 +149,11 @@ on:
   push:
     tags: ["v*"]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   publish:
     uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.2.0

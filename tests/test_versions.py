@@ -1,11 +1,12 @@
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
 
 from dockit_fp.errors import DocKitError
-from dockit_fp.versions import build_all, check_release
+from dockit_fp.versions import build_all, check_release, load_manifest
 
 
 class VersionedBuildTests(unittest.TestCase):
@@ -109,3 +110,73 @@ class VersionedBuildTests(unittest.TestCase):
 
         with self.assertRaisesRegex(DocKitError, "moving source_ref"):
             check_release(root)
+
+    def test_manifest_rejects_unsafe_release_paths_and_git_option_refs(self) -> None:
+        root = self._repository()
+        manifest = root / "docs" / "versions.json"
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        data["versions"][0]["release"] = "../outside"
+        manifest.write_text(json.dumps(data), encoding="utf-8")
+
+        with self.assertRaisesRegex(DocKitError, r"versions\[0\]\.release.*safe name"):
+            load_manifest(root)
+
+        data["versions"][0]["release"] = "2.0.0"
+        data["versions"][0]["source_ref"] = "--help"
+        manifest.write_text(json.dumps(data), encoding="utf-8")
+        with self.assertRaisesRegex(DocKitError, r"versions\[0\]\.source_ref.*tag or full commit SHA"):
+            load_manifest(root)
+
+    def test_check_release_requires_current_source_to_match_head(self) -> None:
+        root = self._repository()
+        (root / "README.md").write_text("post-release change", encoding="utf-8")
+        self._git(root, "add", "README.md")
+        self._git(root, "commit", "-m", "move past release")
+
+        with self.assertRaisesRegex(DocKitError, r"current release '2\.0\.0'.*does not match HEAD"):
+            check_release(root)
+
+    def test_check_release_explains_how_to_create_a_missing_tag(self) -> None:
+        root = self._repository()
+        manifest = root / "docs" / "versions.json"
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        data["versions"][0]["source_ref"] = "v2.0.1"
+        manifest.write_text(json.dumps(data), encoding="utf-8")
+
+        with self.assertRaisesRegex(DocKitError, r"does not exist.*Create the tag"):
+            check_release(root)
+
+    def test_check_release_rejects_uncommitted_documentation(self) -> None:
+        root = self._repository()
+        (root / "docs" / "new.md").write_text("# Changed after tagging", encoding="utf-8")
+
+        with self.assertRaisesRegex(DocKitError, r"Documentation differs from HEAD.*Commit docs changes"):
+            check_release(root)
+
+    def test_historical_example_build_is_byte_for_byte_deterministic(self) -> None:
+        example = Path(__file__).resolve().parents[1] / "examples" / "historical"
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        self._git(root, "init")
+        self._git(root, "config", "user.email", "tests@example.test")
+        self._git(root, "config", "user.name", "Tests")
+        shutil.copytree(example / "releases" / "v1.0.0" / "docs", root / "docs")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "release 1.0.0")
+        self._git(root, "tag", "v1.0.0")
+        shutil.rmtree(root / "docs")
+        shutil.copytree(example / "docs", root / "docs")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "release 1.1.0")
+        self._git(root, "tag", "v1.1.0")
+
+        first, second = root / "site-first", root / "site-second"
+        build_all(root=root, output=first)
+        build_all(root=root, output=second)
+        first_files = {path.relative_to(first): path.read_bytes() for path in first.rglob("*") if path.is_file()}
+        second_files = {path.relative_to(second): path.read_bytes() for path in second.rglob("*") if path.is_file()}
+
+        self.assertEqual(first_files, second_files)
+        self.assertTrue((first / "1.1.0" / "upgrade.html").exists())
+        self.assertFalse((first / "1.0.0" / "upgrade.html").exists())

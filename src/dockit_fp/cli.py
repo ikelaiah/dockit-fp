@@ -54,15 +54,31 @@ def _doctor(root: Path) -> list[str]:
             manifest = load_manifest(root)
             messages.append(f"Versions: {len(manifest.versions)} declared; current {manifest.current}")
             messages.append("Status: versioned release configured")
-            messages.append("Next: run dockit-fp check-release before publishing.")
             if shutil.which("git") is None:
                 messages.append("ERROR: Git is required for build-all")
+            else:
+                try:
+                    check_release(root)
+                    current = next(entry for entry in manifest.versions if entry.release == manifest.current)
+                    messages.append(f"Release refs: verified; current {current.source_ref} matches HEAD")
+                    messages.append("Next: follow the pre-publish checklist before publishing.")
+                except DocKitError as error:
+                    messages.append(f"ERROR: Release refs: {error}")
         except DocKitError as error:
             messages.append(f"ERROR: {error}")
     else:
         messages.append("Versions: no versions.json (single-release preview only)")
         messages.append("Status: preview-ready")
         messages.append("Next: edit docs/index.md, then run dockit-fp check.")
+    workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
+    workflow_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in workflows)
+    if "publish-docs.yml@" in workflow_text or "./.github/workflows/publish-docs.yml" in workflow_text:
+        mode = "single-version" if "versioned: false" in workflow_text else "historical"
+        messages.append(f"Pages: DocKit-FP {mode} workflow detected")
+        if "publish-docs.yml@main" in workflow_text:
+            messages.append("WARNING: Pages workflow uses moving ref @main; pin a released DocKit-FP tag.")
+    else:
+        messages.append("Pages: no DocKit-FP workflow detected; see the GitHub Pages guide.")
     return messages
 
 

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "navigation": [
+    {
+      "title": "Documentation",
+      "pages": [
+        {"title": "Overview", "path": "index.md"},
+        {"title": "Upgrade guide", "path": "upgrade.md"}
+      ]
+    }
+  ]
+}

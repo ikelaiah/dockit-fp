@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.9.0
+
+### Added
+
+- Release-state diagnostics for unsafe, missing, moving and mismatched source
+  references, with repository-aware `doctor` guidance.
+- Maintained single-version and historical GitHub Pages examples, deterministic
+  historical-build coverage and a pre-publish checklist.
+- Direct upgrade guidance from every supported 0.x configuration.
+
+### Changed
+
+- The reusable Pages workflow now supports both publication modes and uses the
+  current Node 24 GitHub Actions majors.
+- Release validation now requires unique immutable references, a matching
+  current tag and committed documentation.
+
 ## 0.8.0
 
 ### Added

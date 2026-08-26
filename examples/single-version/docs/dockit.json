@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "project": {
+    "name": "Single-version Pascal library",
+    "description": "Release-ready documentation that always publishes the main branch."
+  },
+  "theme": {"preset": "ocean"}
+}

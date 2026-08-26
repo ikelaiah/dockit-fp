@@ -73,12 +73,12 @@ expanded.
 Release and hosting workflows should be boring, inspectable and hard to get
 wrong.
 
-- [ ] Improve `doctor`, release checks and GitHub Pages guidance for common
+- [x] Improve `doctor`, release checks and GitHub Pages guidance for common
       repository states.
-- [ ] Provide release-ready examples for a single-version site and a historical
+- [x] Provide release-ready examples for a single-version site and a historical
       multi-version site.
-- [ ] Add deterministic release fixtures and a clear pre-publish checklist.
-- [ ] Document upgrade compatibility from every supported 0.x configuration.
+- [x] Add deterministic release fixtures and a clear pre-publish checklist.
+- [x] Document upgrade compatibility from every supported 0.x configuration.
 
 ## v1.0.0: stable, beautiful documentation infrastructure
 

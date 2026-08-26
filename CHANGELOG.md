@@ -1,6 +1,20 @@
 # Changelog
 
-## 0.7.2 — Unreleased
+## 0.8.0
+
+### Added
+
+- Validated `layout.content_width` choices for compact, comfortable and wide
+  documentation, with default-compatible generated markup.
+- A maintained long-form visual fixture and a responsive light/dark verification
+  matrix for Classic, Paper and Midnight.
+
+### Changed
+
+- Refined typography, spacing, tables, callouts, code blocks, semantic
+  interactive colours, focus visibility and reduced-motion behavior.
+
+## 0.7.2
 
 ### Fixed
 

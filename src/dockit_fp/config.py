@@ -20,6 +20,7 @@ THEME_PRESETS = {
     "purple": ("#7c3aed", "#a855f7"),
 }
 THEME_STYLES = {"classic", "paper", "midnight"}
+CONTENT_WIDTHS = {"compact", "comfortable", "wide"}
 HOMEPAGE_SECTION_DEFAULTS = {
     "capabilities": True,
     "banner": True,
@@ -114,6 +115,7 @@ def _legacy_config(docs: Path) -> SiteConfig:
     return SiteConfig(
         name="Documentation", description="Historical documentation", repository_url=None,
         site_url=None, accent=DEFAULT_ACCENT, accent_secondary=DEFAULT_SECONDARY, theme_style="classic",
+        content_width="comfortable",
         banner=None, banner_alt=None, footer=None, project_links=(), pages=pages,
         legacy=True, home_document=home,
         homepage=Homepage(None, True, True, True, False),
@@ -156,6 +158,15 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         raise DocKitError(
             f"{primary}: field 'theme.accent_secondary' must be a #RRGGBB colour. "
             "Use a #RRGGBB colour such as #0891b2."
+        )
+    layout_options = data.get("layout", {})
+    if not isinstance(layout_options, dict):
+        raise DocKitError(f"{primary}: field 'layout' must be an object. Use a layout object or remove the field.")
+    content_width = layout_options.get("content_width", "comfortable")
+    if not isinstance(content_width, str) or content_width not in CONTENT_WIDTHS:
+        raise DocKitError(
+            f"{primary}: field 'layout.content_width' must be one of compact, comfortable, wide. "
+            "Choose a supported content width or remove the field."
         )
     if not layout_path.exists():
         raise DocKitError(f"{layout_path}: required for modern documentation")
@@ -219,7 +230,8 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
     return SiteConfig(
         name=project["name"].strip(), description=str(project.get("description", "")),
         repository_url=project.get("repository_url"), site_url=project.get("site_url"),
-        accent=accent, accent_secondary=secondary, theme_style=theme_style, banner=banner_path,
+        accent=accent, accent_secondary=secondary, theme_style=theme_style, content_width=content_width,
+        banner=banner_path,
         banner_alt=banner.get("alt") if banner else None, footer=footer.strip() if footer else None,
         project_links=tuple(project_links), pages=tuple(pages),
         legacy=False, home_document=home, homepage=homepage,

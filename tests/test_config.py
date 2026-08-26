@@ -50,3 +50,26 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
 
             with self.assertRaisesRegex(DocKitError, r"navigation page 'install\.md'.*Create docs/install\.md or correct its path"):
                 load_config(root)
+
+    def test_loads_a_colour_preset_and_supported_project_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "theme": {"preset": "purple"},
+                    "identity": {
+                        "footer": "Built for Pascal maintainers.",
+                        "links": [{"label": "Source code", "url": "https://example.test/source"}],
+                    },
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            config = load_config(root)
+
+            self.assertEqual("#7c3aed", config.accent)
+            self.assertEqual("Built for Pascal maintainers.", config.footer)
+            self.assertEqual((("Source code", "https://example.test/source"),), config.project_links)

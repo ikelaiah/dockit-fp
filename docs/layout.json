@@ -25,6 +25,12 @@
         {"title": "PasWeave integration", "path": "pasweave-integration.md"},
         {"title": "Architecture", "path": "architecture.md"}
       ]
+    },
+    {
+      "title": "Customisation",
+      "pages": [
+        {"title": "Sections and identity", "path": "customisation.md"}
+      ]
     }
   ]
 }

@@ -20,5 +20,23 @@ published releases, their immutable tag or full commit SHA, and the current
 release. Development `build` may use the working tree; published `build-all`
 does not.
 
-Errors identify the relevant file and invalid field. Configuration is not a
-CSS escape hatch: structural site styling remains in DocKit-FP.
+Navigation is rendered in the order written: each object is one left-side
+section, and each page is rendered in its listed order. To regroup or reorder
+pages, edit only `navigation`; every section must have a title and at least one
+existing Markdown page. Errors name the section or page and tell you whether to
+add, create or correct it.
+
+`dockit.json` also supports project identity without copied CSS:
+
+```json
+{
+  "identity": {
+    "footer": "Built for Free Pascal maintainers.",
+    "links": [{"label": "Source code", "url": "https://github.com/example/library"}]
+  }
+}
+```
+
+Footer text and links are escaped and links must be absolute HTTP(S) URLs.
+Configuration is not a CSS escape hatch: structural site styling remains in
+DocKit-FP.

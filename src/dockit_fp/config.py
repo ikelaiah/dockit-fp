@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from .errors import DocKitError
 from .models import Page, SiteConfig
@@ -12,6 +13,12 @@ from .models import Page, SiteConfig
 DEFAULT_ACCENT = "#2563eb"
 DEFAULT_SECONDARY = "#0ea5e9"
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
+THEME_PRESETS = {
+    "blue": (DEFAULT_ACCENT, DEFAULT_SECONDARY),
+    "teal": ("#0f766e", "#0891b2"),
+    "ocean": ("#0369a1", "#0284c7"),
+    "purple": ("#7c3aed", "#a855f7"),
+}
 
 
 def _read_json(path: Path) -> dict:
@@ -56,7 +63,8 @@ def _legacy_config(docs: Path) -> SiteConfig:
     return SiteConfig(
         name="Documentation", description="Historical documentation", repository_url=None,
         site_url=None, accent=DEFAULT_ACCENT, accent_secondary=DEFAULT_SECONDARY,
-        banner=None, banner_alt=None, pages=pages, legacy=True, home_document=home,
+        banner=None, banner_alt=None, footer=None, project_links=(), pages=pages,
+        legacy=True, home_document=home,
     )
 
 
@@ -76,8 +84,13 @@ def load_config(root: Path) -> SiteConfig:
     theme = data.get("theme", {})
     if not isinstance(theme, dict):
         raise DocKitError(f"{primary}: field 'theme' must be an object")
-    accent = theme.get("accent", DEFAULT_ACCENT)
-    secondary = theme.get("accent_secondary", DEFAULT_SECONDARY)
+    preset = theme.get("preset", "blue")
+    if not isinstance(preset, str) or preset not in THEME_PRESETS:
+        choices = ", ".join(THEME_PRESETS)
+        raise DocKitError(f"{primary}: field 'theme.preset' must be one of {choices}. Choose a supported preset or remove the field.")
+    preset_accent, preset_secondary = THEME_PRESETS[preset]
+    accent = theme.get("accent", preset_accent)
+    secondary = theme.get("accent_secondary", preset_secondary)
     if not isinstance(accent, str) or not HEX_COLOR.fullmatch(accent):
         raise DocKitError(
             f"{primary}: field 'theme.accent' must be a #RRGGBB colour. "
@@ -124,11 +137,29 @@ def load_config(root: Path) -> SiteConfig:
         raise DocKitError(f"{primary}: banner path is unsafe")
     if banner_path and not (root / banner_path).is_file():
         raise DocKitError(f"{primary}: banner asset {banner_path!r} does not exist")
+    identity = data.get("identity", {})
+    if not isinstance(identity, dict):
+        raise DocKitError(f"{primary}: field 'identity' must be an object")
+    footer = identity.get("footer")
+    if footer is not None and (not isinstance(footer, str) or not footer.strip()):
+        raise DocKitError(f"{primary}: field 'identity.footer' must be a non-empty string when provided")
+    raw_links = identity.get("links", [])
+    if not isinstance(raw_links, list):
+        raise DocKitError(f"{primary}: field 'identity.links' must be a list")
+    project_links: list[tuple[str, str]] = []
+    for index, link in enumerate(raw_links):
+        if not isinstance(link, dict) or not isinstance(link.get("label"), str) or not link["label"].strip() or not isinstance(link.get("url"), str):
+            raise DocKitError(f"{primary}: identity.links[{index}] needs non-empty string label and URL fields")
+        parsed = urlsplit(link["url"])
+        if parsed.scheme not in {"https", "http"} or not parsed.netloc:
+            raise DocKitError(f"{primary}: identity.links[{index}].url must be an absolute http(s) URL")
+        project_links.append((link["label"].strip(), link["url"]))
     home = "index.md" if any(page.path == "index.md" for page in pages) else pages[0].path
     return SiteConfig(
         name=project["name"].strip(), description=str(project.get("description", "")),
         repository_url=project.get("repository_url"), site_url=project.get("site_url"),
         accent=accent, accent_secondary=secondary, banner=banner_path,
-        banner_alt=banner.get("alt") if banner else None, pages=tuple(pages),
+        banner_alt=banner.get("alt") if banner else None, footer=footer.strip() if footer else None,
+        project_links=tuple(project_links), pages=tuple(pages),
         legacy=False, home_document=home,
     )

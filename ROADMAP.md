@@ -41,15 +41,15 @@ publication. The goal is a useful, good-looking first site in five minutes.
 Projects should feel recognisably theirs while retaining the reliable DocKit-FP
 shell.
 
-- [ ] Define and document a simple navigation contract for adding, grouping and
+- [x] Define and document a simple navigation contract for adding, grouping and
       reordering left-side sections.
-- [ ] Make navigation validation name the exact section, page and corrective
+- [x] Make navigation validation name the exact section, page and corrective
       action when a layout is invalid.
-- [ ] Provide supported identity options for banners, footer information and
+- [x] Provide supported identity options for banners, footer information and
       project links instead of asking users to copy CSS.
-- [ ] Add colour presets and contrast guidance alongside the existing semantic
+- [x] Add colour presets and contrast guidance alongside the existing semantic
       accent tokens.
-- [ ] Publish visual examples for every supported customisation, including a
+- [x] Publish visual examples for every supported customisation, including a
       before/after result and copyable configuration.
 
 ## v0.4: themes that are easy to choose, switch and extend

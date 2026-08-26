@@ -20,6 +20,8 @@ class SiteConfig:
     accent_secondary: str
     banner: str | None
     banner_alt: str | None
+    footer: str | None
+    project_links: tuple[tuple[str, str], ...]
     pages: tuple[Page, ...]
     legacy: bool
     home_document: str

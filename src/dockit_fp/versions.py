@@ -17,6 +17,23 @@ from .safety import prepare_output
 
 MOVING_REFS = {"head", "main", "master", "develop", "development", "latest"}
 COMMIT = re.compile(r"^[0-9a-fA-F]{40}$")
+RELEASE_NAME = re.compile(r"^[0-9A-Za-z][0-9A-Za-z._-]*$")
+
+
+def _valid_source_ref(value: str) -> bool:
+    if COMMIT.fullmatch(value):
+        return True
+    forbidden = "~^:?*[\\"
+    return bool(
+        value
+        and not value.startswith("-")
+        and not value.startswith("/")
+        and not value.endswith(("/", "."))
+        and ".." not in value
+        and "@{" not in value
+        and "//" not in value
+        and not any(character.isspace() or character in forbidden for character in value)
+    )
 
 
 @dataclass(frozen=True)
@@ -52,10 +69,18 @@ def load_manifest(root: Path) -> VersionManifest:
     for index, entry in enumerate(entries):
         if not isinstance(entry, dict) or not isinstance(entry.get("release"), str) or not isinstance(entry.get("source_ref"), str):
             raise DocKitError(f"{path}: versions[{index}] needs string release and source_ref")
-        versions.append(Version(entry["release"], entry["source_ref"]))
+        release, source_ref = entry["release"], entry["source_ref"]
+        if not RELEASE_NAME.fullmatch(release):
+            raise DocKitError(
+                f"{path}: versions[{index}].release must be a safe name using letters, numbers, dots, underscores, or hyphens"
+            )
+        if not _valid_source_ref(source_ref):
+            raise DocKitError(f"{path}: versions[{index}].source_ref must be a safe tag or full commit SHA")
+        versions.append(Version(release, source_ref))
     releases = [entry.release for entry in versions]
-    if len(set(releases)) != len(releases) or current not in releases:
-        raise DocKitError(f"{path}: releases must be unique and include current {current!r}")
+    source_refs = [entry.source_ref for entry in versions]
+    if len(set(releases)) != len(releases) or len(set(source_refs)) != len(source_refs) or current not in releases:
+        raise DocKitError(f"{path}: releases and source refs must be unique, and releases must include current {current!r}")
     return VersionManifest(current, tuple(versions))
 
 
@@ -80,9 +105,14 @@ def check_release(root: Path) -> VersionManifest:
     root = root.resolve()
     manifest = load_manifest(root)
     for entry in manifest.versions:
-        if not _is_immutable(root, entry.source_ref):
+        if entry.source_ref.lower() in MOVING_REFS:
             raise DocKitError(
                 f"docs/versions.json: published release {entry.release!r} must not use moving source_ref {entry.source_ref!r}; use a tag or full commit SHA."
+            )
+        if not COMMIT.fullmatch(entry.source_ref) and not _is_immutable(root, entry.source_ref):
+            raise DocKitError(
+                f"docs/versions.json: source_ref {entry.source_ref!r} for release {entry.release!r} does not exist. "
+                f"Create the tag with 'git tag {entry.source_ref}' before publishing."
             )
         try:
             _run_git(root, "rev-parse", "--verify", f"{entry.source_ref}^{{commit}}")
@@ -90,6 +120,17 @@ def check_release(root: Path) -> VersionManifest:
             raise DocKitError(
                 f"Cannot build documentation version {entry.release}: source_ref {entry.source_ref!r} does not resolve to a Git object."
             ) from error
+    current = next(entry for entry in manifest.versions if entry.release == manifest.current)
+    current_commit = str(_run_git(root, "rev-parse", "--verify", f"{current.source_ref}^{{commit}}")).strip()
+    head_commit = str(_run_git(root, "rev-parse", "--verify", "HEAD^{commit}")).strip()
+    if current_commit != head_commit:
+        raise DocKitError(
+            f"docs/versions.json: current release {current.release!r} source_ref {current.source_ref!r} does not match HEAD. "
+            "Tag the commit being published or check out the declared release commit."
+        )
+    changed_docs = str(_run_git(root, "status", "--porcelain", "--untracked-files=all", "--", "docs")).strip()
+    if changed_docs:
+        raise DocKitError("Documentation differs from HEAD. Commit docs changes before publishing the current release.")
     return manifest
 
 

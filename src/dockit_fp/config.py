@@ -19,6 +19,7 @@ THEME_PRESETS = {
     "ocean": ("#0369a1", "#0284c7"),
     "purple": ("#7c3aed", "#a855f7"),
 }
+THEME_STYLES = {"classic", "paper", "midnight"}
 
 
 def _read_json(path: Path) -> dict:
@@ -62,7 +63,7 @@ def _legacy_config(docs: Path) -> SiteConfig:
     pages = tuple(Page(path, _title_from_path(path)) for path in paths)
     return SiteConfig(
         name="Documentation", description="Historical documentation", repository_url=None,
-        site_url=None, accent=DEFAULT_ACCENT, accent_secondary=DEFAULT_SECONDARY,
+        site_url=None, accent=DEFAULT_ACCENT, accent_secondary=DEFAULT_SECONDARY, theme_style="classic",
         banner=None, banner_alt=None, footer=None, project_links=(), pages=pages,
         legacy=True, home_document=home,
     )
@@ -89,6 +90,9 @@ def load_config(root: Path) -> SiteConfig:
         choices = ", ".join(THEME_PRESETS)
         raise DocKitError(f"{primary}: field 'theme.preset' must be one of {choices}. Choose a supported preset or remove the field.")
     preset_accent, preset_secondary = THEME_PRESETS[preset]
+    theme_style = theme.get("style", "classic")
+    if not isinstance(theme_style, str) or theme_style not in THEME_STYLES:
+        raise DocKitError(f"{primary}: field 'theme.style' must be one of {', '.join(sorted(THEME_STYLES))}. Choose a supported visual theme or remove the field.")
     accent = theme.get("accent", preset_accent)
     secondary = theme.get("accent_secondary", preset_secondary)
     if not isinstance(accent, str) or not HEX_COLOR.fullmatch(accent):
@@ -158,7 +162,7 @@ def load_config(root: Path) -> SiteConfig:
     return SiteConfig(
         name=project["name"].strip(), description=str(project.get("description", "")),
         repository_url=project.get("repository_url"), site_url=project.get("site_url"),
-        accent=accent, accent_secondary=secondary, banner=banner_path,
+        accent=accent, accent_secondary=secondary, theme_style=theme_style, banner=banner_path,
         banner_alt=banner.get("alt") if banner else None, footer=footer.strip() if footer else None,
         project_links=tuple(project_links), pages=tuple(pages),
         legacy=False, home_document=home,

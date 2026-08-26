@@ -116,6 +116,13 @@ SITE_JS = r'''
   if(input&&results){
     fetch(input.dataset.searchIndex||'search-index.json').then(response=>response.ok?response.json():[]).then(value=>entries=value).catch(()=>{});
     input.addEventListener('input',showSearch);
+    input.addEventListener('keydown',event=>{
+      const links=[...results.querySelectorAll('a')];const current=links.indexOf(document.activeElement);
+      if(event.key==='ArrowDown'&&links.length){event.preventDefault();links[Math.min(current+1,links.length-1)].focus()}
+      if(event.key==='ArrowUp'&&links.length){event.preventDefault();if(current>0)links[current-1].focus();else input.focus()}
+      if(event.key==='Enter'&&links.length){event.preventDefault();links[0].click()}
+    });
+    results.addEventListener('keydown',event=>{const links=[...results.querySelectorAll('a')],current=links.indexOf(document.activeElement);if(event.key==='ArrowDown'&&current>=0&&current+1<links.length){event.preventDefault();links[current+1].focus()}if(event.key==='ArrowUp'&&current>=0){event.preventDefault();if(current)links[current-1].focus();else input.focus()}if(event.key==='Escape'){closeSearch();input.focus()}});
     document.addEventListener('pointerdown',event=>{if(!results.contains(event.target)&&event.target!==input)closeSearch()});
   }
   document.addEventListener('keydown',event=>{

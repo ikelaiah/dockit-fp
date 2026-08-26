@@ -9,7 +9,7 @@ ready to publish a versioned release.
 From your project root:
 
 ```bash
-python -m pip install "dockit-fp==0.1.0"
+python -m pip install "dockit-fp==0.2.0"
 dockit-fp init
 ```
 
@@ -48,6 +48,10 @@ Those two colours are the supported way to make the site feel like your
 project. You do not need to copy or maintain DocKit-FP's CSS.
 
 `docs/layout.json` controls the order and labels in the navigation.
+
+The repository's [minimal example](../examples/minimal/) is the same complete
+structure with a second page and two supported colour choices. Copy it when
+you want a starting point, then replace its project name and words.
 
 ## 3. Add your first page
 
@@ -150,4 +154,5 @@ dockit-fp doctor
 
 It reports whether DocKit-FP found modern configuration, legacy Markdown, and
 release metadata. Then run `dockit-fp check`; its errors name the file and
-field that need attention.
+field that need attention, and suggest the next corrective action for common
+configuration mistakes.

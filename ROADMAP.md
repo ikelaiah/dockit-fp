@@ -28,11 +28,11 @@ publication. The goal is a useful, good-looking first site in five minutes.
 
 - [x] Improve `init` and `doctor` guidance so the next useful command is always
       obvious.
-- [ ] Keep the beginner guide short, copyable and accurate, with one complete
+- [x] Keep the beginner guide short, copyable and accurate, with one complete
       publish path from an empty directory to GitHub Pages.
-- [ ] Offer a small, maintained example project that changes a section, a
+- [x] Offer a small, maintained example project that changes a section, a
       colour and a first additional page without custom CSS.
-- [ ] Make validation messages more actionable for common configuration errors.
+- [x] Make validation messages more actionable for common configuration errors.
 - [ ] Make every starter site responsive, keyboard-usable and visually polished
       before adding more surface area.
 

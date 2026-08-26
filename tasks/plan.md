@@ -28,13 +28,16 @@ actionable CLI guidance after `init` and in `doctor`.
 - Never weaken immutable release checks or copy another project's branding,
   assets or source code.
 
-## Success criteria for the first slice
+## Success criteria
 
-- `dockit-fp init` states the next edit and validation command.
-- `dockit-fp doctor` distinguishes a normal preview project from one with a
-  versioned release configuration and gives one next action.
-- Existing command behaviour and safety checks remain unchanged.
-- CLI tests and documentation validation pass.
+- [x] `dockit-fp init` states the next edit and validation command.
+- [x] `dockit-fp doctor` distinguishes a normal preview project from one with a
+      versioned release configuration and gives one next action.
+- [x] Common colour and navigation errors name a corrective action.
+- [x] The maintained minimal example changes a colour, adds a page and builds offline.
+- [x] The beginner guide links the example and describes the complete publish path.
+- [ ] Existing command behaviour and safety checks remain unchanged.
+- [ ] CLI tests and documentation validation pass.
 
 ## Release direction
 

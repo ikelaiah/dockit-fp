@@ -1,3 +1,7 @@
 # Example-FP
 
-Welcome to a minimal **DocKit-FP** site.
+Welcome to a maintained **DocKit-FP** starter site. It uses the supported
+navigation and colour settings, so you can copy this structure without
+copying CSS.
+
+Read [Quick start](quick-start.md) to make your first project-specific change.

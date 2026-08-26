@@ -60,13 +60,13 @@ site generator.
 Every built-in theme should look deliberate before custom visual surface area is
 expanded.
 
-- [ ] Refine typography, spacing, tables, callouts, code blocks and long-form
+- [x] Refine typography, spacing, tables, callouts, code blocks and long-form
       reading across Classic, Paper and Midnight.
-- [ ] Add configuration-level layout choices only where they preserve the
+- [x] Add configuration-level layout choices only where they preserve the
       shared semantic theme-token contract.
-- [ ] Publish visual fixtures for phone, tablet, desktop, light, dark and long
+- [x] Publish visual fixtures for phone, tablet, desktop, light, dark and long
       document views.
-- [ ] Verify contrast, focus visibility and keyboard behaviour for every theme.
+- [x] Verify contrast, focus visibility and keyboard behaviour for every theme.
 
 ## v0.9.0: make publishing dependable
 

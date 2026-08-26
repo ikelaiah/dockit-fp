@@ -49,3 +49,10 @@ subject to that check.
 
 No migration is required. When the Classic visual theme is selected, System
 colour mode now follows a dark operating-system preference as documented.
+
+## v0.7.2 to v0.8.0
+
+No migration is required. Existing sites retain the comfortable content width.
+Adopt the optional `layout.content_width` setting only when a compact tutorial
+or wide reference layout better suits the documentation. Theme polish applies
+through the existing semantic token contract and requires no CSS copies.

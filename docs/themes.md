@@ -11,6 +11,18 @@ blue (`#2563eb` / `#0ea5e9`), ocean (`#0369a1` / `#0284c7`) and purple
 (`#7c3aed` / `#a855f7`) are all ordinary configurations, not project-specific
 branches of the stylesheet.
 
+Use one of those curated pairs with `theme.preset`; an explicit accent token
+can still override either colour when a project already has an accessible
+palette:
+
+```json
+{"theme": {"preset": "purple"}}
+```
+
+The supported preset names are `blue`, `teal`, `ocean` and `purple`. Check
+link and focus contrast against both Light and Dark before choosing custom
+tokens.
+
 An optional banner has a project-relative safe path and meaningful `alt` text.
 Use it for identity, not for structural customisation.
 

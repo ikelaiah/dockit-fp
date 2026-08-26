@@ -44,3 +44,8 @@ No migration is required. v0.7.1 restores successful `build-all` publication
 when an immutable historical tag contains modern documentation authored before
 v0.7.0's strict navigation-completeness check. Current documentation remains
 subject to that check.
+
+## v0.7.1 to v0.7.2
+
+No migration is required. When the Classic visual theme is selected, System
+colour mode now follows a dark operating-system preference as documented.

@@ -52,6 +52,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .capability-strip li{max-width:none;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.35rem;background:var(--surface);line-height:1.35}
 .capability-strip strong{display:block;font-family:var(--dk-font-display);font-size:.78rem;font-weight:750;letter-spacing:.01em;color:var(--text)}
 .capability-strip span{display:block;margin-top:.15rem;color:var(--muted);font-size:.75rem}
+.release-context{display:flex;gap:.5rem;align-items:baseline;margin:1rem 0;padding:.55rem .75rem;border-left:3px solid var(--dk-accent);background:var(--surface);font-size:.82rem}.release-context strong{font-family:var(--dk-font-display)}.release-context span{color:var(--muted);font-family:var(--dk-font-mono)}
 .prose a{color:var(--dk-accent);font-weight:600;text-decoration-thickness:.08em;text-underline-offset:.16em}
 .prose a:hover{text-decoration-thickness:.13em}
 .prose pre{position:relative;overflow:auto;background:var(--code);color:var(--code-text);padding:1rem 1.15rem;border-radius:.45rem;font-size:.9rem;line-height:1.6}

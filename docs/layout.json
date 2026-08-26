@@ -7,6 +7,7 @@
         {"title": "Overview", "path": "index.md"},
         {"title": "Beginner's guide", "path": "beginners-guide.md"},
         {"title": "Configuration", "path": "configuration.md"},
+        {"title": "Homepage recipes", "path": "homepage-recipes.md"},
         {"title": "Themes", "path": "themes.md"},
         {"title": "Mathematics", "path": "math.md"}
       ]

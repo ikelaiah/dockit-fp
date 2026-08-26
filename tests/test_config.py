@@ -85,6 +85,85 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
 
             self.assertEqual("midnight", load_config(root).theme_style)
 
+    def test_loads_homepage_cards_and_section_switches(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "homepage": {
+                        "capabilities": [
+                            {"title": "API reference", "description": "Every public unit."},
+                            {"title": "Offline", "description": "No CDN."},
+                        ],
+                        "sections": {
+                            "capabilities": True,
+                            "banner": False,
+                            "introduction": False,
+                            "release_context": True,
+                        },
+                    },
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            homepage = load_config(root).homepage
+
+            self.assertEqual(("API reference", "Every public unit."), homepage.capabilities[0])
+            self.assertFalse(homepage.show_banner)
+            self.assertFalse(homepage.show_introduction)
+            self.assertTrue(homepage.show_release_context)
+
+    def test_names_an_invalid_homepage_card_field_and_correction(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "homepage": {"capabilities": [{"title": "", "description": "Useful."}]},
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            with self.assertRaisesRegex(DocKitError, r"homepage\.capabilities\[0\]\.title.*Use a non-empty string"):
+                load_config(root)
+
+    def test_names_an_invalid_homepage_section_field_and_correction(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "homepage": {"sections": {"banner": "no"}},
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            with self.assertRaisesRegex(DocKitError, r"homepage\.sections\.banner.*Use true or false"):
+                load_config(root)
+
+    def test_rejects_an_unknown_homepage_section_with_the_supported_names(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "homepage": {"sections": {"introducton": False}},
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            with self.assertRaisesRegex(DocKitError, r"homepage\.sections\.introducton.*Use one of"):
+                load_config(root)
+
     def test_explains_the_schema_compatibility_policy(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

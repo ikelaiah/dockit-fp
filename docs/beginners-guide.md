@@ -49,9 +49,10 @@ project. You do not need to copy or maintain DocKit-FP's CSS.
 
 `docs/layout.json` controls the order and labels in the navigation.
 
-The repository's [minimal example](../examples/minimal/) is the same complete
-structure with a second page and two supported colour choices. Copy it when
-you want a starting point, then replace its project name and words.
+The [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.2.0/examples/minimal)
+is the same complete structure with a second page and two supported colour
+choices. Copy it when you want a starting point, then replace its project name
+and words.
 
 ## 3. Add your first page
 
@@ -115,11 +116,10 @@ alternative text:
 Add this object alongside `project` and `theme` in `docs/dockit.json`. Keep the
 image in your repository; DocKit-FP copies it into the built site.
 
-## 6. Publish a version only when you are ready
+## 6. Publish to GitHub Pages when you are ready
 
-Local previews do not need version metadata. Before publishing, choose an
-immutable release name such as `v1.0.0`, add this manifest, commit it, then tag
-that commit:
+Local previews do not need version metadata. When you are ready to publish,
+choose an immutable release name such as `v1.0.0` and add this manifest:
 
 ```json
 {
@@ -140,9 +140,23 @@ git tag -a v1.0.0 -m "v1.0.0"
 git push origin main v1.0.0
 ```
 
-Use the reusable GitHub Pages workflow described in [GitHub Pages](github-pages.md).
-It builds the exact tagged source, so later edits on `main` never rewrite a
-published release.
+Create `.github/workflows/docs.yml` with this pinned workflow:
+
+```yaml
+name: Publish documentation
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.2.0
+```
+
+Commit the workflow before the tag. In the repository settings, enable GitHub
+Pages with **GitHub Actions** as its source. The workflow builds the exact
+tagged source, so later edits on `main` never rewrite a published release.
 
 ## When something does not work
 

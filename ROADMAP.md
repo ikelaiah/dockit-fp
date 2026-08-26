@@ -33,7 +33,7 @@ publication. The goal is a useful, good-looking first site in five minutes.
 - [x] Offer a small, maintained example project that changes a section, a
       colour and a first additional page without custom CSS.
 - [x] Make validation messages more actionable for common configuration errors.
-- [ ] Make every starter site responsive, keyboard-usable and visually polished
+- [x] Make every starter site responsive, keyboard-usable and visually polished
       before adding more surface area.
 
 ## v0.3: customise sections and identity without CSS forks

@@ -37,3 +37,10 @@ in `layout.json`. Run `dockit-fp check`; add each reported path to an
 appropriate section, or remove documentation that should no longer ship.
 Existing Markdown rendering remains compatible, and definition lists are an
 optional authoring feature.
+
+## v0.7.0 to v0.7.1
+
+No migration is required. v0.7.1 restores successful `build-all` publication
+when an immutable historical tag contains modern documentation authored before
+v0.7.0's strict navigation-completeness check. Current documentation remains
+subject to that check.

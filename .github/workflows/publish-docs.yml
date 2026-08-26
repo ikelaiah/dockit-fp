@@ -42,7 +42,7 @@ jobs:
         env:
           DOCKIT_RELEASE: ${{ inputs.release }}
         run: dockit-fp build --release "$DOCKIT_RELEASE" --output build/docs-site
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: build/docs-site
       - id: deployment

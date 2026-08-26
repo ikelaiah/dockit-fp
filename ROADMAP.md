@@ -5,77 +5,96 @@ documentation without maintaining a site generator. This roadmap is a guide to
 direction, not a promise of dates. Feedback from library maintainers will set
 the order within each milestone.
 
-Every milestone must strengthen at least one of these promises:
+The path to 1.0 is guided by three promises:
 
-1. A maintainer can create, learn and publish a documentation site without
-   becoming a site-builder expert.
-2. A project can organise sections, choose colours and express its identity
-   through supported configuration rather than copied CSS.
-3. The default site looks intentional, readable and excellent on every screen.
-4. The generator stays small, offline-friendly and straightforward to maintain.
+1. **Easy to customise.** A project owner can shape content, cards, sections,
+   identity and theme through documented configuration—not Python edits or CSS
+   forks.
+2. **Easy to use.** A maintainer can start, author, check and publish a site
+   with short commands and useful guidance.
+3. **Looks good.** The default site and every supported theme are intentional,
+   readable, responsive and keyboard-accessible.
 
-## Shipped in 0.1.0
+The generator will remain small, offline-friendly and straightforward to
+maintain while delivering those promises.
 
-- Safe Markdown-to-site builds with explicit navigation.
-- Responsive light, dark and system themes, plus two project accent tokens.
-- Local search, offline KaTeX mathematics and downloadable offline archives.
-- Immutable historical builds and GitHub Pages publication from release tags.
+## Shipped in v0.1.0–v0.5.0
 
-## v0.2: make the first site effortless
+- Safe Markdown-to-site builds, local search, offline KaTeX and immutable
+  historical Git-release builds.
+- A guided first-site path, actionable validation and maintained examples.
+- Ordered navigation, identity options, colour presets and visual themes.
+- Safe Markdown task lists, keyboard search, GitHub Pages publication and an
+  explicit configuration-compatibility policy.
 
-The immediate focus is the path from an empty repository to a confident first
-publication. The goal is a useful, good-looking first site in five minutes.
+## v0.6.0: customise the homepage without code
 
-- [x] Improve `init` and `doctor` guidance so the next useful command is always
-      obvious.
-- [x] Keep the beginner guide short, copyable and accurate, with one complete
-      publish path from an empty directory to GitHub Pages.
-- [x] Offer a small, maintained example project that changes a section, a
-      colour and a first additional page without custom CSS.
-- [x] Make validation messages more actionable for common configuration errors.
-- [x] Make every starter site responsive, keyboard-usable and visually polished
-      before adding more surface area.
+The next release closes the gap between the attractive default home page and a
+project's own story.
 
-## v0.3: customise sections and identity without CSS forks
+- [ ] Make the homepage capability cards configurable, reorderable and
+      removable through `dockit.json`.
+- [ ] Let a project choose whether the homepage shows the capability strip,
+      banner, introduction and release context.
+- [ ] Provide copyable homepage recipes for a library, application and API
+      reference site.
+- [ ] Ensure configuration errors identify the exact card or homepage field and
+      suggest a correction.
+- [ ] Keep the default homepage unchanged for existing projects.
 
-Projects should feel recognisably theirs while retaining the reliable DocKit-FP
-shell.
+## v0.7.0: make authoring and navigation effortless
 
-- [x] Define and document a simple navigation contract for adding, grouping and
-      reordering left-side sections.
-- [x] Make navigation validation name the exact section, page and corrective
-      action when a layout is invalid.
-- [x] Provide supported identity options for banners, footer information and
-      project links instead of asking users to copy CSS.
-- [x] Add colour presets and contrast guidance alongside the existing semantic
-      accent tokens.
-- [x] Publish visual examples for every supported customisation, including a
-      before/after result and copyable configuration.
+Writing and finding documentation should feel faster than maintaining a custom
+site generator.
 
-## v0.4: themes that are easy to choose, switch and extend
+- [ ] Add the highest-value safe Markdown features requested by Pascal project
+      maintainers, with predictable generated HTML.
+- [ ] Make navigation editing easier with clear section/page summaries and
+      useful checks for unreachable or unlisted content.
+- [ ] Improve search ranking, result previews and keyboard flows while keeping
+      every asset local.
+- [ ] Add concise authoring recipes for common project documentation structures.
 
-- [x] Keep System, Light and Dark as dependable built-ins, including a clear
-      keyboard-accessible switcher.
-- [x] Define a small semantic theme-token contract so new built-in themes do
-      not require markup forks.
-- [x] Ship a curated set of visually distinct, accessible starter themes.
-- [x] Document the supported path for adding a theme and verify each theme in
-      light, dark, mobile and long-document views.
+## v0.8.0: polish the visual system
 
-## v0.5: maintain with confidence
+Every built-in theme should look deliberate before custom visual surface area is
+expanded.
 
-- [x] Expand safe Markdown authoring features based on real Pascal-project
-      documentation needs.
-- [x] Improve search quality and keyboard navigation while keeping all assets
-      local.
-- [x] Add release-oriented checks, examples and visual fixtures for
-      multi-version sites.
-- [x] Test every supported configuration against generated HTML, responsive
-      layout and accessibility expectations.
-- [x] Version configuration schemas deliberately; provide migration guidance,
-      compatibility expectations and a stable upgrade policy on the path to 1.0.
-- [x] Keep dependencies, build steps and hosting requirements minimal and
-      documented for contributors.
+- [ ] Refine typography, spacing, tables, callouts, code blocks and long-form
+      reading across Classic, Paper and Midnight.
+- [ ] Add configuration-level layout choices only where they preserve the
+      shared semantic theme-token contract.
+- [ ] Publish visual fixtures for phone, tablet, desktop, light, dark and long
+      document views.
+- [ ] Verify contrast, focus visibility and keyboard behaviour for every theme.
+
+## v0.9.0: make publishing dependable
+
+Release and hosting workflows should be boring, inspectable and hard to get
+wrong.
+
+- [ ] Improve `doctor`, release checks and GitHub Pages guidance for common
+      repository states.
+- [ ] Provide release-ready examples for a single-version site and a historical
+      multi-version site.
+- [ ] Add deterministic release fixtures and a clear pre-publish checklist.
+- [ ] Document upgrade compatibility from every supported 0.x configuration.
+
+## v1.0.0: stable, beautiful documentation infrastructure
+
+Version 1.0 is the commitment point: the supported configuration and workflow
+become dependable foundations for Free Pascal projects.
+
+- [ ] Declare the stable configuration contract, compatibility policy and
+      deprecation process.
+- [ ] Complete a full accessibility, responsive-layout and generated-HTML
+      verification matrix for every supported configuration.
+- [ ] Review public documentation, examples, CLI help and release workflow for
+      a maintainer's first successful publication.
+- [ ] Publish a migration guide from each 0.x release and a concise 1.0 upgrade
+      checklist.
+- [ ] Ship only when the three promises—easy to customise, easy to use and
+      looks good—are demonstrably true.
 
 ## Quality bar
 

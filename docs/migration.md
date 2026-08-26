@@ -23,3 +23,9 @@ Future schema versions will fail clearly rather than being guessed at. A major
 schema change will ship with release notes, a migration guide, compatibility
 expectations and—when mechanical conversion is safe—a migration command. Keep
 each published release manifest on immutable tags while upgrading.
+
+## v0.5.0 to v0.6.0
+
+No migration is required. Existing homepages retain their v0.5.0 output.
+Adopt the optional `homepage` object only when you want to replace capability
+cards or control homepage sections.

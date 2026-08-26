@@ -32,15 +32,15 @@ maintain while delivering those promises.
 The next release closes the gap between the attractive default home page and a
 project's own story.
 
-- [ ] Make the homepage capability cards configurable, reorderable and
+- [x] Make the homepage capability cards configurable, reorderable and
       removable through `dockit.json`.
-- [ ] Let a project choose whether the homepage shows the capability strip,
+- [x] Let a project choose whether the homepage shows the capability strip,
       banner, introduction and release context.
-- [ ] Provide copyable homepage recipes for a library, application and API
+- [x] Provide copyable homepage recipes for a library, application and API
       reference site.
-- [ ] Ensure configuration errors identify the exact card or homepage field and
+- [x] Ensure configuration errors identify the exact card or homepage field and
       suggest a correction.
-- [ ] Keep the default homepage unchanged for existing projects.
+- [x] Keep the default homepage unchanged for existing projects.
 
 ## v0.7.0: make authoring and navigation effortless
 

@@ -36,8 +36,8 @@ actionable CLI guidance after `init` and in `doctor`.
 - [x] Common colour and navigation errors name a corrective action.
 - [x] The maintained minimal example changes a colour, adds a page and builds offline.
 - [x] The beginner guide links the example and describes the complete publish path.
-- [ ] Existing command behaviour and safety checks remain unchanged.
-- [ ] CLI tests and documentation validation pass.
+- [x] Existing command behaviour and safety checks remain unchanged.
+- [x] CLI tests and documentation validation pass.
 
 ## Release direction
 

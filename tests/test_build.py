@@ -48,6 +48,8 @@ class BuildSiteTests(unittest.TestCase):
             self.assertEqual(2, result.page_count)
             home = (root / "site" / "index.html").read_text(encoding="utf-8")
             self.assertIn('style="--dk-accent:#0f766e;--dk-accent-secondary:#0891b2"', home)
+            self.assertIn('id="visual-theme"', home)
+            self.assertIn('data-visual-theme="classic"', home)
             self.assertIn("System", home)
             self.assertIn("search-index.json", home)
             self.assertIn('placeholder="Search docs, commands, and versions"', home)

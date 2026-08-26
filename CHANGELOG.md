@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.3.0 — Unreleased
+## 0.4.0 — Unreleased
+
+### Added
+
+- Classic, Paper and Midnight accessible visual starter themes.
+- A semantic visual-theme token contract and keyboard-accessible theme chooser.
+
+## 0.3.0
 
 ### Added
 

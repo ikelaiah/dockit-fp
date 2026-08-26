@@ -73,3 +73,14 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             self.assertEqual("#7c3aed", config.accent)
             self.assertEqual("Built for Pascal maintainers.", config.footer)
             self.assertEqual((("Source code", "https://example.test/source"),), config.project_links)
+
+    def test_loads_a_supported_visual_theme(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {"schema_version": 1, "project": {"name": "Demo"}, "theme": {"style": "midnight"}},
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            self.assertEqual("midnight", load_config(root).theme_style)

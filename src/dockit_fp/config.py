@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from .errors import DocKitError
-from .models import Page, SiteConfig
+from .models import Homepage, Page, SiteConfig
 
 DEFAULT_ACCENT = "#2563eb"
 DEFAULT_SECONDARY = "#0ea5e9"
@@ -20,6 +20,12 @@ THEME_PRESETS = {
     "purple": ("#7c3aed", "#a855f7"),
 }
 THEME_STYLES = {"classic", "paper", "midnight"}
+HOMEPAGE_SECTION_DEFAULTS = {
+    "capabilities": True,
+    "banner": True,
+    "introduction": True,
+    "release_context": False,
+}
 
 
 def _read_json(path: Path) -> dict:
@@ -55,6 +61,50 @@ def _title_from_path(path: str) -> str:
     return Path(path).stem.replace("-", " ").replace("_", " ").title()
 
 
+def _homepage_config(data: dict, primary: Path) -> Homepage:
+    raw_homepage = data.get("homepage", {})
+    if not isinstance(raw_homepage, dict):
+        raise DocKitError(f"{primary}: field 'homepage' must be an object. Use a homepage object or remove the field.")
+    if "capabilities" not in raw_homepage:
+        capabilities = None
+    else:
+        raw_capabilities = raw_homepage["capabilities"]
+        if not isinstance(raw_capabilities, list):
+            raise DocKitError(f"{primary}: field 'homepage.capabilities' must be a list. Use a list of title and description objects.")
+        cards: list[tuple[str, str]] = []
+        for index, card in enumerate(raw_capabilities):
+            if not isinstance(card, dict):
+                raise DocKitError(f"{primary}: homepage.capabilities[{index}] must be an object. Use title and description fields.")
+            values: list[str] = []
+            for field in ("title", "description"):
+                value = card.get(field)
+                if not isinstance(value, str) or not value.strip():
+                    raise DocKitError(f"{primary}: homepage.capabilities[{index}].{field} must be a non-empty string. Use a non-empty string.")
+                values.append(value.strip())
+            cards.append((values[0], values[1]))
+        capabilities = tuple(cards)
+    raw_sections = raw_homepage.get("sections", {})
+    if not isinstance(raw_sections, dict):
+        raise DocKitError(f"{primary}: field 'homepage.sections' must be an object. Use section names with true or false values.")
+    for name in raw_sections:
+        if name not in HOMEPAGE_SECTION_DEFAULTS:
+            choices = ", ".join(HOMEPAGE_SECTION_DEFAULTS)
+            raise DocKitError(f"{primary}: homepage.sections.{name} is not supported. Use one of {choices}.")
+    sections: dict[str, bool] = {}
+    for name, default in HOMEPAGE_SECTION_DEFAULTS.items():
+        value = raw_sections.get(name, default)
+        if not isinstance(value, bool):
+            raise DocKitError(f"{primary}: homepage.sections.{name} must be a boolean. Use true or false.")
+        sections[name] = value
+    return Homepage(
+        capabilities=capabilities,
+        show_capabilities=sections["capabilities"],
+        show_banner=sections["banner"],
+        show_introduction=sections["introduction"],
+        show_release_context=sections["release_context"],
+    )
+
+
 def _legacy_config(docs: Path) -> SiteConfig:
     paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md"))
     if not paths:
@@ -66,6 +116,7 @@ def _legacy_config(docs: Path) -> SiteConfig:
         site_url=None, accent=DEFAULT_ACCENT, accent_secondary=DEFAULT_SECONDARY, theme_style="classic",
         banner=None, banner_alt=None, footer=None, project_links=(), pages=pages,
         legacy=True, home_document=home,
+        homepage=Homepage(None, True, True, True, False),
     )
 
 
@@ -79,6 +130,7 @@ def load_config(root: Path) -> SiteConfig:
     if not primary.exists():
         raise DocKitError(f"{primary}: required when modern documentation configuration exists")
     data = _read_json(primary)
+    homepage = _homepage_config(data, primary)
     project = data.get("project")
     if not isinstance(project, dict) or not isinstance(project.get("name"), str) or not project["name"].strip():
         raise DocKitError(f"{primary}: field 'project.name' must be a non-empty string")
@@ -165,5 +217,5 @@ def load_config(root: Path) -> SiteConfig:
         accent=accent, accent_secondary=secondary, theme_style=theme_style, banner=banner_path,
         banner_alt=banner.get("alt") if banner else None, footer=footer.strip() if footer else None,
         project_links=tuple(project_links), pages=tuple(pages),
-        legacy=False, home_document=home,
+        legacy=False, home_document=home, homepage=homepage,
     )

@@ -40,3 +40,38 @@ add, create or correct it.
 Footer text and links are escaped and links must be absolute HTTP(S) URLs.
 Configuration is not a CSS escape hatch: structural site styling remains in
 DocKit-FP.
+
+## Homepage
+
+The homepage can be tailored through an optional `homepage` object. Omit it to
+keep the existing homepage unchanged: the four standard capability cards and
+the first paragraph appear, a configured banner appears, and release context
+is hidden.
+
+```json
+{
+  "homepage": {
+    "capabilities": [
+      {"title": "Offline", "description": "Every asset ships locally."},
+      {"title": "Stable API", "description": "Guides follow each release."}
+    ],
+    "sections": {
+      "capabilities": true,
+      "banner": true,
+      "introduction": true,
+      "release_context": false
+    }
+  }
+}
+```
+
+`capabilities` is rendered in the order written. Set it to an empty list to
+hide the strip, or set `sections.capabilities` to `false` when retaining cards
+for a later configuration change. Every card needs non-empty string `title`
+and `description` fields. Values are escaped before they enter generated HTML.
+
+The `introduction` switch controls the first paragraph immediately following
+the home-page title. `banner` controls the configured `banner` only on the
+homepage. Set `release_context` to `true` to show the built documentation
+release beneath the banner. See [homepage recipes](homepage-recipes.md) for
+complete starting points.

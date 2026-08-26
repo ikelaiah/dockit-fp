@@ -55,6 +55,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('placeholder="Search docs, commands, and versions"', home)
             self.assertIn('class="brand-mark"', home)
             self.assertIn('class="capability-strip"', home)
+            self.assertIn('aria-label="DocKit-FP capabilities"', home)
             self.assertIn('class="reading-progress"', home)
             self.assertNotIn('class="release-lens"', home)
             self.assertNotIn('<dt>Release</dt>', home)
@@ -108,6 +109,37 @@ class BuildSiteTests(unittest.TestCase):
             callout_end = page.index("</aside>", callout_start)
             strip_start = page.index('class="capability-strip"')
             self.assertFalse(callout_start < strip_start < callout_end)
+
+    def test_configures_homepage_content_without_changing_other_pages(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home\n\nWelcome to <safe> docs.\n\n## Details\n\nKeep this content.", encoding="utf-8")
+            (docs / "guide.md").write_text("# Guide\n\nWelcome to the guide.", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({
+                "schema_version": 1,
+                "project": {"name": "Demo"},
+                "homepage": {
+                    "capabilities": [{"title": "<Fast>", "description": "Use <safe> local assets."}],
+                    "sections": {"introduction": False, "release_context": True},
+                },
+            }), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "navigation": [{"title": "Start", "pages": [
+                {"title": "Home", "path": "index.md"}, {"title": "Guide", "path": "guide.md"},
+            ]}]}), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="0.6.0")
+
+            home = (root / "site" / "index.html").read_text(encoding="utf-8")
+            guide = (root / "site" / "guide.html").read_text(encoding="utf-8")
+            self.assertIn("&lt;Fast&gt;", home)
+            self.assertIn("Use &lt;safe&gt; local assets.", home)
+            self.assertNotIn("<p>Welcome to &lt;safe&gt; docs.</p>", home)
+            self.assertIn('class="release-context"', home)
+            self.assertIn("0.6.0", home)
+            self.assertNotIn('class="capability-strip"', guide)
+            self.assertNotIn('class="release-context"', guide)
 
     def test_rejects_broken_heading_fragments_and_unsafe_links(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

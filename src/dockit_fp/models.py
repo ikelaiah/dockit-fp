@@ -11,6 +11,15 @@ class Page:
 
 
 @dataclass(frozen=True)
+class Homepage:
+    capabilities: tuple[tuple[str, str], ...] | None
+    show_capabilities: bool
+    show_banner: bool
+    show_introduction: bool
+    show_release_context: bool
+
+
+@dataclass(frozen=True)
 class SiteConfig:
     name: str
     description: str
@@ -26,3 +35,4 @@ class SiteConfig:
     pages: tuple[Page, ...]
     legacy: bool
     home_document: str
+    homepage: Homepage

@@ -1,6 +1,14 @@
 # Changelog
 
-## 0.5.0 — Unreleased
+## 0.6.0 — Unreleased
+
+### Added
+
+- Configurable homepage capability cards and independently visible homepage
+  sections, with default-compatible output and actionable validation errors.
+- Copyable homepage recipes for library, application, and API-reference sites.
+
+## 0.5.0
 
 ### Added
 

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "project": {
+    "name": "DocKit-FP visual fixtures",
+    "description": "Maintained fixtures for responsive and accessible visual verification."
+  },
+  "theme": {
+    "preset": "teal",
+    "style": "classic"
+  },
+  "layout": {
+    "content_width": "wide"
+  },
+  "homepage": {
+    "sections": {
+      "release_context": true
+    }
+  }
+}

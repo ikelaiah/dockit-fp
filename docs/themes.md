@@ -5,7 +5,7 @@ browser preference; an explicit selection is retained in local storage when
 available and otherwise safely falls back to System.
 
 Projects customise identity through two semantic tokens, `accent` and
-`accent_secondary`. The shared CSS uses them for links, focus and active
+`accent_secondary`. The shared CSS uses them for links and active
 navigation while retaining its own structural layout. Teal (`#0f766e` / `#0891b2`),
 blue (`#2563eb` / `#0ea5e9`), ocean (`#0369a1` / `#0284c7`) and purple
 (`#7c3aed` / `#a855f7`) are all ordinary configurations, not project-specific
@@ -38,9 +38,12 @@ Set the initial choice in configuration:
 ```
 
 Visitors may switch among Classic, Paper and Midnight independently of
-System, Light and Dark mode; their choice is retained locally. Verify new
-styles at phone width, with a long document, and in each colour mode before
-shipping them.
+System, Light and Dark mode; their choice is retained locally. Each visual
+theme provides deliberate light and dark surfaces, local font stacks and a
+high-contrast focus ring without changing the semantic HTML.
+
+Use the maintained [visual fixtures](visual-fixtures.md) to verify themes at
+phone, tablet and desktop widths, with a long document and every colour mode.
 
 An optional banner has a project-relative safe path and meaningful `alt` text.
 Use it for identity, not for structural customisation.

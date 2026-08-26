@@ -43,6 +43,24 @@ Footer text and links are escaped and links must be absolute HTTP(S) URLs.
 Configuration is not a CSS escape hatch: structural site styling remains in
 DocKit-FP.
 
+## Content width
+
+An optional `layout.content_width` setting changes the article column without
+changing theme colours, navigation order or generated routes:
+
+```json
+{
+  "layout": {
+    "content_width": "wide"
+  }
+}
+```
+
+Use `compact` for prose-led tutorials, `comfortable` for the default balanced
+measure, or `wide` for API tables and larger code samples. Ordinary paragraphs
+retain a readable maximum measure in the wide layout. Omitting `layout` keeps
+`comfortable`, so existing schema-version-1 projects do not change.
+
 ## Homepage
 
 The homepage can be tailored through an optional `homepage` object. Omit it to

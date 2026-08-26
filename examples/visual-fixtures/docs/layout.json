@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "navigation": [
+    {
+      "title": "Visual fixtures",
+      "pages": [
+        {"title": "Components", "path": "index.md"},
+        {"title": "Long-form reading", "path": "long-form.md"}
+      ]
+    }
+  ]
+}

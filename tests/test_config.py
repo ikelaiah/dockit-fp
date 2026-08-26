@@ -85,6 +85,37 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
 
             self.assertEqual("midnight", load_config(root).theme_style)
 
+    def test_loads_a_supported_content_width(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "layout": {"content_width": "wide"},
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            self.assertEqual("wide", load_config(root).content_width)
+
+    def test_rejects_an_unknown_content_width_with_supported_names(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {
+                    "schema_version": 1,
+                    "project": {"name": "Demo"},
+                    "layout": {"content_width": "fluid"},
+                },
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            with self.assertRaisesRegex(DocKitError, r"layout\.content_width.*compact, comfortable, wide"):
+                load_config(root)
+
     def test_loads_homepage_cards_and_section_switches(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

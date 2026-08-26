@@ -10,6 +10,7 @@
         {"title": "Homepage recipes", "path": "homepage-recipes.md"},
         {"title": "Authoring recipes", "path": "authoring-recipes.md"},
         {"title": "Themes", "path": "themes.md"},
+        {"title": "Visual fixtures", "path": "visual-fixtures.md"},
         {"title": "Mathematics", "path": "math.md"}
       ]
     },

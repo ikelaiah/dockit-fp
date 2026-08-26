@@ -17,6 +17,19 @@ class BuildSiteTests(unittest.TestCase):
             page = (Path(temporary) / "site" / "quick-start.html").read_text(encoding="utf-8")
             self.assertIn("Change the accent colours", page)
 
+    def test_builds_the_maintained_visual_fixture(self) -> None:
+        root = Path(__file__).resolve().parents[1] / "examples" / "visual-fixtures"
+        with tempfile.TemporaryDirectory() as temporary:
+            result = build_site(root=root, output=Path(temporary) / "site", release="fixture")
+
+            self.assertEqual(2, result.page_count)
+            home = (Path(temporary) / "site" / "index.html").read_text(encoding="utf-8")
+            long_form = (Path(temporary) / "site" / "long-form.html").read_text(encoding="utf-8")
+            self.assertIn('data-content-width="wide"', home)
+            self.assertIn('class="admonition important"', home)
+            self.assertIn('class="table-scroll"', home)
+            self.assertIn("Long-form reading fixture", long_form)
+
     def test_builds_modern_navigation_search_and_theme_tokens(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -50,6 +63,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('style="--dk-accent:#0f766e;--dk-accent-secondary:#0891b2"', home)
             self.assertIn('id="visual-theme"', home)
             self.assertIn('data-visual-theme="classic"', home)
+            self.assertIn('data-content-width="comfortable"', home)
             self.assertIn("System", home)
             self.assertIn("search-index.json", home)
             self.assertIn('placeholder="Search docs, commands, and versions"', home)
@@ -90,6 +104,23 @@ class BuildSiteTests(unittest.TestCase):
             )
             self.assertIn(
                 system_classic_dark_rule,
+                site_css,
+            )
+            self.assertIn(
+                '@media(prefers-color-scheme:dark){html[data-visual-theme="classic"]'
+                ':not([data-theme]){--raised:#172033;--focus-ring:#67e8f9;'
+                '--interactive:color-mix(in srgb,var(--dk-accent) 45%,#fff)}}',
+                site_css,
+            )
+            self.assertIn('--dk-content-width:46rem', site_css)
+            self.assertIn('--interactive:color-mix(in srgb,var(--dk-accent) 78%,#000)', site_css)
+            self.assertIn('--interactive:color-mix(in srgb,var(--dk-accent) 45%,#fff)', site_css)
+            self.assertIn('html[data-content-width="wide"]{--dk-content-width:54rem', site_css)
+            self.assertIn('@media(prefers-reduced-motion:reduce)', site_css)
+            self.assertIn(
+                '@media(max-width:600px){.topbar{gap:.5rem}.brand{flex:0 0 100%}'
+                '.topbar select{flex:0 1 calc(50% - .25rem);width:calc(50% - .25rem);min-width:0}'
+                '.capability-strip{grid-template-columns:1fr}}',
                 site_css,
             )
             search = json.loads((root / "site" / "search-index.json").read_text(encoding="utf-8"))

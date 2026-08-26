@@ -28,6 +28,7 @@ class SiteConfig:
     accent: str
     accent_secondary: str
     theme_style: str
+    content_width: str
     banner: str | None
     banner_alt: str | None
     footer: str | None

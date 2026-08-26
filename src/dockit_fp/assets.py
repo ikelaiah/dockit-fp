@@ -19,6 +19,7 @@ SITE_CSS = r'''
 html[data-theme="light"]{color-scheme:light}
 html[data-theme="dark"]{color-scheme:dark;--bg:#111827;--surface:#1f2937;--text:#f3f4f6;--muted:#b8c2d3;--border:#3b4659;--code:#030712}
 html[data-visual-theme="paper"]{--bg:#fdfbf7;--surface:#f4eee3;--text:#312d26;--muted:#6c6254;--border:#ddd1c1;--code:#2b2925}html[data-visual-theme="midnight"]{color-scheme:dark;--bg:#0d1220;--surface:#182033;--text:#eef3ff;--muted:#b4c0d8;--border:#35415a;--code:#050912}
+@media(prefers-color-scheme:dark){html[data-visual-theme="classic"]:not([data-theme]){color-scheme:dark;--bg:#111827;--surface:#1f2937;--text:#f3f4f6;--muted:#b8c2d3;--border:#3b4659;--code:#030712}}
 *{box-sizing:border-box}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--dk-font-ui);font-size:17px;line-height:1.72;font-synthesis:none;text-rendering:optimizeLegibility}

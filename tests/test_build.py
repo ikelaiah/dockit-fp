@@ -8,6 +8,15 @@ from dockit_fp.errors import DocKitError
 
 
 class BuildSiteTests(unittest.TestCase):
+    def test_builds_the_maintained_minimal_example(self) -> None:
+        root = Path(__file__).resolve().parents[1] / "examples" / "minimal"
+        with tempfile.TemporaryDirectory() as temporary:
+            result = build_site(root=root, output=Path(temporary) / "site", release="example")
+
+            self.assertEqual(2, result.page_count)
+            page = (Path(temporary) / "site" / "quick-start.html").read_text(encoding="utf-8")
+            self.assertIn("Change the accent colours", page)
+
     def test_builds_modern_navigation_search_and_theme_tokens(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

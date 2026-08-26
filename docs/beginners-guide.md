@@ -9,7 +9,7 @@ ready to publish a versioned release.
 From your project root:
 
 ```bash
-python -m pip install "dockit-fp==0.1.0"
+python -m pip install "dockit-fp==0.2.0"
 dockit-fp init
 ```
 
@@ -48,6 +48,11 @@ Those two colours are the supported way to make the site feel like your
 project. You do not need to copy or maintain DocKit-FP's CSS.
 
 `docs/layout.json` controls the order and labels in the navigation.
+
+The [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.2.0/examples/minimal)
+is the same complete structure with a second page and two supported colour
+choices. Copy it when you want a starting point, then replace its project name
+and words.
 
 ## 3. Add your first page
 
@@ -111,11 +116,10 @@ alternative text:
 Add this object alongside `project` and `theme` in `docs/dockit.json`. Keep the
 image in your repository; DocKit-FP copies it into the built site.
 
-## 6. Publish a version only when you are ready
+## 6. Publish to GitHub Pages when you are ready
 
-Local previews do not need version metadata. Before publishing, choose an
-immutable release name such as `v1.0.0`, add this manifest, commit it, then tag
-that commit:
+Local previews do not need version metadata. When you are ready to publish,
+choose an immutable release name such as `v1.0.0` and add this manifest:
 
 ```json
 {
@@ -136,9 +140,28 @@ git tag -a v1.0.0 -m "v1.0.0"
 git push origin main v1.0.0
 ```
 
-Use the reusable GitHub Pages workflow described in [GitHub Pages](github-pages.md).
-It builds the exact tagged source, so later edits on `main` never rewrite a
-published release.
+Create `.github/workflows/docs.yml` with this pinned workflow:
+
+```yaml
+name: Publish documentation
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.2.0
+```
+
+Commit the workflow before the tag. In the repository settings, enable GitHub
+Pages with **GitHub Actions** as its source. The workflow builds the exact
+tagged source, so later edits on `main` never rewrite a published release.
 
 ## When something does not work
 
@@ -150,4 +173,5 @@ dockit-fp doctor
 
 It reports whether DocKit-FP found modern configuration, legacy Markdown, and
 release metadata. Then run `dockit-fp check`; its errors name the file and
-field that need attention.
+field that need attention, and suggest the next corrective action for common
+configuration mistakes.

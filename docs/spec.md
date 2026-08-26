@@ -1,4 +1,4 @@
-# Spec: DocKit-FP 0.1.0
+# Spec: DocKit-FP 0.2.0
 
 ## Objective
 

@@ -79,9 +79,15 @@ def load_config(root: Path) -> SiteConfig:
     accent = theme.get("accent", DEFAULT_ACCENT)
     secondary = theme.get("accent_secondary", DEFAULT_SECONDARY)
     if not isinstance(accent, str) or not HEX_COLOR.fullmatch(accent):
-        raise DocKitError(f"{primary}: field 'theme.accent' must be a #RRGGBB colour")
+        raise DocKitError(
+            f"{primary}: field 'theme.accent' must be a #RRGGBB colour. "
+            "Use a #RRGGBB colour such as #0f766e."
+        )
     if not isinstance(secondary, str) or not HEX_COLOR.fullmatch(secondary):
-        raise DocKitError(f"{primary}: field 'theme.accent_secondary' must be a #RRGGBB colour")
+        raise DocKitError(
+            f"{primary}: field 'theme.accent_secondary' must be a #RRGGBB colour. "
+            "Use a #RRGGBB colour such as #0891b2."
+        )
     if not layout_path.exists():
         raise DocKitError(f"{layout_path}: required for modern documentation")
     layout = _read_json(layout_path)
@@ -94,13 +100,19 @@ def load_config(root: Path) -> SiteConfig:
             raise DocKitError(f"{layout_path}: each navigation section needs a title")
         entries = section.get("pages")
         if not isinstance(entries, list) or not entries:
-            raise DocKitError(f"{layout_path}: navigation section {section['title']!r} needs pages")
+            raise DocKitError(
+                f"{layout_path}: navigation section {section['title']!r} needs pages. "
+                "Add at least one page entry or remove the section."
+            )
         for entry in entries:
             if not isinstance(entry, dict) or not isinstance(entry.get("title"), str):
                 raise DocKitError(f"{layout_path}: navigation page needs a title")
             path = safe_document_path(entry.get("path"), f"{layout_path}: navigation page")
             if not (docs / path).is_file():
-                raise DocKitError(f"{layout_path}: navigation page {path!r} does not exist")
+                raise DocKitError(
+                    f"{layout_path}: navigation page {path!r} does not exist. "
+                    f"Create docs/{path} or correct its path."
+                )
             if any(page.path == path for page in pages):
                 raise DocKitError(f"{layout_path}: navigation page {path!r} appears more than once")
             pages.append(Page(path, entry["title"], section["title"]))

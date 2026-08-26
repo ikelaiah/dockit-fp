@@ -18,6 +18,7 @@ TASK = re.compile(r"^\[([ xX])\]\s+(.+)$")
 LINK = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 CODE = re.compile(r"`([^`]+)`")
 INLINE_MATH = re.compile(r"(?<!\\)\$([^$\n]+)\$")
+DEFINITION_DESCRIPTION = re.compile(r"^:\s+(.+)$")
 
 
 @dataclass(frozen=True)
@@ -115,6 +116,20 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
                 raise DocKitError(f"Markdown: unsupported admonition {kind!r}")
             output.append(f'<aside class="admonition {kind}"><strong>{kind.title()}</strong><p>{_inline(text.strip(), resolve_link)}</p></aside>')
             plain.append(_plain(text))
+        elif line.strip() and index + 1 < len(lines) and DEFINITION_DESCRIPTION.match(lines[index + 1]):
+            flush_paragraph()
+            items: list[str] = []
+            while index + 1 < len(lines) and lines[index].strip():
+                description = DEFINITION_DESCRIPTION.match(lines[index + 1])
+                if not description:
+                    break
+                term = lines[index]
+                value = description.group(1)
+                items.append(f"<dt>{_inline(term.strip(), resolve_link)}</dt><dd>{_inline(value, resolve_link)}</dd>")
+                plain.extend((_plain(term), _plain(value)))
+                index += 2
+            output.append(f"<dl>{''.join(items)}</dl>")
+            continue
         elif LIST.match(line) or ORDERED.match(line):
             flush_paragraph()
             ordered = bool(ORDERED.match(line))

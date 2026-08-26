@@ -185,6 +185,10 @@ def load_config(root: Path) -> SiteConfig:
             if any(page.path == path for page in pages):
                 raise DocKitError(f"{layout_path}: navigation page {path!r} appears more than once")
             pages.append(Page(path, entry["title"], section["title"]))
+    listed_paths = {page.path for page in pages}
+    unlisted_paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md") if path.is_file() and path.relative_to(docs).as_posix() not in listed_paths)
+    if unlisted_paths:
+        raise DocKitError(f"{layout_path}: unlisted Markdown document {unlisted_paths[0]!r}. Add it to navigation or remove it.")
     banner = data.get("banner")
     if banner is not None and (not isinstance(banner, dict) or not isinstance(banner.get("path"), str) or not isinstance(banner.get("alt"), str)):
         raise DocKitError(f"{primary}: field 'banner' needs string path and alt fields")

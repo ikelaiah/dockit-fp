@@ -164,6 +164,19 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             with self.assertRaisesRegex(DocKitError, r"homepage\.sections\.introducton.*Use one of"):
                 load_config(root)
 
+    def test_names_unlisted_modern_markdown_and_how_to_include_it(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {"schema_version": 1, "project": {"name": "Demo"}},
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+            (root / "docs" / "reference.md").write_text("# Reference", encoding="utf-8")
+
+            with self.assertRaisesRegex(DocKitError, r"unlisted Markdown document 'reference\.md'.*Add it to navigation"):
+                load_config(root)
+
     def test_explains_the_schema_compatibility_policy(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

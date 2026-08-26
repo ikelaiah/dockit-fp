@@ -75,6 +75,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('class="page-previous" href="../index.html"', pascal)
             site_js = (root / "site" / "assets" / "site.js").read_text(encoding="utf-8")
             self.assertIn("copy-code", site_js)
+            self.assertIn("ArrowDown", site_js)
             search = json.loads((root / "site" / "search-index.json").read_text(encoding="utf-8"))
             self.assertEqual(["index.html", "guides/pascal.html"], [entry["url"] for entry in search])
 

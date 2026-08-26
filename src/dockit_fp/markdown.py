@@ -14,6 +14,7 @@ HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 FENCE = re.compile(r"^```\s*([\w+-]*)\s*$")
 LIST = re.compile(r"^\s*[-*+]\s+(.+)$")
 ORDERED = re.compile(r"^\s*\d+[.)]\s+(.+)$")
+TASK = re.compile(r"^\[([ xX])\]\s+(.+)$")
 LINK = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 CODE = re.compile(r"`([^`]+)`")
 INLINE_MATH = re.compile(r"(?<!\\)\$([^$\n]+)\$")
@@ -123,8 +124,16 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
                 match = ORDERED.match(lines[index]) if ordered else LIST.match(lines[index])
                 if not match:
                     break
-                items.append(f"<li>{_inline(match.group(1), resolve_link)}</li>")
-                plain.append(_plain(match.group(1)))
+                item = match.group(1)
+                task = TASK.match(item) if not ordered else None
+                if task:
+                    complete = task.group(1).lower() == "x"
+                    state = "Complete" if complete else "Incomplete"
+                    items.append(f'<li><span class="task-list" role="img" aria-label="{state}">{"✓" if complete else "○"}</span>{_inline(task.group(2), resolve_link)}</li>')
+                    plain.append(_plain(task.group(2)))
+                else:
+                    items.append(f"<li>{_inline(item, resolve_link)}</li>")
+                    plain.append(_plain(item))
                 index += 1
             output.append(f"<{tag}>{''.join(items)}</{tag}>")
             continue

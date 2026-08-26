@@ -30,7 +30,7 @@ def _read_json(path: Path) -> dict:
     if not isinstance(value, dict):
         raise DocKitError(f"{path}: expected a JSON object")
     if value.get("schema_version") != 1:
-        raise DocKitError(f"{path}: field 'schema_version' must be 1")
+        raise DocKitError(f"{path}: only schema version 1 is supported; consult the migration guide before changing schema_version")
     return value
 
 

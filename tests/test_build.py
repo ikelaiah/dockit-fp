@@ -33,6 +33,7 @@ class BuildSiteTests(unittest.TestCase):
                 "schema_version": 1,
                 "project": {"name": "Demo-FP", "description": "Demo docs", "repository_url": "https://example.test/demo"},
                 "theme": {"accent": "#0f766e", "accent_secondary": "#0891b2"},
+                "identity": {"footer": "Demo footer", "links": [{"label": "Repository", "url": "https://example.test/demo"}]},
             }), encoding="utf-8")
             (docs / "layout.json").write_text(json.dumps({
                 "schema_version": 1,
@@ -56,6 +57,8 @@ class BuildSiteTests(unittest.TestCase):
             self.assertNotIn('class="release-lens"', home)
             self.assertNotIn('<dt>Release</dt>', home)
             self.assertIn('class="page-navigation"', home)
+            self.assertIn('class="site-footer"', home)
+            self.assertIn('href="https://example.test/demo"', home)
             self.assertIn('class="page-next"', home)
             self.assertIn('<span>Pascal</span>', home)
             self.assertGreater(home.index('class="capability-strip"'), home.index('A <strong>safe</strong> start'))

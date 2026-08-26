@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "project": {
+    "name": "Historical Pascal library",
+    "description": "Release-ready immutable multi-version documentation."
+  },
+  "theme": {"preset": "teal"}
+}

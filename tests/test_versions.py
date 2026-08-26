@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -151,3 +152,31 @@ class VersionedBuildTests(unittest.TestCase):
 
         with self.assertRaisesRegex(DocKitError, r"Documentation differs from HEAD.*Commit docs changes"):
             check_release(root)
+
+    def test_historical_example_build_is_byte_for_byte_deterministic(self) -> None:
+        example = Path(__file__).resolve().parents[1] / "examples" / "historical"
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        self._git(root, "init")
+        self._git(root, "config", "user.email", "tests@example.test")
+        self._git(root, "config", "user.name", "Tests")
+        shutil.copytree(example / "releases" / "v1.0.0" / "docs", root / "docs")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "release 1.0.0")
+        self._git(root, "tag", "v1.0.0")
+        shutil.rmtree(root / "docs")
+        shutil.copytree(example / "docs", root / "docs")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "release 1.1.0")
+        self._git(root, "tag", "v1.1.0")
+
+        first, second = root / "site-first", root / "site-second"
+        build_all(root=root, output=first)
+        build_all(root=root, output=second)
+        first_files = {path.relative_to(first): path.read_bytes() for path in first.rglob("*") if path.is_file()}
+        second_files = {path.relative_to(second): path.read_bytes() for path in second.rglob("*") if path.is_file()}
+
+        self.assertEqual(first_files, second_files)
+        self.assertTrue((first / "1.1.0" / "upgrade.html").exists())
+        self.assertFalse((first / "1.0.0" / "upgrade.html").exists())

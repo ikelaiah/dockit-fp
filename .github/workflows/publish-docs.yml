@@ -2,6 +2,17 @@ name: Publish documentation
 
 on:
   workflow_call:
+    inputs:
+      versioned:
+        description: Build immutable versions.json history instead of one site
+        required: false
+        type: boolean
+        default: true
+      release:
+        description: Release label for a single-version site
+        required: false
+        type: string
+        default: preview
 
 permissions:
   contents: read
@@ -23,8 +34,14 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install .
       - run: dockit-fp check
-      - run: dockit-fp check-release
-      - run: dockit-fp build-all --output build/docs-site
+      - if: inputs.versioned
+        run: dockit-fp check-release
+      - if: inputs.versioned
+        run: dockit-fp build-all --output build/docs-site
+      - if: ${{ ! inputs.versioned }}
+        env:
+          DOCKIT_RELEASE: ${{ inputs.release }}
+        run: dockit-fp build --release "$DOCKIT_RELEASE" --output build/docs-site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build/docs-site

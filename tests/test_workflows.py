@@ -1,0 +1,27 @@
+from pathlib import Path
+import unittest
+
+
+class PublishingWorkflowTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.root = Path(__file__).resolve().parents[1]
+
+    def test_reusable_workflow_supports_versioned_and_single_version_sites(self) -> None:
+        workflow = (self.root / ".github" / "workflows" / "publish-docs.yml").read_text(encoding="utf-8")
+
+        self.assertIn("versioned:", workflow)
+        self.assertIn("default: true", workflow)
+        self.assertIn("release:", workflow)
+        self.assertIn("DOCKIT_RELEASE: ${{ inputs.release }}", workflow)
+        self.assertIn('dockit-fp build --release "$DOCKIT_RELEASE" --output build/docs-site', workflow)
+        self.assertIn("if: inputs.versioned", workflow)
+        self.assertIn("if: ${{ ! inputs.versioned }}", workflow)
+
+    def test_examples_pin_the_release_and_select_the_intended_mode(self) -> None:
+        single = (self.root / "examples" / "single-version" / ".github" / "workflows" / "documentation.yml").read_text(encoding="utf-8")
+        historical = (self.root / "examples" / "historical" / ".github" / "workflows" / "documentation.yml").read_text(encoding="utf-8")
+
+        self.assertIn("publish-docs.yml@v0.9.0", single)
+        self.assertIn("versioned: false", single)
+        self.assertIn("publish-docs.yml@v0.9.0", historical)
+        self.assertNotIn("versioned: false", historical)

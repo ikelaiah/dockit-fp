@@ -9,7 +9,7 @@ ready to publish a versioned release.
 From your project root:
 
 ```bash
-python -m pip install "dockit-fp==0.2.0"
+python -m pip install "dockit-fp==0.9.0"
 dockit-fp init
 ```
 
@@ -49,7 +49,7 @@ project. You do not need to copy or maintain DocKit-FP's CSS.
 
 `docs/layout.json` controls the order and labels in the navigation.
 
-The [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.2.0/examples/minimal)
+The [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.0/examples/minimal)
 is the same complete structure with a second page and two supported colour
 choices. Copy it when you want a starting point, then replace its project name
 and words.
@@ -156,7 +156,7 @@ permissions:
 
 jobs:
   publish:
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.2.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.9.0
 ```
 
 Commit the workflow before the tag. In the repository settings, enable GitHub
@@ -171,7 +171,8 @@ Run:
 dockit-fp doctor
 ```
 
-It reports whether DocKit-FP found modern configuration, legacy Markdown, and
-release metadata. Then run `dockit-fp check`; its errors name the file and
-field that need attention, and suggest the next corrective action for common
-configuration mistakes.
+It reports whether DocKit-FP found modern configuration, legacy Markdown,
+release metadata, immutable refs and a single-version or historical Pages
+workflow. Then run `dockit-fp check`; its errors name the file and field that
+need attention. Use the [pre-publish checklist](pre-publish-checklist.md) for
+the final release sequence.

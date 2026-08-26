@@ -11,3 +11,15 @@ Migrate gradually from local `tools/build_docs.py`, `build_all_docs.py`,
 6. Delete the old local machinery only after output behaviour matches.
 
 Do not rewrite historical tags or remove the old builder first.
+
+## Configuration compatibility
+
+DocKit-FP configuration is versioned deliberately. v0.5 supports
+`"schema_version": 1` for `dockit.json`, `layout.json` and `versions.json`.
+Version 1 additions are optional and remain backwards compatible: a project can
+adopt presets, identity fields and visual themes one at a time.
+
+Future schema versions will fail clearly rather than being guessed at. A major
+schema change will ship with release notes, a migration guide, compatibility
+expectations and—when mechanical conversion is safe—a migration command. Keep
+each published release manifest on immutable tags while upgrading.

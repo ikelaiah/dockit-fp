@@ -84,3 +84,15 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             )
 
             self.assertEqual("midnight", load_config(root).theme_style)
+
+    def test_explains_the_schema_compatibility_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {"schema_version": 2, "project": {"name": "Demo"}},
+                {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            with self.assertRaisesRegex(DocKitError, r"schema version 1.*migration"):
+                load_config(root)

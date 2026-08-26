@@ -64,17 +64,17 @@ shell.
 
 ## v0.5: maintain with confidence
 
-- [ ] Expand safe Markdown authoring features based on real Pascal-project
+- [x] Expand safe Markdown authoring features based on real Pascal-project
       documentation needs.
-- [ ] Improve search quality and keyboard navigation while keeping all assets
+- [x] Improve search quality and keyboard navigation while keeping all assets
       local.
-- [ ] Add release-oriented checks, examples and visual fixtures for
+- [x] Add release-oriented checks, examples and visual fixtures for
       multi-version sites.
-- [ ] Test every supported configuration against generated HTML, responsive
+- [x] Test every supported configuration against generated HTML, responsive
       layout and accessibility expectations.
-- [ ] Version configuration schemas deliberately; provide migration guidance,
+- [x] Version configuration schemas deliberately; provide migration guidance,
       compatibility expectations and a stable upgrade policy on the path to 1.0.
-- [ ] Keep dependencies, build steps and hosting requirements minimal and
+- [x] Keep dependencies, build steps and hosting requirements minimal and
       documented for contributors.
 
 ## Quality bar

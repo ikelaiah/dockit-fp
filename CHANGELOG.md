@@ -1,6 +1,17 @@
 # Changelog
 
-## 0.4.0 — Unreleased
+## 0.5.0 — Unreleased
+
+### Added
+
+- Safe, accessible Markdown task lists and keyboard search-result navigation.
+- Explicit configuration schema compatibility and migration policy.
+
+### Changed
+
+- Release validation now covers five immutable documentation versions.
+
+## 0.4.0
 
 ### Added
 

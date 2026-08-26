@@ -2,7 +2,7 @@
 
 Modern documentation uses three optional-to-required-in-combination JSON files.
 Every configuration object has `"schema_version": 1`; an unknown version is an
-error so schema evolution is explicit.
+error with a migration pointer so schema evolution is explicit.
 
 `docs/dockit.json` owns project identity:
 

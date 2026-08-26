@@ -54,12 +54,12 @@ shell.
 
 ## v0.4: themes that are easy to choose, switch and extend
 
-- [ ] Keep System, Light and Dark as dependable built-ins, including a clear
+- [x] Keep System, Light and Dark as dependable built-ins, including a clear
       keyboard-accessible switcher.
-- [ ] Define a small semantic theme-token contract so new built-in themes do
+- [x] Define a small semantic theme-token contract so new built-in themes do
       not require markup forks.
-- [ ] Ship a curated set of visually distinct, accessible starter themes.
-- [ ] Document the supported path for adding a theme and verify each theme in
+- [x] Ship a curated set of visually distinct, accessible starter themes.
+- [x] Document the supported path for adding a theme and verify each theme in
       light, dark, mobile and long-document views.
 
 ## v0.5: maintain with confidence

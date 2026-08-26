@@ -23,6 +23,25 @@ The supported preset names are `blue`, `teal`, `ocean` and `purple`. Check
 link and focus contrast against both Light and Dark before choosing custom
 tokens.
 
+## Visual starter themes
+
+Every site has a second, keyboard-accessible **Documentation visual theme**
+selector. `classic` is the dependable default; `paper` gives long guides a warm
+reading surface, and `midnight` is a deliberately dark technical theme. All
+three use the same semantic background, surface, text, border and code tokens,
+so adding a built-in theme never needs a markup fork.
+
+Set the initial choice in configuration:
+
+```json
+{"theme": {"style": "midnight"}}
+```
+
+Visitors may switch among Classic, Paper and Midnight independently of
+System, Light and Dark mode; their choice is retained locally. Verify new
+styles at phone width, with a long document, and in each colour mode before
+shipping them.
+
 An optional banner has a project-relative safe path and meaningful `alt` text.
 Use it for identity, not for structural customisation.
 

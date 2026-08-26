@@ -118,7 +118,10 @@ def build_all(*, root: Path, output: Path) -> BuildAllResult:
             source = staging / item.release
             source.mkdir()
             _archive_to(root, item.source_ref, source)
-            result = build_site(root=source, output=output / item.release, release=item.release, versions=targets)
+            result = build_site(
+                root=source, output=output / item.release, release=item.release, versions=targets,
+                require_listed_documents=item.release == manifest.current,
+            )
             page_count += result.page_count
     (output / "versions.json").write_text(json.dumps({
         "schema_version": 1, "current": manifest.current,

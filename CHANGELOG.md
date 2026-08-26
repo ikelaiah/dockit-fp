@@ -1,6 +1,14 @@
 # Changelog
 
-## 0.7.0 — Unreleased
+## 0.7.1 — Unreleased
+
+### Fixed
+
+- Historical releases now build with the navigation rules in effect when they
+  were authored, while the current release keeps strict unlisted-Markdown
+  validation.
+
+## 0.7.0
 
 ### Added
 

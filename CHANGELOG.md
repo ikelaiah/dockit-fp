@@ -1,6 +1,17 @@
 # Changelog
 
-## 0.2.0 — Unreleased
+## 0.3.0 — Unreleased
+
+### Added
+
+- Ordered section navigation and project identity configuration with footer links.
+- Curated blue, teal, ocean and purple colour presets.
+
+### Changed
+
+- Published copyable before-and-after customisation examples.
+
+## 0.2.0
 
 ### Added
 

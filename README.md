@@ -34,14 +34,14 @@ Pin a released version rather than using `main`.
 For example:
 
 ```bash
-python -m pip install "dockit-fp==0.2.0"
+python -m pip install "dockit-fp==0.3.0"
 ```
 
 During development of DocKit-FP itself, installation directly from Git may also be possible:
 
 ```bash
 python -m pip install \
-  "git+https://github.com/ikelaiah/dockit-fp.git@v0.2.0"
+  "git+https://github.com/ikelaiah/dockit-fp.git@v0.3.0"
 ```
 
 Use a released version in CI whenever possible.
@@ -492,7 +492,7 @@ on:
 
 jobs:
   documentation:
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.2.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.3.0
 ```
 
 The exact workflow inputs may depend on the DocKit-FP release.
@@ -514,7 +514,7 @@ for production documentation.
 Do this:
 
 ```yaml
-uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.2.0
+uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.3.0
 ```
 
 Not:

@@ -82,6 +82,16 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn("function rank", site_js)
             self.assertIn("event.key==='Home'", site_js)
             self.assertIn("event.key==='End'", site_js)
+            site_css = (root / "site" / "assets" / "site.css").read_text(encoding="utf-8")
+            system_classic_dark_rule = (
+                '@media(prefers-color-scheme:dark){html[data-visual-theme="classic"]'
+                ':not([data-theme]){color-scheme:dark;--bg:#111827;--surface:#1f2937;'
+                '--text:#f3f4f6;--muted:#b8c2d3;--border:#3b4659;--code:#030712}}'
+            )
+            self.assertIn(
+                system_classic_dark_rule,
+                site_css,
+            )
             search = json.loads((root / "site" / "search-index.json").read_text(encoding="utf-8"))
             self.assertEqual(["index.html", "guides/pascal.html"], [entry["url"] for entry in search])
 

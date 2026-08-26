@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.7.1 — Unreleased
+## 0.7.2 — Unreleased
+
+### Fixed
+
+- The Classic visual theme now follows a dark operating-system preference when
+  the colour control is set to System.
+
+## 0.7.1
 
 ### Fixed
 

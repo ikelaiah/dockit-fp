@@ -4,6 +4,13 @@ from dockit_fp.markdown import render_markdown
 
 
 class MarkdownTests(unittest.TestCase):
+    def test_renders_safe_task_lists_for_documentation_checklists(self) -> None:
+        rendered = render_markdown("- [ ] Write guide\n- [x] Run check", lambda target: target)
+
+        self.assertIn('class="task-list"', rendered.html)
+        self.assertIn('aria-label="Incomplete"', rendered.html)
+        self.assertIn('aria-label="Complete"', rendered.html)
+
     def test_renders_github_style_admonitions_without_the_bang(self) -> None:
         rendered = render_markdown("> [!IMPORTANT] Keep history accurate.", lambda target: target)
 

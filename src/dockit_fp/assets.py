@@ -47,6 +47,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .prose p,.prose li{max-width:43rem}
 .prose p{margin:.8rem 0}
 .prose ul,.prose ol{padding-left:1.45rem}
+.task-list{display:inline-block;width:1.25em;color:var(--dk-accent);font-weight:700}
 .capability-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:1.25rem 0 1.5rem;padding:0;list-style:none}
 .capability-strip li{max-width:none;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.35rem;background:var(--surface);line-height:1.35}
 .capability-strip strong{display:block;font-family:var(--dk-font-display);font-size:.78rem;font-weight:750;letter-spacing:.01em;color:var(--text)}

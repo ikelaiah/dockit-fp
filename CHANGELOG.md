@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.6.0 — Unreleased
+## 0.7.0 — Unreleased
+
+### Added
+
+- Safe semantic definition lists for API and option reference prose.
+- Unlisted-Markdown diagnostics, navigation summaries, ranked local search,
+  richer search guidance, and Home/End result movement.
+- Copyable library, application, and API-reference authoring recipes.
+
+## 0.6.0
 
 ### Added
 

@@ -47,13 +47,13 @@ project's own story.
 Writing and finding documentation should feel faster than maintaining a custom
 site generator.
 
-- [ ] Add the highest-value safe Markdown features requested by Pascal project
+- [x] Add the highest-value safe Markdown features requested by Pascal project
       maintainers, with predictable generated HTML.
-- [ ] Make navigation editing easier with clear section/page summaries and
+- [x] Make navigation editing easier with clear section/page summaries and
       useful checks for unreachable or unlisted content.
-- [ ] Improve search ranking, result previews and keyboard flows while keeping
+- [x] Improve search ranking, result previews and keyboard flows while keeping
       every asset local.
-- [ ] Add concise authoring recipes for common project documentation structures.
+- [x] Add concise authoring recipes for common project documentation structures.
 
 ## v0.8.0: polish the visual system
 

@@ -1,35 +1,87 @@
 # Pre-publish checklist
 
-Use this checklist after documentation is ready and before pushing a release
-tag. Commands assume the project root is the current directory.
+Use only the checklist for the mode you chose in [GitHub Pages](github-pages.md).
+Run every command from the project folder.
 
-## Every site
+Do not rush a release because the code is ready. A calm local check is much
+easier to repair than a broken public tag.
 
-- [ ] Run `dockit-fp doctor` and resolve every `ERROR` and moving-ref warning.
-- [ ] Run `dockit-fp check` and review the reported section/page totals.
-- [ ] Commit the documentation and pinned Pages workflow.
-- [ ] Confirm `git status --short` contains no intended release changes.
-- [ ] Build locally and inspect phone, tablet, desktop, keyboard and theme flows.
-- [ ] Confirm repository Settings → Pages uses **GitHub Actions**.
+## Before either kind of site
+
+- [ ] Read the changed pages as someone new to the project.
+- [ ] Run `dockit-fp doctor` and resolve every line beginning with `ERROR`.
+- [ ] Run `dockit-fp check` and confirm the reported page total makes sense.
+- [ ] Run `dockit-fp build --output build/docs-site` and open the local site.
+- [ ] Check one phone-sized width, one desktop width, keyboard navigation, and
+      Light and Dark mode.
+- [ ] Confirm **Settings → Pages → Source** is **GitHub Actions**.
 
 ## Single-version site
 
-- [ ] Omit `docs/versions.json`.
-- [ ] Set `versioned: false` in the reusable-workflow call.
-- [ ] Run `dockit-fp build --release latest --output build/docs-site`.
-- [ ] Push the configured branch and confirm the Pages workflow succeeds.
+This path updates the public site from a branch such as `main`.
+
+1. Confirm there is no `docs/versions.json`.
+2. Confirm the workflow contains `versioned: false`.
+3. Build the exact site locally:
+
+   ```bash
+   dockit-fp build --release latest --output build/docs-site
+   ```
+
+4. Commit the documentation and workflow.
+5. Run `git status --short`. No output means the project folder is clean.
+6. Push the configured branch.
+7. Open GitHub's **Actions** page and confirm the Documentation run is green.
+8. Open the public URL and check one page and one search result.
 
 ## Historical site
 
-- [ ] Add the release to `docs/versions.json`, make it `current`, and use the
-      immutable tag that will identify this exact commit.
-- [ ] Commit release preparation, then create the annotated tag, for example
-      `git tag -a v1.2.0 -m "v1.2.0"`.
-- [ ] Run `dockit-fp check-release`; the current tag must exist, match `HEAD`,
-      and have no uncommitted documentation changes.
-- [ ] Run `dockit-fp build-all --output build/docs-site` and inspect each release
-      directory, the root redirect, `versions.json` and each `release.json`.
-- [ ] Push the commit and tag, then confirm both CI and Pages deployment succeed.
+This path publishes an immutable site for every listed release. In the example
+below, replace `1.2.0` with your version.
 
-Never move a published tag to repair documentation. Correct the source on a new
-release and preserve the historical output.
+1. Add release `1.2.0` and source ref `v1.2.0` to `docs/versions.json`. Set
+   `current` to `1.2.0`.
+2. Run `dockit-fp check`.
+3. Commit all release files, including the documentation, manifest and workflow:
+
+   ```bash
+   git add docs .github/workflows
+   git commit -m "Prepare v1.2.0 documentation"
+   ```
+
+4. Create the tag on that exact commit:
+
+   ```bash
+   git tag -a v1.2.0 -m "v1.2.0"
+   ```
+
+5. Run the release checks and historical build:
+
+   ```bash
+   dockit-fp check-release
+   dockit-fp build-all --output build/docs-site
+   ```
+
+   The release check should report immutable releases. The build should contain
+   one folder per release and a `versions.json` file at its root.
+
+6. Run `git status --short`. No output means tracked release files are clean.
+7. Push the commit and tag together:
+
+   ```bash
+   git push origin main v1.2.0
+   ```
+
+8. Confirm both CI and the Documentation workflow are green on GitHub.
+9. Open the public site, switch between two releases, and confirm their content
+   is different where expected.
+
+## If you find a mistake
+
+If the tag exists only on your computer, correct and commit the files, delete
+the local tag with `git tag -d v1.2.0`, then create it again on the corrected
+commit.
+
+If the tag has been pushed, do not move or replace it. Publish the correction
+as a new patch release, such as `v1.2.1`, so links and historical documentation
+remain trustworthy.

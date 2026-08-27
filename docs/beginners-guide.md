@@ -1,41 +1,88 @@
 # Your first DocKit-FP site
 
-This guide takes a small Free Pascal project from no documentation site to a
-local preview. You need Python 3.10 or newer. Git is only needed when you are
-ready to publish a versioned release.
+This guide starts from an ordinary code project and ends with a documentation
+site running on your computer. The example name is Pascal-flavoured, but the
+steps work for any project that uses Markdown.
 
-## 1. Install and initialise
+Allow about 10 minutes. You can stop after the preview works; publishing is a
+separate task for another day.
 
-From your project root:
+## Before you begin
+
+You need:
+
+- Python 3.10 or newer;
+- an internet connection for installation;
+- a code project, even a tiny practice project;
+- a terminal and a text editor.
+
+You do **not** need Git, a GitHub account, a web server or Pascal knowledge for
+this guide. When this page says “project folder”, it means the top-level folder
+that normally contains `README.md` or `src/`.
+
+## 1. Install DocKit-FP
+
+Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "dockit-fp==0.9.0"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.9.1.zip"
+```
+
+Then check that the command is available:
+
+```bash
+dockit-fp --help
+```
+
+You should see a list of commands such as `build`, `check` and `init`.
+
+> [!NOTE] If your terminal says `dockit-fp` was not found, close and reopen the
+> terminal. You can also run `python -m dockit_fp --help`.
+
+## 2. Create the starter files
+
+Run this from the same project folder:
+
+```bash
 dockit-fp init
 ```
 
-`init` creates a safe preview-ready starting point and refuses to overwrite an
-existing `docs/` tree. It creates these three files:
+You should see a message beginning with `Initialised`. The command creates only
+three files and refuses to replace an existing documentation folder:
 
 ```text
 docs/
-├── dockit.json
-├── layout.json
-└── index.md
+├── dockit.json   # project name and colours
+├── layout.json   # pages and navigation order
+└── index.md      # home page words
 ```
 
-## 2. Read the three files
+## 3. Make the home page yours
 
-`docs/index.md` is your home page. Write normal Markdown there.
+Open `docs/index.md` and replace its text with something small:
 
-`docs/dockit.json` is your project identity. Start by changing the name and
-description:
+```markdown
+# Star Mapper
+
+Star Mapper turns telescope readings into a searchable sky map.
+
+## Start here
+
+Read the quick start to make your first map.
+```
+
+The first `#` is the page title. A line beginning with `##` is a section title.
+That is enough Markdown to begin.
+
+Next, open `docs/dockit.json`. Change the project name and description. Leave
+`schema_version` unchanged:
 
 ```json
 {
   "schema_version": 1,
   "project": {
-    "name": "MyLibrary-FP",
-    "description": "A useful Free Pascal library."
+    "name": "Star Mapper",
+    "description": "Make a searchable map from telescope readings."
   },
   "theme": {
     "accent": "#0f766e",
@@ -44,27 +91,55 @@ description:
 }
 ```
 
-Those two colours are the supported way to make the site feel like your
-project. You do not need to copy or maintain DocKit-FP's CSS.
+## 4. Check before you build
 
-`docs/layout.json` controls the order and labels in the navigation.
+Run:
 
-The [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.0/examples/minimal)
-is the same complete structure with a second page and two supported colour
-choices. Copy it when you want a starting point, then replace its project name
-and words.
+```bash
+dockit-fp check
+```
 
-## 3. Add your first page
+Success looks similar to:
 
-Create `docs/quick-start.md`:
+```text
+Documentation check passed: 1 section(s), 1 page(s)
+```
+
+If a check fails, read the final line first. It normally names the file and the
+next correction. You can also run `dockit-fp doctor` for a setup summary.
+
+## 5. Build and open the site
+
+Run:
+
+```bash
+dockit-fp build
+python -m http.server 8000 --directory build/docs-site
+```
+
+Open <http://localhost:8000> in a browser. You should see your project name,
+home page, search box and theme controls. Try the page at a narrow browser width
+too; the navigation should fold into a mobile menu.
+
+Press `Ctrl+C` in the terminal when you want to stop the preview server.
+
+> [!IMPORTANT] You have finished the beginner path. The site works locally.
+> You do not need release tags or GitHub Pages until you choose to publish.
+
+## 6. Add one useful page
+
+Think of the first thing a new user wants to achieve. Create
+`docs/quick-start.md` and show that one task:
 
 ```markdown
 # Quick start
 
-Install the library, then create your first value.
+Install Star Mapper, then run `star-mapper import first-light.csv`.
+
+You should see `Created sky-map.html`.
 ```
 
-Add it to `docs/layout.json`:
+Add the file to `docs/layout.json` so it appears in the navigation:
 
 ```json
 {
@@ -81,98 +156,16 @@ Add it to `docs/layout.json`:
 }
 ```
 
-Every page in the navigation must be a Markdown file inside `docs/`. This is
-intentional: it makes broken navigation an early, readable error instead of a
-surprise on the published site.
+Run `dockit-fp check` and `dockit-fp build` again. Reload the browser, and the
+new page should appear in the left navigation.
 
-## 4. Preview before publishing
+## Where to go next
 
-Check first, then build:
-
-```bash
-dockit-fp check
-dockit-fp build --output build/docs-site
-python -m http.server 8000 --directory build/docs-site
-```
-
-Open `http://localhost:8000`. The preview includes the theme picker, search,
-mobile navigation and local KaTeX mathematics. Stop the web server with
-`Ctrl+C` when you are done.
-
-## 5. Add a banner only when it helps
-
-An optional project-local image can appear on the home page. Give it useful
-alternative text:
-
-```json
-{
-  "banner": {
-    "path": "assets/project-banner.svg",
-    "alt": "MyLibrary-FP logo"
-  }
-}
-```
-
-Add this object alongside `project` and `theme` in `docs/dockit.json`. Keep the
-image in your repository; DocKit-FP copies it into the built site.
-
-## 6. Publish to GitHub Pages when you are ready
-
-Local previews do not need version metadata. When you are ready to publish,
-choose an immutable release name such as `v1.0.0` and add this manifest:
-
-```json
-{
-  "schema_version": 1,
-  "current": "1.0.0",
-  "versions": [
-    {"release": "1.0.0", "source_ref": "v1.0.0"}
-  ]
-}
-```
-
-Save it as `docs/versions.json`, then:
-
-```bash
-git add docs/versions.json
-git commit -m "Prepare v1.0.0 documentation"
-git tag -a v1.0.0 -m "v1.0.0"
-git push origin main v1.0.0
-```
-
-Create `.github/workflows/docs.yml` with this pinned workflow:
-
-```yaml
-name: Publish documentation
-
-on:
-  push:
-    tags: ["v*"]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-jobs:
-  publish:
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.9.0
-```
-
-Commit the workflow before the tag. In the repository settings, enable GitHub
-Pages with **GitHub Actions** as its source. The workflow builds the exact
-tagged source, so later edits on `main` never rewrite a published release.
-
-## When something does not work
-
-Run:
-
-```bash
-dockit-fp doctor
-```
-
-It reports whether DocKit-FP found modern configuration, legacy Markdown,
-release metadata, immutable refs and a single-version or historical Pages
-workflow. Then run `dockit-fp check`; its errors name the file and field that
-need attention. Use the [pre-publish checklist](pre-publish-checklist.md) for
-the final release sequence.
+- Learn a simple, language-neutral writing method in
+  [Write documentation people can use](writing-great-docs.md).
+- Learn the three configuration files in [Configuration](configuration.md).
+- Copy a small working project from the
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.1/examples/minimal).
+- When you truly want a public site, choose the simpler or historical path in
+  [GitHub Pages](github-pages.md).
+- Look up unfamiliar words in the [glossary](glossary.md).

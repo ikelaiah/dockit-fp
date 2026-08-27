@@ -1,8 +1,8 @@
 # Homepage recipes
 
-These optional `homepage` snippets belong in `docs/dockit.json`. They use only
-the supported configuration contract, so they survive DocKit-FP upgrades
-without copied Python or CSS.
+Copy one of these optional `homepage` examples into `docs/dockit.json`, then
+change the words for your project. They use supported settings, so you do not
+need to copy Python or CSS when DocKit-FP changes.
 
 ## Library
 
@@ -40,9 +40,8 @@ intact.
 
 ## API reference
 
-Start directly with the reference navigation rather than a marketing-style
-introduction. Release context helps callers match documentation to a package
-version.
+Start directly with the reference navigation instead of a long introduction.
+The release label helps readers match the page to the package version they use.
 
 ```json
 {

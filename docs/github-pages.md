@@ -1,54 +1,126 @@
-# GitHub Pages
+# Publish with GitHub Pages
 
-Use the reusable workflow pinned to a release, never `main`. Choose one of the
-two supported publication modes.
+GitHub Pages can host the files built by DocKit-FP. Your documentation should
+work locally before you begin this page.
 
-## Historical multi-version site
+You need a GitHub repository and permission to change its settings. If Git or
+GitHub Actions is new to you, the [glossary](glossary.md) explains the terms.
 
-Historical mode is the backward-compatible default. It requires
-`docs/versions.json`, immutable tags or full commit SHAs, and a current source
-that matches the checked-out `HEAD`:
+## Choose one publishing path
+
+| Choose | When it fits | What readers see |
+| --- | --- | --- |
+| **Single-version** | You only need the latest documentation | One site that updates when `main` changes |
+| **Historical** | Readers use several released versions | A version selector and one site per release tag |
+
+When you are unsure, choose single-version. You can add release history later.
+
+## Single-version site: the simpler choice
+
+Do not create `docs/versions.json` for this path.
+
+Create `.github/workflows/documentation.yml` with this complete file:
 
 ```yaml
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
 jobs:
   documentation:
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.9.0
     permissions:
       contents: read
       pages: write
       id-token: write
-```
-
-The workflow checks configuration and release metadata, builds every declared
-version, and uploads only a successfully validated site. Trigger it from a
-`v*` tag and ensure the repository checkout can read all declared tags. See the
-[historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.0/examples/historical).
-
-## Single-version site
-
-A project that publishes only the current branch can omit `versions.json` and
-opt out of historical mode:
-
-```yaml
-jobs:
-  documentation:
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.9.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.9.1
     with:
       versioned: false
       release: latest
+```
+
+The workflow runs after a push to `main`. `workflow_dispatch` also adds a button
+for starting it manually from GitHub's Actions page.
+
+Check the same path locally:
+
+```bash
+dockit-fp doctor
+dockit-fp check
+dockit-fp build --release latest --output build/docs-site
+```
+
+The final command should say how many pages it built. Open the result locally
+before pushing. The maintained
+[single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.1/examples/single-version)
+contains the same setup.
+
+## Historical site for versioned projects
+
+Choose this path when old documentation must stay available. You need Git tags
+and `docs/versions.json`. A tag is a stable name for one saved Git commit; see
+[Historical documentation](historical-docs.md) for the manifest.
+
+Create `.github/workflows/documentation.yml` with this complete file:
+
+```yaml
+name: Documentation
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  documentation:
     permissions:
       contents: read
       pages: write
       id-token: write
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.9.1
 ```
 
-The `release` input is a display label passed safely to the build through an
-environment variable. See the [single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.0/examples/single-version).
+The workflow runs when you push a tag such as `v1.2.0`. Historical mode is the
+default, so it does not need a `with` section.
 
-For either mode, enable Pages with **GitHub Actions** as the source. Run
-`dockit-fp doctor` to confirm which workflow mode DocKit-FP detects, then follow
-the [pre-publish checklist](pre-publish-checklist.md).
+Check the release locally after creating its tag and before pushing it:
 
-DocKit-FP itself calls the local reusable workflow from `deploy-docs.yml`. Its
-deployment is triggered by a `v*` release tag (or manually), so the live Pages
-site corresponds to an immutable entry in `docs/versions.json`.
+```bash
+dockit-fp doctor
+dockit-fp check
+dockit-fp check-release
+dockit-fp build-all --output build/docs-site
+```
+
+Follow the [pre-publish checklist](pre-publish-checklist.md) for the exact
+commit, tag, check and push order. The maintained
+[historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.9.1/examples/historical)
+shows a small two-release project.
+
+## Enable Pages in the repository
+
+Do this once for either path:
+
+1. Open the repository on GitHub.
+2. Select **Settings**, then **Pages**.
+3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+4. Push the workflow and the trigger for your chosen path.
+5. Open the repository's **Actions** page and wait for the Documentation run.
+
+A green run includes check, build, upload and deploy steps. GitHub shows the
+public site URL after deployment.
+
+## If the workflow does not run
+
+- Confirm the file is inside `.github/workflows/` and ends in `.yml` or `.yaml`.
+- For single-version mode, confirm you pushed the configured branch.
+- For historical mode, confirm you pushed a tag beginning with `v`.
+- Open the failed Actions step and read its final error before retrying.
+- Run the same DocKit-FP command locally; local errors are usually faster to
+  correct.
+
+Always pin a released workflow such as `@v0.9.1`. Do not use `@main` for a
+published site: a future DocKit-FP change could alter your site without a
+deliberate upgrade.

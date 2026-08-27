@@ -1,14 +1,15 @@
 # PasWeave integration
 
-PasWeave understands Pascal source, declarations, documentation comments,
-coverage and API symbols. DocKit-FP understands Markdown documentation sites.
-The integration seam is simply generated API Markdown placed beside handwritten
-guides:
+PasWeave reads Pascal source and produces API documentation as Markdown.
+DocKit-FP combines Markdown pages into a complete documentation website. You
+can use either tool alone, or put PasWeave's generated pages beside your
+handwritten guides:
 
 ```text
 Pascal source -> PasWeave -> generated API Markdown --+
 handwritten guides ----------------------------------+-> DocKit-FP -> site
 ```
 
-Neither package depends on the other in 0.1.0. DocKit-FP never parses Pascal;
-use PasWeave when source-derived API documentation is needed.
+Add the generated Markdown files to `docs/layout.json`, then run
+`dockit-fp check` and `dockit-fp build` as usual. DocKit-FP never parses Pascal
+source itself.

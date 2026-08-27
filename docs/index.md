@@ -1,22 +1,31 @@
-# Documentation that keeps its history
+# Make code documentation people can use
 
-DocKit-FP builds **fast, offline-friendly, versioned documentation sites** for
-Free Pascal and Lazarus projects.
+DocKit-FP turns Markdown into a searchable, responsive documentation website.
+It is geared towards Free Pascal and Lazarus, but you can use it for another
+language too: the input is ordinary Markdown, not Pascal source code.
 
-> [!IMPORTANT] DocKit-FP builds and publishes sites from existing Markdown; it does not extract Pascal API documentation from source—use PasWeave for that.
+> [!TIP] New here? Start with [Your first DocKit-FP site](beginners-guide.md).
+> It takes you to a working local preview and explains each step.
 
-## Why it exists
+## Pick one goal
 
-Free Pascal libraries should not each have to maintain their own renderer,
-search, theme switcher, version selector and historical Git build scripts.
-DocKit-FP makes that shared machinery one small dependency while every project
-keeps its own words, releases and visual identity.
+- **I want a working site first.** Follow the
+  [beginner's guide](beginners-guide.md).
+- **I want to write clearer guides.** Read
+  [Write documentation people can use](writing-great-docs.md).
+- **I want to add or reorder pages.** Open [Configuration](configuration.md).
+- **I want to change the look.** Try [Themes](themes.md) or
+  [homepage recipes](homepage-recipes.md).
+- **I want to publish.** Choose a path in [GitHub Pages](github-pages.md).
+- **A word is unfamiliar.** Check the [glossary](glossary.md).
 
-## Start here
+## What stays simple
 
-- [Build your first documentation site](beginners-guide.md)
-- [Configure a modern project](configuration.md)
-- [Keep older documentation accurate](historical-docs.md)
-- [Choose a project identity without CSS forks](themes.md)
-- [Write offline-friendly mathematics](math.md)
-- [Publish safely to GitHub Pages](github-pages.md)
+Your project owns its words, Markdown files and visual identity. DocKit-FP owns
+the shared page layout, search, themes, validation and publishing machinery.
+Everything needed to browse a built site is stored locally, so the site does
+not depend on a hosted JavaScript or CSS service.
+
+DocKit-FP does not extract API descriptions from source code. Free Pascal
+projects can use [PasWeave](pasweave-integration.md) for that job and feed the
+resulting Markdown into DocKit-FP.

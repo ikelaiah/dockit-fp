@@ -2,29 +2,37 @@
   "schema_version": 1,
   "navigation": [
     {
-      "title": "Get started",
+      "title": "Start here",
       "pages": [
         {"title": "Overview", "path": "index.md"},
-        {"title": "Beginner's guide", "path": "beginners-guide.md"},
+        {"title": "Your first site", "path": "beginners-guide.md"},
+        {"title": "Write useful documentation", "path": "writing-great-docs.md"},
+        {"title": "Glossary", "path": "glossary.md"}
+      ]
+    },
+    {
+      "title": "Shape your site",
+      "pages": [
         {"title": "Configuration", "path": "configuration.md"},
-        {"title": "Homepage recipes", "path": "homepage-recipes.md"},
         {"title": "Authoring recipes", "path": "authoring-recipes.md"},
+        {"title": "Sections and identity", "path": "customisation.md"},
+        {"title": "Homepage recipes", "path": "homepage-recipes.md"},
         {"title": "Themes", "path": "themes.md"},
         {"title": "Visual fixtures", "path": "visual-fixtures.md"},
         {"title": "Mathematics", "path": "math.md"}
       ]
     },
     {
-      "title": "Working with releases",
+      "title": "Publish safely",
       "pages": [
-        {"title": "Historical documentation", "path": "historical-docs.md"},
         {"title": "GitHub Pages", "path": "github-pages.md"},
         {"title": "Pre-publish checklist", "path": "pre-publish-checklist.md"},
+        {"title": "Historical documentation", "path": "historical-docs.md"},
         {"title": "Migration", "path": "migration.md"}
       ]
     },
     {
-      "title": "Ecosystem",
+      "title": "Pascal and project internals",
       "pages": [
         {"title": "PasWeave integration", "path": "pasweave-integration.md"},
         {"title": "Architecture", "path": "architecture.md"},
@@ -33,17 +41,12 @@
       ]
     },
     {
-      "title": "Customisation",
-      "pages": [
-        {"title": "Sections and identity", "path": "customisation.md"}
-      ]
-    },
-    {
       "title": "Project decisions",
       "pages": [
         {"title": "Boundaries", "path": "decisions/0001-boundaries.md"},
         {"title": "History and customisation", "path": "decisions/0002-history-and-customisation.md"},
-        {"title": "Release-tag publication", "path": "decisions/0003-publish-from-release-tags.md"}
+        {"title": "Release-tag publication", "path": "decisions/0003-publish-from-release-tags.md"},
+        {"title": "Reader-first documentation", "path": "decisions/0004-reader-first-documentation.md"}
       ]
     }
   ]

@@ -9,5 +9,5 @@ archives every declared Git tag or full SHA into an isolated temporary tree.
 The public compatibility contract consists of CLI commands/options, JSON schema
 versions, generated route and search-index shapes, semantic theme token names,
 and reusable-workflow inputs. Breaking any of these requires a SemVer major
-release. Downstream projects should pin released tags such as `v0.9.1`, never
+release. Downstream projects should pin released tags such as `v0.9.2`, never
 the main branch.

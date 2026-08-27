@@ -49,9 +49,9 @@ order:
 6. Explain the most likely failure.
 7. Link to one sensible next step.
 
-Copy this Markdown template:
+Use this Markdown page shape:
 
-````markdown
+```markdown
 # Create your first report
 
 This guide creates a small report from one input file.
@@ -62,18 +62,11 @@ You need Example Tool 2.0 or newer and a terminal in the project folder.
 
 ## 1. Create the input
 
-Save this as `input.txt`:
-
-```text
-Ada,3
-Linus,5
-```
+Save a two-line file named `input.txt` with one name and score per line.
 
 ## 2. Run the command
 
-```bash
-example-tool input.txt
-```
+Run `example-tool input.txt` from the project folder.
 
 You should see `Created report.html`.
 
@@ -85,7 +78,14 @@ same folder.
 ## Next step
 
 Continue with the page named “Change the report layout”.
-````
+```
+
+When the page shape is clear, put commands in their own fenced code blocks so
+they are easy to copy:
+
+```bash
+example-tool input.txt
+```
 
 ## Make code examples kind
 

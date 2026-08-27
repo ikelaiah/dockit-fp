@@ -130,17 +130,13 @@ Press `Ctrl+C` in the terminal when you want to stop the preview server.
 Think of the first thing a new user wants to achieve. Create
 `docs/quick-start.md` and show that one task:
 
-````markdown
+```markdown
 # Quick start
 
-Install Star Mapper, then run this command:
-
-```text
-star-mapper import first-light.csv
-```
+Install Star Mapper, then run `star-mapper import first-light.csv`.
 
 You should see `Created sky-map.html`.
-````
+```
 
 Add the file to `docs/layout.json` so it appears in the navigation:
 

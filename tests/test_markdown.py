@@ -57,3 +57,17 @@ class MarkdownTests(unittest.TestCase):
 
         self.assertIn("<dl><dt>Widget</dt><dd>A reusable <strong>component</strong>.</dd>", rendered.html)
         self.assertIn("<dt>Unsafe &lt;term&gt;</dt><dd>Escaped &lt;description&gt;.</dd>", rendered.html)
+
+    def test_highlights_supported_fenced_code_without_trusting_source_html(self) -> None:
+        rendered = render_markdown(
+            "```json\n{\"enabled\": true, \"label\": \"<safe>\"}\n```\n\n"
+            "```pascal\nprogram Demo;\nbegin\n  WriteLn('hello');\nend.\n```",
+            lambda target: target,
+        )
+
+        self.assertIn('class="language-json syntax-highlight"', rendered.html)
+        self.assertIn('<span class="tok-property">&quot;enabled&quot;</span>', rendered.html)
+        self.assertIn('<span class="tok-boolean">true</span>', rendered.html)
+        self.assertIn('&lt;safe&gt;', rendered.html)
+        self.assertIn('<span class="tok-keyword">program</span>', rendered.html)
+        self.assertIn('<span class="tok-function">WriteLn</span>', rendered.html)

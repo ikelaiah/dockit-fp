@@ -79,6 +79,7 @@ html[data-visual-theme="midnight"] .prose h1{color:color-mix(in srgb,var(--text)
 .prose pre{position:relative;overflow:auto;background:var(--code);color:var(--code-text);padding:1.05rem 1.2rem;border:1px solid color-mix(in srgb,var(--border) 55%,transparent);border-radius:var(--dk-radius);font-size:.9rem;line-height:1.65;tab-size:2}
 .prose code{font-family:var(--dk-font-mono);font-size:.88em}
 .prose :not(pre)>code{background:var(--surface);border:1px solid var(--border);padding:.08rem .28rem;border-radius:.2rem}
+.syntax-highlight .tok-property{color:#93c5fd}.syntax-highlight .tok-keyword{color:#c4b5fd}.syntax-highlight .tok-function{color:#67e8f9}.syntax-highlight .tok-string{color:#86efac}.syntax-highlight .tok-number{color:#fcd34d}.syntax-highlight .tok-boolean{color:#f9a8d4}.syntax-highlight .tok-constant{color:#fda4af}.syntax-highlight .tok-comment{color:#94a3b8;font-style:italic}.syntax-highlight .tok-heading{color:#93c5fd;font-weight:700}.syntax-highlight .tok-code{color:#fcd34d}
 .copy-code{position:absolute;top:.55rem;right:.55rem;min-height:0;padding:.2rem .45rem;border-color:#ffffff3d;background:#ffffff12;color:inherit;font-family:var(--dk-font-mono);font-size:.7rem;line-height:1.3;opacity:0;transition:opacity .15s ease}.prose pre:hover .copy-code,.copy-code:focus-visible{opacity:1}
 .table-scroll{overflow:auto;margin:1.4rem 0;border:1px solid var(--border);border-radius:var(--dk-radius)}
 .prose table{border-collapse:collapse;min-width:32rem;width:100%;font-size:.92rem;line-height:1.5}

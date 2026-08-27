@@ -8,6 +8,7 @@ import re
 from collections.abc import Callable
 
 from .errors import DocKitError
+from .highlight import highlight_code, supports_language
 
 LinkResolver = Callable[[str], str]
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
@@ -84,7 +85,10 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             if language == "math":
                 output.append(f'<div class="math-display" data-tex="{html.escape(tex, quote=True)}"></div>')
             else:
-                output.append(f'<pre class="language-{html.escape(language, quote=True)}"><code>{html.escape(tex)}</code></pre>')
+                classes = f"language-{html.escape(language, quote=True)}"
+                if supports_language(language):
+                    classes += " syntax-highlight"
+                output.append(f'<pre class="{classes}"><code>{highlight_code(tex, language)}</code></pre>')
             plain.extend(code)
         elif line.strip() == "$$":
             flush_paragraph()

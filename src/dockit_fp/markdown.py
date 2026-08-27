@@ -114,8 +114,15 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             kind = kind.strip().lower()
             if kind not in {"note", "tip", "important", "warning"}:
                 raise DocKitError(f"Markdown: unsupported admonition {kind!r}")
-            output.append(f'<aside class="admonition {kind}"><strong>{kind.title()}</strong><p>{_inline(text.strip(), resolve_link)}</p></aside>')
-            plain.append(_plain(text))
+            message = [text.strip()]
+            index += 1
+            while index < len(lines) and lines[index].startswith(">"):
+                message.append(lines[index][1:].strip())
+                index += 1
+            body = " ".join(part for part in message if part)
+            output.append(f'<aside class="admonition {kind}"><strong>{kind.title()}</strong><p>{_inline(body, resolve_link)}</p></aside>')
+            plain.append(_plain(body))
+            continue
         elif line.strip() and index + 1 < len(lines) and DEFINITION_DESCRIPTION.match(lines[index + 1]):
             flush_paragraph()
             items: list[str] = []
@@ -139,7 +146,17 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
                 match = ORDERED.match(lines[index]) if ordered else LIST.match(lines[index])
                 if not match:
                     break
-                item = match.group(1)
+                parts = [match.group(1).strip()]
+                index += 1
+                while index < len(lines):
+                    continuation = lines[index]
+                    if not continuation.strip() or not continuation[0].isspace():
+                        break
+                    if LIST.match(continuation) or ORDERED.match(continuation):
+                        break
+                    parts.append(continuation.strip())
+                    index += 1
+                item = " ".join(parts)
                 task = TASK.match(item) if not ordered else None
                 if task:
                     complete = task.group(1).lower() == "x"
@@ -149,7 +166,6 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
                 else:
                     items.append(f"<li>{_inline(item, resolve_link)}</li>")
                     plain.append(_plain(item))
-                index += 1
             output.append(f"<{tag}>{''.join(items)}</{tag}>")
             continue
         elif "|" in line and index + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[index + 1]):

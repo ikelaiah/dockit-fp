@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.9.1
+
+### Added
+
+- A language-neutral guide for planning and writing useful code documentation,
+  plus a plain-language glossary for documentation, Git and publishing terms.
+- Documentation usability checks that preserve the short local-preview path and
+  learning-first navigation.
+
+### Changed
+
+- Replaced the long, repetitive README with a calm ten-minute path to a local
+  preview and goal-based next steps.
+- Reworked beginner, configuration, theming and publishing guides around clear
+  prerequisites, copyable examples, expected results and recovery steps.
+- Moved project internals after learning, customisation and publishing in the
+  generated navigation.
+
 ## 0.9.0
 
 ### Added

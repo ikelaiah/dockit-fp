@@ -1,8 +1,8 @@
 # Customising sections and identity
 
-DocKit-FP keeps the reading shell stable while letting a project name its own
-sections, colours and links. These are supported configuration changes, not
-CSS forks.
+Use configuration to rename sections, choose colours and add project links.
+DocKit-FP keeps the page layout and accessibility behaviour working, so you do
+not need to copy or maintain its CSS.
 
 ## Before and after: navigation
 
@@ -36,5 +36,5 @@ meaningful footer links:
 }
 ```
 
-The result changes the accent, visible footer and project link while retaining
-the responsive layout, keyboard focus treatment and System/Light/Dark modes.
+The result changes the highlight colour, visible footer and project link. The
+phone layout, keyboard focus and System/Light/Dark modes continue to work.

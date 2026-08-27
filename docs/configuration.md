@@ -1,97 +1,149 @@
-# Configuration
+# Configure your site
 
-Modern documentation uses three optional-to-required-in-combination JSON files.
-Every configuration object has `"schema_version": 1`; an unknown version is an
-error with a migration pointer so schema evolution is explicit.
+You can build a useful site with the files created by `dockit-fp init`. Change
+one thing at a time, run `dockit-fp check`, and keep the last working version in
+Git when possible.
 
-`docs/dockit.json` owns project identity:
+## The three configuration files
+
+| File | What it controls | When you need it |
+| --- | --- | --- |
+| `docs/dockit.json` | Project name, colours and optional homepage choices | Created by `init` |
+| `docs/layout.json` | Page order and left navigation | Created by `init` |
+| `docs/versions.json` | Published release history | Only for a historical site |
+
+These files use JSON. Keep the commas, quotation marks and braces exactly
+paired. Every file starts with `"schema_version": 1`; leave that value alone.
+If the punctuation is wrong, `dockit-fp check` names the file and error.
+
+## Project name and colours
+
+Edit `docs/dockit.json`:
 
 ```json
 {
   "schema_version": 1,
-  "project": {"name": "MyLibrary-FP", "description": "Useful Pascal tools"},
-  "theme": {"accent": "#0f766e", "accent_secondary": "#0891b2"}
-}
-```
-
-`docs/layout.json` owns ordered navigation. Every listed `.md` path must be a
-safe path beneath `docs/` and must exist. `docs/versions.json` declares
-published releases, their immutable tag or full commit SHA, and the current
-release. Development `build` may use the working tree; published `build-all`
-does not.
-
-Navigation is rendered in the order written: each object is one left-side
-section, and each page is rendered in its listed order. To regroup or reorder
-pages, edit only `navigation`; every section must have a title and at least one
-existing Markdown page. Errors name the section or page and tell you whether to
-add, create or correct it. Modern configurations must list every Markdown file
-under `docs/`; `dockit-fp check` identifies an unlisted path and reports the
-section and page totals so navigation changes are easy to review.
-
-`dockit.json` also supports project identity without copied CSS:
-
-```json
-{
-  "identity": {
-    "footer": "Built for Free Pascal maintainers.",
-    "links": [{"label": "Source code", "url": "https://github.com/example/library"}]
+  "project": {
+    "name": "MyLibrary-FP",
+    "description": "Useful Pascal tools"
+  },
+  "theme": {
+    "preset": "teal"
   }
 }
 ```
 
-Footer text and links are escaped and links must be absolute HTTP(S) URLs.
-Configuration is not a CSS escape hatch: structural site styling remains in
-DocKit-FP.
+The supported colour presets are `blue`, `teal`, `ocean` and `purple`. Start
+with a preset. You can choose exact colours later in [Themes](themes.md).
 
-## Content width
+## Pages and navigation
 
-An optional `layout.content_width` setting changes the article column without
-changing theme colours, navigation order or generated routes:
+Edit `docs/layout.json` to choose which pages appear and in what order:
 
 ```json
 {
+  "schema_version": 1,
+  "navigation": [
+    {
+      "title": "Get started",
+      "pages": [
+        {"title": "Overview", "path": "index.md"},
+        {"title": "Quick start", "path": "quick-start.md"}
+      ]
+    },
+    {
+      "title": "Reference",
+      "pages": [
+        {"title": "Commands", "path": "reference/commands.md"}
+      ]
+    }
+  ]
+}
+```
+
+Each `path` starts inside `docs/`. For example,
+`"path": "reference/commands.md"` means the file is
+`docs/reference/commands.md`.
+
+List every Markdown file under `docs/`. This prevents a useful page from
+becoming invisible. If a file is missing or unlisted, `dockit-fp check` tells
+you which path to add, create or correct.
+
+## Reading width
+
+Add `layout` inside `docs/dockit.json` when the default width does not suit the
+content:
+
+```json
+{
+  "schema_version": 1,
+  "project": {"name": "MyLibrary-FP"},
   "layout": {
     "content_width": "wide"
   }
 }
 ```
 
-Use `compact` for prose-led tutorials, `comfortable` for the default balanced
-measure, or `wide` for API tables and larger code samples. Ordinary paragraphs
-retain a readable maximum measure in the wide layout. Omitting `layout` keeps
-`comfortable`, so existing schema-version-1 projects do not change.
+Choose:
 
-## Homepage
+- `compact` for short, prose-led tutorials;
+- `comfortable` for the balanced default;
+- `wide` for large tables and code samples.
 
-The homepage can be tailored through an optional `homepage` object. Omit it to
-keep the existing homepage unchanged: the four standard capability cards and
-the first paragraph appear, a configured banner appears, and release context
-is hidden.
+Omit this setting to keep `comfortable`.
+
+## Footer links
+
+You can add a short footer and a few useful links inside `docs/dockit.json`:
 
 ```json
 {
+  "schema_version": 1,
+  "project": {"name": "MyLibrary-FP"},
+  "identity": {
+    "footer": "Built for Free Pascal maintainers.",
+    "links": [
+      {"label": "Source code", "url": "https://github.com/example/library"}
+    ]
+  }
+}
+```
+
+Link URLs must begin with `https://` or `http://`. DocKit-FP safely escapes the
+visible text.
+
+## Homepage choices
+
+The default homepage works without extra configuration. When you want to
+change its cards or visible sections, add a `homepage` object to
+`docs/dockit.json`:
+
+```json
+{
+  "schema_version": 1,
+  "project": {"name": "MyLibrary-FP"},
   "homepage": {
     "capabilities": [
       {"title": "Offline", "description": "Every asset ships locally."},
       {"title": "Stable API", "description": "Guides follow each release."}
     ],
     "sections": {
-      "capabilities": true,
-      "banner": true,
-      "introduction": true,
-      "release_context": false
+      "release_context": true
     }
   }
 }
 ```
 
-`capabilities` is rendered in the order written. Set it to an empty list to
-hide the strip, or set `sections.capabilities` to `false` when retaining cards
-for a later configuration change. Every card needs non-empty string `title`
-and `description` fields. Values are escaped before they enter generated HTML.
+Each card needs a non-empty `title` and `description`. An empty
+`capabilities` list hides all cards. The optional section names are
+`capabilities`, `banner`, `introduction` and `release_context`, and each accepts
+`true` or `false`.
 
-The `introduction` switch controls the first paragraph immediately following
-the home-page title. `banner` controls the configured `banner` only on the
-homepage. Set `release_context` to `true` to show the built documentation
-release beneath the banner. See [homepage recipes](homepage-recipes.md) for
-complete starting points.
+Start from a complete example in [Homepage recipes](homepage-recipes.md).
+
+## Release history can wait
+
+Do not add `docs/versions.json` for a local preview or a single-version site.
+Add it only when you decide to preserve documentation for older releases. The
+[GitHub Pages guide](github-pages.md) helps you choose, and the
+[glossary](glossary.md) explains terms such as tag, source ref and immutable.

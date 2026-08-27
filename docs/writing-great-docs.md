@@ -87,6 +87,15 @@ they are easy to copy:
 example-tool input.txt
 ```
 
+Name the language after the opening fence when you can. DocKit-FP highlights
+`json`, `pascal` (also `fpc`), `python`, `bash`, `yaml` and `markdown` locally;
+other names stay as readable plain code. This never needs a CDN or a browser
+extension:
+
+```json
+{"retries": 3, "quiet": false}
+```
+
 ## Make code examples kind
 
 - Prefer one complete small example over several fragments.

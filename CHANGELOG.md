@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0
+
+### Added
+
+- Offline syntax highlighting for JSON, Free Pascal, Python, Bash, YAML and
+  Markdown fenced code blocks, with a safe plain-code fallback for other
+  languages.
+
 ## 0.9.2
 
 ### Fixed

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.2
+
+### Fixed
+
+- Wrapped list-item text and multi-line GitHub-style callouts now stay together
+  in the generated page, so links and follow-up sentences no longer appear as
+  stray paragraphs.
+
 ## 0.9.1
 
 ### Added

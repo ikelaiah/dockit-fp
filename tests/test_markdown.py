@@ -17,6 +17,28 @@ class MarkdownTests(unittest.TestCase):
         self.assertIn('class="admonition important"', rendered.html)
         self.assertIn("<strong>Important</strong>", rendered.html)
 
+    def test_keeps_wrapped_list_item_content_in_the_same_list_item(self) -> None:
+        rendered = render_markdown(
+            "- Follow the\n  [beginner's guide](beginners-guide.md).\n- Then build the site.",
+            lambda target: target,
+        )
+
+        self.assertEqual(
+            rendered.html,
+            '<ul><li>Follow the <a href="beginners-guide.md">beginner\'s guide</a>.</li><li>Then build the site.</li></ul>',
+        )
+
+    def test_keeps_following_quote_lines_inside_an_admonition(self) -> None:
+        rendered = render_markdown(
+            "> [!TIP] Start with one page.\n> It takes only a few minutes.",
+            lambda target: target,
+        )
+
+        self.assertEqual(
+            rendered.html,
+            '<aside class="admonition tip"><strong>Tip</strong><p>Start with one page. It takes only a few minutes.</p></aside>',
+        )
+
     def test_marks_inline_display_and_fenced_math_for_katex(self) -> None:
         rendered = render_markdown(
             "Inline $x^2$\n\n$$\n\\int_0^1 x dx\n$$\n\n```math\n\\frac{a}{b}\n```",

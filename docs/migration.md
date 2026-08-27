@@ -27,7 +27,7 @@ each published release manifest on immutable tags while upgrading.
 ## Upgrade directly from any supported 0.x release
 
 All released 0.x configurations use schema version 1. Upgrade the pinned package
-and workflow to v0.9.1, then use this table before running `doctor`, `check`, and
+and workflow to v0.9.2, then use this table before running `doctor`, `check`, and
 the appropriate publish build.
 
 | Starting release | Required compatibility work |
@@ -41,6 +41,7 @@ the appropriate publish build.
 | v0.7.0, v0.7.1 or v0.7.2 | No configuration change is required. Keep immutable historical tags. |
 | v0.8.0 | No configuration change is required; `layout.content_width` remains optional. |
 | v0.9.0 | No configuration change is required; v0.9.1 improves guides and examples. |
+| v0.9.1 | No configuration change is required; v0.9.2 keeps wrapped list items and callouts together. |
 
 For historical publication, v0.9.0 additionally rejects unsafe release path
 segments and option-like refs, requires the current source to match `HEAD`, and
@@ -93,3 +94,9 @@ workflow ref before publication.
 No configuration change is required. Update package and workflow pins to
 v0.9.1. The generated site and release validation remain compatible; this
 patch release makes the learning and publishing instructions easier to follow.
+
+## v0.9.1 to v0.9.2
+
+No configuration change is required. Update package and workflow pins to
+v0.9.2, then rebuild the site. Wrapped list-item text and multi-line
+GitHub-style callouts now render as one readable component.

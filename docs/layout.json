@@ -46,7 +46,8 @@
         {"title": "Boundaries", "path": "decisions/0001-boundaries.md"},
         {"title": "History and customisation", "path": "decisions/0002-history-and-customisation.md"},
         {"title": "Release-tag publication", "path": "decisions/0003-publish-from-release-tags.md"},
-        {"title": "Reader-first documentation", "path": "decisions/0004-reader-first-documentation.md"}
+        {"title": "Reader-first documentation", "path": "decisions/0004-reader-first-documentation.md"},
+        {"title": "Local syntax highlighting", "path": "decisions/0005-local-syntax-highlighting.md"}
       ]
     }
   ]

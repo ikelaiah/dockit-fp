@@ -117,6 +117,8 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('--interactive:color-mix(in srgb,var(--dk-accent) 45%,#fff)', site_css)
             self.assertIn('html[data-content-width="wide"]{--dk-content-width:54rem', site_css)
             self.assertIn('@media(prefers-reduced-motion:reduce)', site_css)
+            self.assertIn('.syntax-highlight .tok-property{color:#93c5fd}', site_css)
+            self.assertIn('.syntax-highlight .tok-keyword{color:#c4b5fd}', site_css)
             self.assertIn(
                 '@media(max-width:600px){.topbar{gap:.5rem}.brand{flex:0 0 100%}'
                 '.topbar select{flex:0 1 calc(50% - .25rem);width:calc(50% - .25rem);min-width:0}'

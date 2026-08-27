@@ -27,7 +27,7 @@ each published release manifest on immutable tags while upgrading.
 ## Upgrade directly from any supported 0.x release
 
 All released 0.x configurations use schema version 1. Upgrade the pinned package
-and workflow to v0.9.2, then use this table before running `doctor`, `check`, and
+and workflow to v0.10.0, then use this table before running `doctor`, `check`, and
 the appropriate publish build.
 
 | Starting release | Required compatibility work |
@@ -42,6 +42,7 @@ the appropriate publish build.
 | v0.8.0 | No configuration change is required; `layout.content_width` remains optional. |
 | v0.9.0 | No configuration change is required; v0.9.1 improves guides and examples. |
 | v0.9.1 | No configuration change is required; v0.9.2 keeps wrapped list items and callouts together. |
+| v0.9.2 | No configuration change is required; v0.10.0 adds offline syntax highlighting. |
 
 For historical publication, v0.9.0 additionally rejects unsafe release path
 segments and option-like refs, requires the current source to match `HEAD`, and
@@ -100,3 +101,10 @@ patch release makes the learning and publishing instructions easier to follow.
 No configuration change is required. Update package and workflow pins to
 v0.9.2, then rebuild the site. Wrapped list-item text and multi-line
 GitHub-style callouts now render as one readable component.
+
+## v0.9.2 to v0.10.0
+
+No configuration change is required. Update package and workflow pins to
+v0.10.0, then rebuild the site. Fenced JSON, Pascal, Python, Bash, YAML and
+Markdown blocks receive local syntax highlighting; other fence languages stay
+safe, readable plain code.

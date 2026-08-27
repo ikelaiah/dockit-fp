@@ -57,3 +57,35 @@ class MarkdownTests(unittest.TestCase):
 
         self.assertIn("<dl><dt>Widget</dt><dd>A reusable <strong>component</strong>.</dd>", rendered.html)
         self.assertIn("<dt>Unsafe &lt;term&gt;</dt><dd>Escaped &lt;description&gt;.</dd>", rendered.html)
+
+    def test_highlights_supported_fenced_code_without_trusting_source_html(self) -> None:
+        rendered = render_markdown(
+            "```json\n{\"enabled\": true, \"label\": \"<safe>\"}\n```\n\n"
+            "```pascal\nprogram Demo;\nbegin\n  WriteLn('hello');\nend.\n```",
+            lambda target: target,
+        )
+
+        self.assertIn('class="language-json syntax-highlight"', rendered.html)
+        self.assertIn('<span class="tok-property">&quot;enabled&quot;</span>', rendered.html)
+        self.assertIn('<span class="tok-boolean">true</span>', rendered.html)
+        self.assertIn('&lt;safe&gt;', rendered.html)
+        self.assertIn('<span class="tok-keyword">program</span>', rendered.html)
+        self.assertIn('<span class="tok-function">WriteLn</span>', rendered.html)
+
+    def test_highlights_documented_languages_and_keeps_unknown_fences_plain(self) -> None:
+        rendered = render_markdown(
+            "```fpc\nbegin WriteLn('hello'); end.\n```\n\n"
+            "```python\ndef greet():\n  print('hello')\n```\n\n"
+            "```bash\necho hello\n```\n\n"
+            "```yaml\nenabled: true\n```\n\n"
+            "```markdown\n# Heading\n```\n\n"
+            "```text\n<plain>\n```",
+            lambda target: target,
+        )
+
+        self.assertIn('class="language-fpc syntax-highlight"', rendered.html)
+        self.assertIn('<span class="tok-keyword">def</span>', rendered.html)
+        self.assertIn('<span class="tok-function">echo</span>', rendered.html)
+        self.assertIn('<span class="tok-property">enabled</span>', rendered.html)
+        self.assertIn('<span class="tok-heading"># Heading</span>', rendered.html)
+        self.assertIn('<pre class="language-text"><code>&lt;plain&gt;</code></pre>', rendered.html)

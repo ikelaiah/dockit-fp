@@ -14,7 +14,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertEqual(1, sum(line.startswith("# ") for line in readme.splitlines()))
         self.assertIn("first site in about 10 minutes", readme)
         self.assertIn("You can stop here", readme)
-        self.assertIn("dockit-fp/archive/refs/tags/v0.9.2.zip", readme)
+        self.assertIn("dockit-fp/archive/refs/tags/v0.10.0.zip", readme)
         self.assertNotIn('pip install "dockit-fp==', readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:

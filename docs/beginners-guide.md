@@ -12,19 +12,20 @@ separate task for another day.
 You need:
 
 - Python 3.10 or newer;
+- an internet connection for installation;
 - a code project, even a tiny practice project;
 - a terminal and a text editor.
 
-You do **not** need Git, GitHub, a web server or Pascal knowledge for this
-guide. When this page says “project folder”, it means the top-level folder that
-normally contains `README.md` or `src/`.
+You do **not** need Git, a GitHub account, a web server or Pascal knowledge for
+this guide. When this page says “project folder”, it means the top-level folder
+that normally contains `README.md` or `src/`.
 
 ## 1. Install DocKit-FP
 
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "dockit-fp==0.9.1"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.9.1.zip"
 ```
 
 Then check that the command is available:

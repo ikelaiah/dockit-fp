@@ -9,14 +9,14 @@ files in a Git repository, you can use the same ideas and most of the tool.
 
 ## Make your first site in about 10 minutes
 
-You need Python 3.10 or newer. You do not need Git or GitHub for this first
-preview.
+You need Python 3.10 or newer and an internet connection for installation. You
+do not need Git or a GitHub account for this first preview.
 
 Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "dockit-fp==0.9.1"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.9.1.zip"
 dockit-fp init
 ```
 

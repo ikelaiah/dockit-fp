@@ -33,7 +33,8 @@ class DocumentationUsabilityTests(unittest.TestCase):
 
     def test_writing_guide_is_language_neutral_and_result_focused(self) -> None:
         guide = (self.root / "docs" / "writing-great-docs.md").read_text(encoding="utf-8")
+        words = " ".join(guide.split())
 
-        self.assertIn("Pascal, Python,\nJavaScript or something else", guide)
+        self.assertIn("Pascal, Python, JavaScript or something else", words)
         self.assertIn("This page helps **[person]** to **[result]**", guide)
         self.assertIn("Show what success looks like", guide)

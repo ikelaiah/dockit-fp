@@ -101,6 +101,34 @@ class VersionedBuildTests(unittest.TestCase):
         self.assertEqual(2, result.release_count)
         self.assertTrue((root / "site" / "1.0.0" / "index.html").exists())
 
+    def test_build_all_reads_root_readmes_from_each_historical_source(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        self._git(root, "init")
+        self._git(root, "config", "user.email", "tests@example.test")
+        self._git(root, "config", "user.name", "Tests")
+        docs = root / "docs"
+        docs.mkdir()
+        (root / "README.md").write_text("# Version one", encoding="utf-8")
+        (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+        (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "navigation": [{"title": "Overview", "pages": [{"title": "Overview", "path": "README.md", "source": "root"}]}]}), encoding="utf-8")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "v1")
+        self._git(root, "tag", "v1.0.0")
+        (root / "README.md").write_text("# Version two", encoding="utf-8")
+        (docs / "versions.json").write_text(json.dumps({"schema_version": 1, "current": "2.0.0", "versions": [
+            {"release": "2.0.0", "source_ref": "v2.0.0"}, {"release": "1.0.0", "source_ref": "v1.0.0"},
+        ]}), encoding="utf-8")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "v2")
+        self._git(root, "tag", "v2.0.0")
+
+        build_all(root=root, output=root / "site")
+
+        self.assertIn("Version one", (root / "site" / "1.0.0" / "index.html").read_text(encoding="utf-8"))
+        self.assertIn("Version two", (root / "site" / "2.0.0" / "index.html").read_text(encoding="utf-8"))
+
     def test_check_release_rejects_moving_refs(self) -> None:
         root = self._repository()
         manifest = root / "docs" / "versions.json"

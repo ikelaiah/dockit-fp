@@ -143,6 +143,44 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn("Old documentation", (root / "site" / "index.html").read_text(encoding="utf-8"))
             self.assertTrue((root / "site" / "CHEATSHEET.html").exists())
 
+    def test_builds_an_explicit_repository_root_readme_without_copying_it(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            readme = root / "README.md"
+            readme.write_text("# Root documentation\n\n[Guide](docs/guide.md)", encoding="utf-8")
+            (docs / "guide.md").write_text("# Guide\n\n[Back](../README.md)", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "navigation": [
+                {"title": "Overview", "pages": [{"title": "Overview", "path": "README.md", "source": "root"}]},
+                {"title": "Guides", "pages": [{"title": "Guide", "path": "guide.md"}]},
+            ]}), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            self.assertIn('href="guide.html"', (root / "site" / "index.html").read_text(encoding="utf-8"))
+            self.assertIn('href="index.html"', (root / "site" / "guide.html").read_text(encoding="utf-8"))
+            self.assertEqual("# Root documentation\n\n[Guide](docs/guide.md)", readme.read_text(encoding="utf-8"))
+
+    def test_root_readme_remains_the_home_when_docs_contains_index(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (root / "README.md").write_text("# Repository overview", encoding="utf-8")
+            (docs / "index.md").write_text("# Docs overview", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "navigation": [
+                {"title": "Overview", "pages": [{"title": "Repository", "path": "README.md", "source": "root"}]},
+                {"title": "Documentation", "pages": [{"title": "Docs", "path": "index.md"}]},
+            ]}), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            self.assertIn("Repository overview", (root / "site" / "index.html").read_text(encoding="utf-8"))
+            self.assertIn("Docs overview", (root / "site" / "docs-index.html").read_text(encoding="utf-8"))
+
     def test_places_home_capabilities_outside_an_initial_admonition(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

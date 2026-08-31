@@ -16,33 +16,33 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.10.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.0.zip"
 dockit-fp init
+dockit-fp serve
 ```
 
-DocKit-FP creates:
+`init` inspects the project without changing existing Markdown. It detects a
+root `README.md`, Markdown below `docs/`, Git/GitHub metadata and common
+ancillary files. It creates only the missing DocKit configuration around those
+documents:
 
 ```text
 docs/
 ├── dockit.json   # project name and colours
 ├── layout.json   # navigation order
-└── index.md      # home page words
+└── index.md      # only for a project with no existing documentation
 ```
 
-Open `docs/index.md` in any text editor and write a short welcome. Then run:
-
-```bash
-dockit-fp check
-dockit-fp build
-python -m http.server 8000 --directory build/docs-site
-```
-
-Visit <http://localhost:8000> in a browser. You should see your home page with
-navigation, search and theme controls. Press `Ctrl+C` in the terminal to stop
-the preview server.
+Visit <http://127.0.0.1:8000> in a browser. You should see your existing
+README and `docs/` pages with navigation, search and theme controls. Press
+`Ctrl+C` in the terminal to stop the preview server.
 
 That is a complete local documentation site. You can stop here and return when
-you are ready to add pages or publish it.
+you are ready to add pages or publish it. `README.md` and `docs/**/*.md`
+are the only automatic candidates. `CHANGELOG.md`, `CONTRIBUTING.md`,
+`SECURITY.md` and `CODE_OF_CONDUCT.md` are reported for deliberate inclusion,
+never published by surprise. Once `docs/layout.json` exists it is entirely
+yours: add, remove, rename and reorder pages without DocKit changing it.
 
 For a slower walkthrough with explanations and expected results, follow
 [Your first DocKit-FP site](docs/beginners-guide.md).
@@ -84,7 +84,8 @@ guides.
 
 You do not need to rewrite it. Keep the Markdown files you have, add the small
 configuration files around them, and introduce explicit navigation gradually.
-See [Configuration](docs/configuration.md) for the supported files.
+See [Configuration](docs/configuration.md) for the supported files and the
+explicit root-README entry.
 
 ## Working on DocKit-FP itself
 

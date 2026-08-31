@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.11.0
+
+### Added
+
+- Safe existing-repository adoption: `init` discovers only a root README and
+  Markdown under `docs/`, derives initial navigation, reports Git/GitHub and
+  ancillary Markdown, and preserves all existing Markdown.
+- Explicit safe root-README navigation with correct historical-release source
+  handling.
+- `dockit-fp serve` for validated localhost documentation previews.
+
+### Changed
+
+- Once generated, `layout.json` is maintainer-owned and authoritative; new
+  discovery never silently changes it.
+
 ## 0.10.0
 
 ### Added

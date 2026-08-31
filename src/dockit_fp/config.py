@@ -50,6 +50,24 @@ def safe_document_path(value: object, source_name: str) -> str:
     return path.as_posix()
 
 
+def page_source_path(root: Path, page: Page) -> Path:
+    """Return the only allowed source location for a configured page."""
+    candidate = root / "README.md" if page.source == "root" else root / "docs" / page.path
+    resolved_root = root.resolve()
+    try:
+        resolved = candidate.resolve()
+    except OSError as error:
+        raise DocKitError(f"Unsafe documentation source {candidate}") from error
+    if not resolved.is_relative_to(resolved_root):
+        raise DocKitError(f"Unsafe documentation source outside the repository root: {candidate}")
+    return resolved
+
+
+def page_source_reference(page: Page) -> str:
+    """Return the repository-relative path used for safe Markdown linking."""
+    return "README.md" if page.source == "root" else f"docs/{page.path}"
+
+
 def _home_page(paths: list[str]) -> str:
     priorities = ("index.md", "README.md", "readme.md", "start/index.md", "getting-started.md")
     for candidate in priorities:
@@ -188,14 +206,21 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
             if not isinstance(entry, dict) or not isinstance(entry.get("title"), str):
                 raise DocKitError(f"{layout_path}: navigation page needs a title")
             path = safe_document_path(entry.get("path"), f"{layout_path}: navigation page")
-            if not (docs / path).is_file():
+            source = entry.get("source", "docs")
+            if source not in {"docs", "root"}:
+                raise DocKitError(f"{layout_path}: navigation page source must be 'docs' or 'root'")
+            if source == "root" and path != "README.md":
+                raise DocKitError(f"{layout_path}: repository-root source only supports README.md")
+            page = Page(path, entry["title"], section["title"], source)
+            if not page_source_path(root, page).is_file():
+                location = "README.md" if source == "root" else f"docs/{path}"
                 raise DocKitError(
                     f"{layout_path}: navigation page {path!r} does not exist. "
-                    f"Create docs/{path} or correct its path."
+                    f"Create {location} or correct its path."
                 )
             if any(page.path == path for page in pages):
                 raise DocKitError(f"{layout_path}: navigation page {path!r} appears more than once")
-            pages.append(Page(path, entry["title"], section["title"]))
+            pages.append(page)
     if require_listed_documents:
         listed_paths = {page.path for page in pages}
         unlisted_paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md") if path.is_file() and path.relative_to(docs).as_posix() not in listed_paths)
@@ -209,6 +234,8 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         raise DocKitError(f"{primary}: banner path is unsafe")
     if banner_path and not (root / banner_path).is_file():
         raise DocKitError(f"{primary}: banner asset {banner_path!r} does not exist")
+    if banner_path and not (root / banner_path).resolve().is_relative_to(root.resolve()):
+        raise DocKitError(f"{primary}: banner asset {banner_path!r} is outside the repository root")
     identity = data.get("identity", {})
     if not isinstance(identity, dict):
         raise DocKitError(f"{primary}: field 'identity' must be an object")
@@ -226,7 +253,9 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         if parsed.scheme not in {"https", "http"} or not parsed.netloc:
             raise DocKitError(f"{primary}: identity.links[{index}].url must be an absolute http(s) URL")
         project_links.append((link["label"].strip(), link["url"]))
-    home = "index.md" if any(page.path == "index.md" for page in pages) else pages[0].path
+    home = next((page.path for page in pages if page.source == "root"), None)
+    if home is None:
+        home = "index.md" if any(page.path == "index.md" for page in pages) else pages[0].path
     return SiteConfig(
         name=project["name"].strip(), description=str(project.get("description", "")),
         repository_url=project.get("repository_url"), site_url=project.get("site_url"),

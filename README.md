@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.3.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.4.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -55,7 +55,7 @@ For a slower walkthrough with explanations and expected results, follow
 | --- | --- |
 | Learn how to write useful documentation | [Write documentation people can use](docs/writing-great-docs.md) |
 | Add pages and navigation | [Configuration](docs/configuration.md) |
-| Change colours, themes or the homepage | [Themes](docs/themes.md) and [homepage recipes](docs/homepage-recipes.md) |
+| Change colours, themes or the homepage | [Themes](docs/themes.md) and [customize the home page](docs/homepage-recipes.md) |
 | Publish only the latest site | [GitHub Pages: single-version site](docs/github-pages.md#single-version-site-the-simpler-choice) |
 | Keep documentation for older releases | [GitHub Pages: historical site](docs/github-pages.md#historical-site-for-versioned-projects) |
 | Understand an unfamiliar term | [Glossary](docs/glossary.md) |

@@ -14,7 +14,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertEqual(1, sum(line.startswith("# ") for line in readme.splitlines()))
         self.assertIn("first site in about 10 minutes", readme)
         self.assertIn("You can stop here", readme)
-        self.assertIn("dockit-fp/archive/refs/tags/v0.11.3.zip", readme)
+        self.assertIn("dockit-fp/archive/refs/tags/v0.11.4.zip", readme)
         self.assertNotIn('pip install "dockit-fp==', readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:
@@ -52,3 +52,20 @@ class DocumentationUsabilityTests(unittest.TestCase):
         root_policy = "Only the repository-root `README.md` has special root-source support."
         self.assertIn(root_policy, beginner)
         self.assertIn(root_policy, configuration)
+
+    def test_docs_project_demonstrates_its_homepage_configuration(self) -> None:
+        config = json.loads((self.root / "docs" / "dockit.json").read_text(encoding="utf-8"))
+        guide = (self.root / "docs" / "homepage-recipes.md").read_text(encoding="utf-8")
+
+        self.assertEqual(
+            [
+                "Existing-project friendly",
+                "Polished with little setup",
+                "Versioned documentation",
+                "Offline/local assets",
+            ],
+            [card["title"] for card in config["homepage"]["capabilities"]],
+        )
+        self.assertTrue(config["homepage"]["sections"]["release_context"])
+        self.assertIn("The homepage is not another Markdown document", guide)
+        self.assertIn("## See it in DocKit-FP", guide)

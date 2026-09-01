@@ -15,7 +15,7 @@ language too: the input is ordinary Markdown, not Pascal source code.
   [Write documentation people can use](writing-great-docs.md).
 - **I want to add or reorder pages.** Open [Configuration](configuration.md).
 - **I want to change the look.** Try [Themes](themes.md) or
-  [homepage recipes](homepage-recipes.md).
+  [customize the home page](homepage-recipes.md).
 - **I want to publish.** Choose a path in [GitHub Pages](github-pages.md).
 - **A word is unfamiliar.** Check the [glossary](glossary.md).
 

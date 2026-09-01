@@ -9,5 +9,16 @@
   "theme": {
     "accent": "#4f46e5",
     "accent_secondary": "#0891b2"
+  },
+  "homepage": {
+    "capabilities": [
+      {"title": "Existing-project friendly", "description": "Start with the README and docs you already have."},
+      {"title": "Polished with little setup", "description": "Build a searchable documentation site from Markdown."},
+      {"title": "Versioned documentation", "description": "Keep released guides available side by side."},
+      {"title": "Offline/local assets", "description": "Built sites work without a CDN."}
+    ],
+    "sections": {
+      "release_context": true
+    }
   }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.4
+
+### Changed
+
+- DocKit-FP's own home page now demonstrates homepage capability cards and
+  release context, with a guide that connects the configuration to the result.
+
 ## 0.11.3
 
 ### Changed

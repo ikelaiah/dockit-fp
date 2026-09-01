@@ -1,13 +1,51 @@
-# Homepage recipes
+# Customize the home page
 
-Copy one of these optional `homepage` examples into `docs/dockit.json`, then
-change the words for your project. They use supported settings, so you do not
-need to copy Python or CSS when DocKit-FP changes.
+The homepage is not another Markdown document. It is your existing home
+document rendered as the site's `index.html`: normally the repository-root
+`README.md` or `docs/index.md`, depending on your configuration. The
+`homepage` settings in `docs/dockit.json` only change how that first page is
+presented. You do not need them unless you want to customise the landing page.
+
+The examples below are `homepage` values to add to your existing
+`docs/dockit.json`; keep your `schema_version`, `project` and other settings.
+
+## See it in DocKit-FP
+
+DocKit-FP uses the same configuration on this site. Its
+[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.11.4/docs/dockit.json)
+contains capability cards and release context:
+
+```json
+{
+  "homepage": {
+    "capabilities": [
+      {"title": "Existing-project friendly", "description": "Start with the README and docs you already have."},
+      {"title": "Offline/local assets", "description": "Built sites work without a CDN."}
+    ],
+    "sections": {"release_context": true}
+  }
+}
+```
+
+```text
+docs/dockit.json
+        ↓
+homepage.capabilities
+        ↓
+capability cards below the opening summary on the DocKit-FP home page
+
+homepage.sections.release_context
+        ↓
+the current release label above the DocKit-FP home page
+```
+
+Open the generated [DocKit-FP home page](index.md) to see both effects.
 
 ## Library
 
-Lead with installation and API confidence while retaining the standard
-introduction from `index.md`.
+Use this when a library home page should make installation and API confidence
+easy to scan. It adds three capability cards below the opening introduction
+and shows the current release.
 
 ```json
 {
@@ -24,9 +62,9 @@ introduction from `index.md`.
 
 ## Application
 
-Use a project banner and focus the home page on the product story. An empty
-card list hides the capability strip while leaving the rest of the document
-intact.
+Use this when the home page should lead with a product banner and story. After
+you add the image at the configured path, it shows the banner and introduction
+but hides capability cards.
 
 ```json
 {
@@ -40,8 +78,9 @@ intact.
 
 ## API reference
 
-Start directly with the reference navigation instead of a long introduction.
-The release label helps readers match the page to the package version they use.
+Use this when readers should reach a reference-oriented home page quickly. It
+hides the opening introduction, adds two reference cards, and shows the
+current release label.
 
 ```json
 {

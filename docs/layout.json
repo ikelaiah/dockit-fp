@@ -16,7 +16,7 @@
         {"title": "Configuration", "path": "configuration.md"},
         {"title": "Authoring recipes", "path": "authoring-recipes.md"},
         {"title": "Sections and identity", "path": "customisation.md"},
-        {"title": "Homepage recipes", "path": "homepage-recipes.md"},
+        {"title": "Customize the home page", "path": "homepage-recipes.md"},
         {"title": "Themes", "path": "themes.md"},
         {"title": "Visual fixtures", "path": "visual-fixtures.md"},
         {"title": "Mathematics", "path": "math.md"}

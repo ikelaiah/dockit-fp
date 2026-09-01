@@ -175,7 +175,7 @@ Each card needs a non-empty `title` and `description`. An empty
 `capabilities`, `banner`, `introduction` and `release_context`, and each accepts
 `true` or `false`.
 
-Start from a complete example in [Homepage recipes](homepage-recipes.md).
+Start from a complete example in [Customize the home page](homepage-recipes.md).
 
 ## Release history can wait
 

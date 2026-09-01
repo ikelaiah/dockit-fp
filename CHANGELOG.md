@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.0
+
+### Changed
+
+- Refined the default generated site with calmer header controls, clearer
+  navigation hierarchy, stronger typography rhythm and balanced homepage card
+  layouts for two, three and four cards.
+- Improved code blocks, copy controls, tables, callouts, search results,
+  on-page navigation and previous/next navigation across responsive widths.
+- Expanded the maintained visual fixture and added nested-list rendering for
+  realistic documentation shapes without introducing new configuration or
+  external assets.
+
 ## 0.11.4
 
 ### Changed

@@ -12,7 +12,7 @@ The examples below are `homepage` values to add to your existing
 ## See it in DocKit-FP
 
 DocKit-FP uses the same configuration on this site. Its
-[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.11.4/docs/dockit.json)
+[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.12.0/docs/dockit.json)
 contains capability cards and release context:
 
 ```json

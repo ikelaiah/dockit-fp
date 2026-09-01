@@ -88,7 +88,20 @@ initial navigation, explicit power-user control, safe root README support, and
 
 ## v0.12 — Beautiful by Default
 
-Further visual refinement.
+A minimally configured repository should produce a site that feels
+publication-ready without custom CSS, custom assets or extensive theme
+configuration.
+
+- [ ] Make the Classic homepage, header, sidebar, typography and code
+      presentation feel confident and publication-ready by default.
+- [ ] Refine tables, callouts, search, on-page navigation and previous/next
+      navigation without changing their existing schemas or core behavior.
+- [ ] Verify Paper and Midnight against the shared semantic design contract in
+      Light, Dark and System modes.
+- [ ] Exercise the result with DocKit-FP's own docs and the maintained visual
+      fixture at phone, tablet and desktop widths.
+- [ ] Preserve keyboard navigation, focus visibility, accessible names,
+      reduced-motion behavior and offline/local assets.
 
 ## v0.13 — GitHub in One Command
 

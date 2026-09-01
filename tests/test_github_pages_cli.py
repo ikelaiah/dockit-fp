@@ -46,10 +46,11 @@ class GitHubPagesCommandTests(unittest.TestCase):
             docs = root / "docs"
             docs.mkdir()
             (docs / "index.md").write_text("# Existing home", encoding="utf-8")
+            (docs / "guide.md").write_text("# Existing guide", encoding="utf-8")
             config = docs / "dockit.json"
             layout = docs / "layout.json"
             config.write_text('{"schema_version": 1, "project": {"name": "Kept"}}\n', encoding="utf-8")
-            layout.write_text('{"schema_version": 1, "home": {"path": "index.md"}, "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}]}]}\n', encoding="utf-8")
+            layout.write_text('{"schema_version": 1, "home": {"path": "guide.md"}, "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}, {"title": "Guide", "path": "guide.md"}]}]}\n', encoding="utf-8")
             before = {path: path.read_text(encoding="utf-8") for path in (config, layout)}
 
             self.assertEqual(0, self._run(root)[0])
@@ -62,6 +63,17 @@ class GitHubPagesCommandTests(unittest.TestCase):
             self.assertEqual(configured, {path: path.read_text(encoding="utf-8") for path in configured})
             self.assertIn("No changes required.", output)
             self.assertIn("not connected to GitHub yet", output)
+
+    def test_requires_a_git_repository_before_creating_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+
+            result, output = self._run(root)
+
+            self.assertEqual(1, result)
+            self.assertIn("not a Git repository", output)
+            self.assertFalse((root / "docs").exists())
+            self.assertFalse((root / WORKFLOW_RELATIVE_PATH).exists())
 
     def test_requires_explicit_update_for_an_outdated_managed_workflow(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

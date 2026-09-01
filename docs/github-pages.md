@@ -1,25 +1,74 @@
 # Publish with GitHub Pages
 
-GitHub Pages can host the files built by DocKit. Your documentation should
-work locally before you begin this page.
+DocKit can prepare a normal Git repository for GitHub Pages without requiring
+the GitHub CLI, a token, a network connection, or copied workflow YAML. You
+keep control of Git commits, pushes and repository settings.
 
-You need a GitHub repository and permission to change its settings. If Git or
-GitHub Actions is new to you, the [glossary](glossary.md) explains the terms.
+## GitHub Pages in one command
 
-## Choose one publishing path
+From the top of an existing Git repository, run:
 
-| Choose | When it fits | What readers see |
-| --- | --- | --- |
-| **Single-version** | You only need the latest documentation | One site that updates when `main` changes |
-| **Historical** | Readers use several released versions | A version selector and one site per release tag |
+```bash
+dockit-fp github-pages
+```
 
-When you are unsure, choose single-version. You can add release history later.
+For a repository with Markdown but no DocKit setup, this safely reuses the
+same conservative discovery as `dockit-fp init`. It creates only missing files:
 
-## Single-version site: the simpler choice
+```text
+docs/dockit.json
+docs/layout.json
+.github/workflows/dockit-pages.yml
+```
 
-Do not create `docs/versions.json` for this path.
+Existing Markdown remains unchanged. For an existing DocKit project, its
+layout, explicit `home`, navigation, identity and theme remain authoritative.
+The command validates the result before reporting the next steps:
 
-Create `.github/workflows/documentation.yml` with this complete file:
+```bash
+git add .
+git commit -m "Add DocKit documentation"
+git push
+```
+
+DocKit does not commit or push. If the repository has no GitHub remote yet,
+setup still succeeds; add a GitHub remote before the push.
+
+Enable **Settings → Pages → Source → GitHub Actions** once in the repository.
+The generated workflow runs after a push to the repository's GitHub default
+branch and can also be started manually from that branch. It validates,
+builds, uploads and deploys the documentation; pushes from feature branches do
+not deploy Pages.
+
+### Safe reruns and updates
+
+`dockit-fp github-pages` is safe to rerun. When the configuration and managed
+workflow are current, it makes no repository changes.
+
+The generated workflow carries a DocKit ownership marker and pins the reusable
+workflow to the installed release, such as `@v0.14.0`. It never follows
+`@main`. If a recognised managed workflow is older, ordinary setup reports the
+version and leaves it unchanged. Update only that workflow deliberately:
+
+```bash
+dockit-fp github-pages --update
+```
+
+If `.github/workflows/dockit-pages.yml` exists but is not recognisably
+DocKit-managed, DocKit refuses to overwrite it. A malformed managed workflow
+also requires manual repair. Neither case changes other repository files.
+
+## Advanced: manual and historical workflows
+
+The one-command path builds a single, current site from the default branch. It
+is the recommended choice for most repositories. Keep the following manual
+workflow forms when you need a different filename, a custom workflow layout or
+immutable documentation for release tags.
+
+### Single-version site
+
+Do not create `docs/versions.json` for this path. Create a workflow such as
+`.github/workflows/documentation.yml`:
 
 ```yaml
 name: Documentation
@@ -35,35 +84,19 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.13.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.14.0
     with:
       versioned: false
       release: latest
 ```
 
-The workflow runs after a push to `main`. `workflow_dispatch` also adds a button
-for starting it manually from GitHub's Actions page.
-
-Check the same path locally:
-
-```bash
-dockit-fp doctor
-dockit-fp check
-dockit-fp build --release latest --output build/docs-site
-```
-
-The final command should say how many pages it built. Open the result locally
-before pushing. The maintained
-[single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.13.0/examples/single-version)
-contains the same setup.
+The maintained [single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.14.0/examples/single-version)
+uses this form.
 
 ## Historical site for versioned projects
 
-Choose this path when old documentation must stay available. You need Git tags
-and `docs/versions.json`. A tag is a stable name for one saved Git commit; see
-[Historical documentation](historical-docs.md) for the manifest.
-
-Create `.github/workflows/documentation.yml` with this complete file:
+Choose this path when readers need several released versions. It needs Git tags
+and `docs/versions.json`; see [Historical documentation](historical-docs.md).
 
 ```yaml
 name: Documentation
@@ -79,48 +112,25 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.13.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.14.0
 ```
 
-The workflow runs when you push a tag such as `v1.2.0`. Historical mode is the
-default, so it does not need a `with` section.
-
-Check the release locally after creating its tag and before pushing it:
+Check a historical release locally after creating its tag and before pushing:
 
 ```bash
-dockit-fp doctor
 dockit-fp check
 dockit-fp check-release
 dockit-fp build-all --output build/docs-site
 ```
 
-Follow the [pre-publish checklist](pre-publish-checklist.md) for the exact
-commit, tag, check and push order. The maintained
-[historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.13.0/examples/historical)
-shows a small two-release project.
+The maintained [historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.14.0/examples/historical)
+uses this form. Follow the [pre-publish checklist](pre-publish-checklist.md)
+for the exact release order.
 
-## Enable Pages in the repository
+## If deployment does not run
 
-Do this once for either path:
-
-1. Open the repository on GitHub.
-2. Select **Settings**, then **Pages**.
-3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-4. Push the workflow and the trigger for your chosen path.
-5. Open the repository's **Actions** page and wait for the Documentation run.
-
-A green run includes check, build, upload and deploy steps. GitHub shows the
-public site URL after deployment.
-
-## If the workflow does not run
-
-- Confirm the file is inside `.github/workflows/` and ends in `.yml` or `.yaml`.
-- For single-version mode, confirm you pushed the configured branch.
-- For historical mode, confirm you pushed a tag beginning with `v`.
-- Open the failed Actions step and read its final error before retrying.
-- Run the same DocKit command locally; local errors are usually faster to
-  correct.
-
-Always pin a released workflow such as `@v0.13.0`. Do not use `@main` for a
-published site: a future DocKit change could alter your site without a
-deliberate upgrade.
+- Confirm GitHub Pages uses **GitHub Actions** as its source.
+- Confirm the workflow is under `.github/workflows/` and ends in `.yml` or
+  `.yaml`.
+- For the generated workflow, push the repository's default branch.
+- Open the failed Actions step and run `dockit-fp check` locally before retrying.

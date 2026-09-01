@@ -14,7 +14,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertEqual(1, sum(line.startswith("# ") for line in readme.splitlines()))
         self.assertIn("first site in about 10 minutes", readme)
         self.assertIn("You can stop here", readme)
-        self.assertIn("dockit-fp/archive/refs/tags/v0.13.0.zip", readme)
+        self.assertIn("dockit-fp/archive/refs/tags/v0.14.0.zip", readme)
         self.assertNotIn('pip install "dockit-fp==', readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:
@@ -69,3 +69,13 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertTrue(config["homepage"]["sections"]["release_context"])
         self.assertIn("The home page is the Markdown document selected by `layout.json.home`", guide)
         self.assertIn("## See it in DocKit", guide)
+
+    def test_github_pages_guide_leads_with_the_one_command_setup_path(self) -> None:
+        readme = (self.root / "README.md").read_text(encoding="utf-8")
+        guide = (self.root / "docs" / "github-pages.md").read_text(encoding="utf-8")
+
+        self.assertIn("dockit-fp github-pages", readme)
+        self.assertIn("## GitHub Pages in one command", guide)
+        self.assertIn("dockit-fp github-pages --update", guide)
+        self.assertIn("does not commit or push", guide)
+        self.assertIn("## Advanced: manual and historical workflows", guide)

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.14.0
+
+### Added
+
+- `dockit-fp github-pages` safely prepares an existing Git repository for a
+  single-version GitHub Pages deployment without GitHub CLI authentication or
+  network access during setup.
+- A deterministic, release-pinned managed workflow with idempotent reruns and
+  explicit `--update` support for recognised older DocKit workflows.
+
+### Changed
+
+- `doctor` reports the state and pinned version of the managed GitHub Pages
+  workflow when present.
+
 ## 0.13.0
 
 ### Added

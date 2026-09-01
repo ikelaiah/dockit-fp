@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.13.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.14.0.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -51,6 +51,24 @@ published; existing layouts retain their strict validation unless you opt in.
 For a slower walkthrough with explanations and expected results, follow
 [Your first DocKit site](docs/beginners-guide.md).
 
+## Publish with GitHub Pages in one command
+
+When this is a Git repository and you are ready to publish, run:
+
+```bash
+dockit-fp github-pages
+git add .
+git commit -m "Add DocKit documentation"
+git push
+```
+
+DocKit safely creates missing documentation configuration and a pinned GitHub
+Pages workflow. It does not commit or push; those remain your decisions. Enable
+GitHub Pages with **GitHub Actions** once in the repository settings, then a
+push to the repository's default branch publishes the site. See [GitHub Pages
+in one command](docs/github-pages.md#github-pages-in-one-command) for updates,
+existing projects and advanced historical publishing.
+
 ## Choose what you want to do next
 
 | Your goal | Read this |
@@ -58,7 +76,7 @@ For a slower walkthrough with explanations and expected results, follow
 | Learn how to write useful documentation | [Write documentation people can use](docs/writing-great-docs.md) |
 | Add pages and navigation | [Configuration](docs/configuration.md) |
 | Change colours, themes or home-page presentation | [Themes](docs/themes.md) and [customize the home page](docs/homepage-recipes.md) |
-| Publish only the latest site | [GitHub Pages: single-version site](docs/github-pages.md#single-version-site-the-simpler-choice) |
+| Publish with the recommended path | [GitHub Pages in one command](docs/github-pages.md#github-pages-in-one-command) |
 | Keep documentation for older releases | [GitHub Pages: historical site](docs/github-pages.md#historical-site-for-versioned-projects) |
 | Understand an unfamiliar term | [Glossary](docs/glossary.md) |
 

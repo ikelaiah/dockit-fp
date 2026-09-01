@@ -38,4 +38,4 @@ class ManagedGitHubPagesWorkflowTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         fixture = root / "examples" / "github-pages" / ".github" / "workflows" / "dockit-pages.yml"
 
-        self.assertEqual(render_workflow("v0.13.0"), fixture.read_text(encoding="utf-8"))
+        self.assertEqual(render_workflow("v0.14.0"), fixture.read_text(encoding="utf-8"))

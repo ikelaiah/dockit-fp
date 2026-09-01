@@ -16,7 +16,8 @@ Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
 - **I want to add or reorder pages.** Open [Configuration](configuration.md).
 - **I want to change the look.** Try [Themes](themes.md) or
   [customize the home page](homepage-recipes.md).
-- **I want to publish.** Choose a path in [GitHub Pages](github-pages.md).
+- **I want to publish.** Run `dockit-fp github-pages`, then follow [GitHub
+  Pages](github-pages.md).
 - **A word is unfamiliar.** Check the [glossary](glossary.md).
 
 ## What stays simple

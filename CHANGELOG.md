@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.13.0
+
+### Added
+
+- `layout.json.home` explicitly selects the listed Markdown document published
+  as `index.html`, including the repository-root `README.md` with
+  `"source": "root"`.
+
+### Changed
+
+- Existing layouts without `home` retain their established root-README,
+  `docs/index.md`, then first-listed-page fallback.
+- Public documentation and generated-site branding now use DocKit. Repository,
+  CLI, Python-module and GitHub Pages workflow identifiers remain `dockit-fp`
+  and `dockit_fp` for compatibility.
+
 ## 0.12.1
 
 ### Added

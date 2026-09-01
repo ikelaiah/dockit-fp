@@ -1,3 +1,3 @@
-"""DocKit-FP: versioned static documentation sites for Free Pascal projects."""
+"""DocKit: versioned static documentation sites for code projects."""
 
-__version__ = "0.12.1"
+__version__ = "0.13.0"

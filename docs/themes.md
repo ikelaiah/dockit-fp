@@ -1,6 +1,6 @@
 # Choose colours and a visual theme
 
-You do not need CSS to give a DocKit-FP site its own identity. Start with one
+You do not need CSS to give a DocKit site its own identity. Start with one
 colour preset and one visual style in `docs/dockit.json`:
 
 ```json
@@ -26,7 +26,7 @@ You choose the site's starting visual style:
 - `paper` gives long guides a warm reading surface;
 - `midnight` starts with a dark technical look.
 
-Visitors can switch the visual style too. DocKit-FP remembers both choices in
+Visitors can switch the visual style too. DocKit remembers both choices in
 the browser when storage is available.
 
 Classic is the showcase default: it keeps the header, navigation and reading

@@ -1,6 +1,6 @@
 # Mathematics
 
-DocKit-FP bundles the MIT-licensed [KaTeX](https://katex.org/) runtime, stylesheet
+DocKit bundles the MIT-licensed [KaTeX](https://katex.org/) runtime, stylesheet
 and fonts with every generated site. Math works offline, in GitHub Pages, and
 in downloaded documentation archives—no CDN is used.
 

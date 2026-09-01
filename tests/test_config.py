@@ -81,6 +81,13 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             (root / "docs" / "guide.md").write_text("# Guide", encoding="utf-8")
             self.assertEqual("guide.md", load_config(root).home_document)
 
+    def test_uses_an_explicit_listed_repository_root_readme_as_home(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(root, {"schema_version": 1, "project": {"name": "Demo"}}, {"schema_version": 1, "unlisted": "exclude", "home": {"path": "README.md", "source": "root"}, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "README.md", "source": "root"}]}]})
+            (root / "README.md").write_text("# Root home", encoding="utf-8")
+            self.assertEqual("README.md", load_config(root).home_document)
+
     def test_rejects_an_unlisted_or_invalid_explicit_home_page(self) -> None:
         for home, message in (({"path": "missing.md"}, "home.path.*listed navigation page"), ({"path": "README.md", "source": "docs"}, "home.*source.*root"), ({"path": "index.md", "source": "root"}, "repository-root source only supports README.md")):
             with self.subTest(home=home), tempfile.TemporaryDirectory() as temporary:

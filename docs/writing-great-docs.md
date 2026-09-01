@@ -87,7 +87,7 @@ they are easy to copy:
 example-tool input.txt
 ```
 
-Name the language after the opening fence when you can. DocKit-FP highlights
+Name the language after the opening fence when you can. DocKit highlights
 `json`, `pascal` (also `fpc`), `python`, `bash`, `yaml` and `markdown` locally;
 other names stay as readable plain code. This never needs a CDN or a browser
 extension:

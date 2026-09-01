@@ -4,7 +4,7 @@ DocKit turns Markdown into a searchable, responsive documentation website for
 code projects. It originated in the Free Pascal ecosystem and remains
 Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
 
-> [!TIP] New here? Start with [Your first DocKit-FP site](beginners-guide.md).
+> [!TIP] New here? Start with [Your first DocKit site](beginners-guide.md).
 > It takes you to a working local preview and explains each step.
 
 ## Pick one goal
@@ -21,11 +21,11 @@ Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
 
 ## What stays simple
 
-Your project owns its words, Markdown files and visual identity. DocKit-FP owns
+Your project owns its words, Markdown files and visual identity. DocKit owns
 the shared page layout, search, themes, validation and publishing machinery.
 Everything needed to browse a built site is stored locally, so the site does
 not depend on a hosted JavaScript or CSS service.
 
-DocKit-FP does not extract API descriptions from source code. Free Pascal
+DocKit does not extract API descriptions from source code. Free Pascal
 projects can use [PasWeave](pasweave-integration.md) for that job and feed the
-resulting Markdown into DocKit-FP.
+resulting Markdown into DocKit.

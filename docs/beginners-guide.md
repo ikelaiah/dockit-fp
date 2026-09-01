@@ -20,12 +20,12 @@ You do **not** need Git, a GitHub account, a web server or Pascal knowledge for
 this guide. When this page says “project folder”, it means the top-level folder
 that normally contains `README.md` or `src/`.
 
-## 1. Install DocKit-FP
+## 1. Install DocKit
 
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.1.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.13.0.zip"
 ```
 
 Then check that the command is available:
@@ -236,7 +236,7 @@ Reload the browser. **Quick start** should now appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.1/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.13.0/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

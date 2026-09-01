@@ -232,6 +232,23 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('href="index.html"', (root / "site" / "guide.html").read_text(encoding="utf-8"))
             self.assertEqual("# Root documentation\n\n[Guide](docs/guide.md)", readme.read_text(encoding="utf-8"))
 
+    def test_keeps_docs_index_reachable_when_another_page_is_the_explicit_home(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Documentation index", encoding="utf-8")
+            (docs / "guide.md").write_text("# Getting started", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "home": {"path": "guide.md"}, "navigation": [{"title": "Docs", "pages": [
+                {"title": "Index", "path": "index.md"}, {"title": "Guide", "path": "guide.md"},
+            ]}]}), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            self.assertIn("Getting started", (root / "site" / "index.html").read_text(encoding="utf-8"))
+            self.assertIn("Documentation index", (root / "site" / "docs-index.html").read_text(encoding="utf-8"))
+
     def test_excludes_unlisted_markdown_when_layout_requests_it(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

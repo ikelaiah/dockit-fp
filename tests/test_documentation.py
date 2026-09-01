@@ -14,7 +14,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertEqual(1, sum(line.startswith("# ") for line in readme.splitlines()))
         self.assertIn("first site in about 10 minutes", readme)
         self.assertIn("You can stop here", readme)
-        self.assertIn("dockit-fp/archive/refs/tags/v0.12.1.zip", readme)
+        self.assertIn("dockit-fp/archive/refs/tags/v0.13.0.zip", readme)
         self.assertNotIn('pip install "dockit-fp==', readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:
@@ -67,5 +67,5 @@ class DocumentationUsabilityTests(unittest.TestCase):
             [card["title"] for card in config["homepage"]["capabilities"]],
         )
         self.assertTrue(config["homepage"]["sections"]["release_context"])
-        self.assertIn("The homepage is not another Markdown document", guide)
-        self.assertIn("## See it in DocKit-FP", guide)
+        self.assertIn("The home page is the Markdown document selected by `layout.json.home`", guide)
+        self.assertIn("## See it in DocKit", guide)

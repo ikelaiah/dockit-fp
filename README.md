@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.2.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.3.zip"
 dockit-fp init
 dockit-fp serve
 ```

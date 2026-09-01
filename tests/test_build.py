@@ -69,7 +69,11 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('placeholder="Search docs, commands, and versions"', home)
             self.assertIn('class="brand-mark"', home)
             self.assertIn('class="capability-strip"', home)
-            self.assertIn('aria-label="DocKit-FP capabilities"', home)
+            self.assertIn('data-card-count="4"', home)
+            self.assertIn('data-homepage="true"', home)
+            self.assertIn('class="header-controls"', home)
+            self.assertIn('aria-current="page"', home)
+            self.assertIn('aria-label="Demo-FP capabilities"', home)
             self.assertIn('class="reading-progress"', home)
             self.assertNotIn('class="release-lens"', home)
             self.assertNotIn('<dt>Release</dt>', home)
@@ -116,6 +120,10 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('--interactive:color-mix(in srgb,var(--dk-accent) 78%,#000)', site_css)
             self.assertIn('--interactive:color-mix(in srgb,var(--dk-accent) 45%,#fff)', site_css)
             self.assertIn('html[data-content-width="wide"]{--dk-content-width:54rem', site_css)
+            self.assertIn('--dk-space-1:.25rem', site_css)
+            self.assertIn('.capability-strip[data-card-count="3"]', site_css)
+            self.assertIn('.header-controls', site_css)
+            self.assertIn('.prose[data-homepage="true"]>h1+p', site_css)
             self.assertIn('@media(prefers-reduced-motion:reduce)', site_css)
             self.assertIn('.syntax-highlight .tok-property{color:#93c5fd}', site_css)
             self.assertIn('.syntax-highlight .tok-keyword{color:#c4b5fd}', site_css)
@@ -127,6 +135,34 @@ class BuildSiteTests(unittest.TestCase):
             )
             search = json.loads((root / "site" / "search-index.json").read_text(encoding="utf-8"))
             self.assertEqual(["index.html", "guides/pascal.html"], [entry["url"] for entry in search])
+
+    def test_marks_a_custom_three_card_homepage_for_responsive_layout(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home\n\nA short introduction.", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({
+                "schema_version": 1,
+                "project": {"name": "Three Cards"},
+                "homepage": {"capabilities": [
+                    {"title": "One", "description": "First"},
+                    {"title": "Two", "description": "Second"},
+                    {"title": "Three", "description": "Third"},
+                ]},
+            }), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}],
+            }), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            home = (root / "site" / "index.html").read_text(encoding="utf-8")
+            self.assertIn('class="capability-strip" data-card-count="3"', home)
+            self.assertIn('aria-label="Three Cards capabilities"', home)
+            self.assertIn('class="header-controls"', home)
+            self.assertIn('data-homepage="true"', home)
 
     def test_uses_readme_as_home_for_configuration_free_legacy_docs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

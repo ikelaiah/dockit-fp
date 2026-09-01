@@ -15,6 +15,7 @@ HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 FENCE = re.compile(r"^```\s*([\w+-]*)\s*$")
 LIST = re.compile(r"^\s*[-*+]\s+(.+)$")
 ORDERED = re.compile(r"^\s*\d+[.)]\s+(.+)$")
+LIST_ITEM = re.compile(r"^(?P<indent>\s*)(?:(?P<unordered>[-*+])|(?P<ordered>\d+[.)]))\s+(?P<text>.+)$")
 TASK = re.compile(r"^\[([ xX])\]\s+(.+)$")
 LINK = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 CODE = re.compile(r"`([^`]+)`")
@@ -66,6 +67,55 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             output.append(f"<p>{_inline(text, resolve_link)}</p>")
             plain.append(_plain(text))
             paragraph.clear()
+
+    def render_list(start: int, base_indent: int | None = None) -> tuple[str, int]:
+        first = LIST_ITEM.match(lines[start])
+        if not first:
+            return "", start
+        base_indent = base_indent if base_indent is not None else len(first.group("indent").expandtabs(4))
+        ordered = first.group("ordered") is not None
+        tag = "ol" if ordered else "ul"
+        items: list[str] = []
+        current = start
+        while current < len(lines):
+            match = LIST_ITEM.match(lines[current])
+            if not match:
+                break
+            indent = len(match.group("indent").expandtabs(4))
+            if indent < base_indent:
+                break
+            if indent > base_indent:
+                if not items:
+                    break
+                nested, current = render_list(current, indent)
+                items[-1] = items[-1].replace("</li>", f"{nested}</li>", 1)
+                continue
+            if (match.group("ordered") is not None) != ordered:
+                break
+
+            item = match.group("text").strip()
+            current += 1
+            parts = [item]
+            while current < len(lines):
+                continuation = lines[current]
+                continuation_match = LIST_ITEM.match(continuation)
+                if not continuation.strip() or not continuation[0].isspace():
+                    break
+                if continuation_match:
+                    break
+                parts.append(continuation.strip())
+                current += 1
+            item = " ".join(parts)
+            task = TASK.match(item) if not ordered else None
+            if task:
+                complete = task.group(1).lower() == "x"
+                state = "Complete" if complete else "Incomplete"
+                items.append(f'<li><span class="task-list" role="img" aria-label="{state}">{"✓" if complete else "○"}</span>{_inline(task.group(2), resolve_link)}</li>')
+                plain.append(_plain(task.group(2)))
+            else:
+                items.append(f"<li>{_inline(item, resolve_link)}</li>")
+                plain.append(_plain(item))
+        return f"<{tag}>{''.join(items)}</{tag}>", current
 
     while index < len(lines):
         line = lines[index]
@@ -143,34 +193,8 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             continue
         elif LIST.match(line) or ORDERED.match(line):
             flush_paragraph()
-            ordered = bool(ORDERED.match(line))
-            tag = "ol" if ordered else "ul"
-            items: list[str] = []
-            while index < len(lines):
-                match = ORDERED.match(lines[index]) if ordered else LIST.match(lines[index])
-                if not match:
-                    break
-                parts = [match.group(1).strip()]
-                index += 1
-                while index < len(lines):
-                    continuation = lines[index]
-                    if not continuation.strip() or not continuation[0].isspace():
-                        break
-                    if LIST.match(continuation) or ORDERED.match(continuation):
-                        break
-                    parts.append(continuation.strip())
-                    index += 1
-                item = " ".join(parts)
-                task = TASK.match(item) if not ordered else None
-                if task:
-                    complete = task.group(1).lower() == "x"
-                    state = "Complete" if complete else "Incomplete"
-                    items.append(f'<li><span class="task-list" role="img" aria-label="{state}">{"✓" if complete else "○"}</span>{_inline(task.group(2), resolve_link)}</li>')
-                    plain.append(_plain(task.group(2)))
-                else:
-                    items.append(f"<li>{_inline(item, resolve_link)}</li>")
-                    plain.append(_plain(item))
-            output.append(f"<{tag}>{''.join(items)}</{tag}>")
+            list_html, index = render_list(index)
+            output.append(list_html)
             continue
         elif "|" in line and index + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[index + 1]):
             flush_paragraph()

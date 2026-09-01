@@ -29,6 +29,11 @@ You choose the site's starting visual style:
 Visitors can switch the visual style too. DocKit-FP remembers both choices in
 the browser when storage is available.
 
+Classic is the showcase default: it keeps the header, navigation and reading
+surface quiet so ordinary Markdown supplies the personality. Paper and
+Midnight use the same spacing, typography and semantic states, with their own
+reading surfaces. No custom CSS is needed to make any of them publication-ready.
+
 ## Pick an accent colour
 
 The supported presets are:

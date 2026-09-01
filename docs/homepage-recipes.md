@@ -41,6 +41,11 @@ the current release label above the DocKit-FP home page
 
 Open the generated [DocKit-FP home page](index.md) to see both effects.
 
+The built-in presentation adapts to the number of cards: two, three and four
+cards form balanced columns on a desktop, then move to two columns on a tablet
+and one column on a phone. This is part of the default visual system, so card
+configuration remains content-only.
+
 ## Library
 
 Use this when a library home page should make installation and API confidence

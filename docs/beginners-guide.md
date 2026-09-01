@@ -25,7 +25,7 @@ that normally contains `README.md` or `src/`.
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.1.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.2.zip"
 ```
 
 Then check that the command is available:
@@ -62,6 +62,8 @@ docs/
 By default, DocKit publishes only `README.md` and `docs/**/*.md`. It tells you
 about `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` and
 `CODE_OF_CONDUCT.md`, but leaves them private until you choose to add them.
+Only the repository-root `README.md` has special root-source support. Other
+Markdown you want to publish should live under `docs/`.
 
 ## 3. See the site now
 
@@ -156,21 +158,14 @@ Install Star Mapper, then run `star-mapper import first-light.csv`.
 You should see `Created sky-map.html`.
 ```
 
-Add the file to `docs/layout.json` so it appears in the navigation:
+Open your existing `docs/layout.json` and add the new page to the appropriate
+existing section. Keep your current Overview or home entry unchanged: it may
+refer to the repository-root README rather than `docs/index.md`.
+
+Add only this new page entry to that section's `pages` list:
 
 ```json
-{
-  "schema_version": 1,
-  "navigation": [
-    {
-      "title": "Get started",
-      "pages": [
-        {"title": "Overview", "path": "index.md"},
-        {"title": "Quick start", "path": "quick-start.md"}
-      ]
-    }
-  ]
-}
+{"title": "Quick start", "path": "quick-start.md"}
 ```
 
 Run `dockit-fp check` and `dockit-fp serve` again. Reload the browser, and the
@@ -182,7 +177,7 @@ new page should appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.1/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.2/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

@@ -97,6 +97,8 @@ does not permit `../README.md`, another root file, or any path outside the
 repository. A README can link to a configured `docs/` page and a docs page can
 link back to the README. Historical builds read the README from the matching
 Git release archive.
+Only the repository-root `README.md` has special root-source support. Other
+Markdown you want to publish should live under `docs/`.
 
 After `layout.json` exists it is authoritative. DocKit will not discover new
 pages, alter order or titles, add ancillary files, or reorganise sections. Add

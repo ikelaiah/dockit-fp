@@ -1,4 +1,4 @@
-# Your first DocKit-FP site
+# Your first DocKit site
 
 This guide starts from an ordinary code project and ends with a documentation
 site running on your computer. The example name is Pascal-flavoured, but the

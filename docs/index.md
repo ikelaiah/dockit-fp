@@ -1,8 +1,8 @@
 # Make code documentation people can use
 
-DocKit-FP turns Markdown into a searchable, responsive documentation website.
-It is geared towards Free Pascal and Lazarus, but you can use it for another
-language too: the input is ordinary Markdown, not Pascal source code.
+DocKit turns Markdown into a searchable, responsive documentation website for
+code projects. It originated in the Free Pascal ecosystem and remains
+Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
 
 > [!TIP] New here? Start with [Your first DocKit-FP site](beginners-guide.md).
 > It takes you to a working local preview and explains each step.

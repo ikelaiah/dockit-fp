@@ -254,6 +254,25 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
     if require_listed_documents and unlisted == "error" and unlisted_paths:
         raise DocKitError(f"{layout_path}: unlisted Markdown document {unlisted_paths[0]!r}. Add it to navigation or remove it.")
     excluded_documents = tuple(unlisted_paths) if unlisted == "exclude" else ()
+    raw_home = layout.get("home")
+    if raw_home is None:
+        home = next((page.path for page in pages if page.source == "root"), None)
+        if home is None:
+            home = "index.md" if any(page.path == "index.md" for page in pages) else pages[0].path
+    else:
+        if not isinstance(raw_home, dict):
+            raise DocKitError(f"{layout_path}: field 'home' must be an object with a listed page path")
+        path = safe_document_path(raw_home.get("path"), f"{layout_path}: home")
+        source = raw_home.get("source", "docs")
+        if source not in {"docs", "root"}:
+            raise DocKitError(f"{layout_path}: home.source must be 'docs' or 'root'")
+        if source == "root" and path != "README.md":
+            raise DocKitError(f"{layout_path}: repository-root source only supports README.md")
+        if source == "docs" and path == "README.md":
+            raise DocKitError(f"{layout_path}: home README.md requires source 'root'")
+        if not any(page.path == path and page.source == source for page in pages):
+            raise DocKitError(f"{layout_path}: home.path {path!r} must name a listed navigation page with the same source")
+        home = path
     banner = data.get("banner")
     if banner is not None and (not isinstance(banner, dict) or not isinstance(banner.get("path"), str) or not isinstance(banner.get("alt"), str)):
         raise DocKitError(f"{primary}: field 'banner' needs string path and alt fields")
@@ -282,9 +301,6 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         if parsed.scheme not in {"https", "http"} or not parsed.netloc:
             raise DocKitError(f"{primary}: identity.links[{index}].url must be an absolute http(s) URL")
         project_links.append((link["label"].strip(), link["url"]))
-    home = next((page.path for page in pages if page.source == "root"), None)
-    if home is None:
-        home = "index.md" if any(page.path == "index.md" for page in pages) else pages[0].path
     return SiteConfig(
         name=project["name"].strip(), description=str(project.get("description", "")),
         repository_url=project.get("repository_url"), site_url=project.get("site_url"),

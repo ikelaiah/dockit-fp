@@ -1,11 +1,11 @@
-# DocKit-FP
+# DocKit
 
 Turn Markdown files into a polished documentation website with search, themes,
 mobile navigation and optional release history.
 
-DocKit-FP is designed around Free Pascal and Lazarus projects, but the site
-builder does not require Pascal source code. If your project can keep Markdown
-files in a Git repository, you can use the same ideas and most of the tool.
+DocKit is a small, offline-friendly Markdown documentation-site builder for code
+projects. It originated in the Free Pascal ecosystem and remains Pascal-friendly,
+but it does not require Pascal source code.
 
 ## Make your first site in about 10 minutes
 

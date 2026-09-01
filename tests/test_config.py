@@ -74,6 +74,21 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             self.assertEqual("Built for Pascal maintainers.", config.footer)
             self.assertEqual((("Source code", "https://example.test/source"),), config.project_links)
 
+    def test_uses_an_explicit_listed_home_page(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(root, {"schema_version": 1, "project": {"name": "Demo"}}, {"schema_version": 1, "home": {"path": "guide.md"}, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}, {"title": "Guide", "path": "guide.md"}]}]})
+            (root / "docs" / "guide.md").write_text("# Guide", encoding="utf-8")
+            self.assertEqual("guide.md", load_config(root).home_document)
+
+    def test_rejects_an_unlisted_or_invalid_explicit_home_page(self) -> None:
+        for home, message in (({"path": "missing.md"}, "home.path.*listed navigation page"), ({"path": "README.md", "source": "docs"}, "home.*source.*root"), ({"path": "index.md", "source": "root"}, "repository-root source only supports README.md")):
+            with self.subTest(home=home), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self._write_config(root, {"schema_version": 1, "project": {"name": "Demo"}}, {"schema_version": 1, "home": home, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]})
+                with self.assertRaisesRegex(DocKitError, message):
+                    load_config(root)
+
     def test_loads_a_repository_local_identity_logo(self) -> None:
         for suffix, contents in ((".svg", "<svg></svg>"), (".png", b"png")):
             with self.subTest(suffix=suffix), tempfile.TemporaryDirectory() as temporary:

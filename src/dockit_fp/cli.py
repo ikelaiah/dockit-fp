@@ -44,7 +44,7 @@ def _init(root: Path) -> list[str]:
             created.append("docs/index.md")
         navigation = [{"title": "Getting started", "pages": [{"title": "Introduction", "path": "index.md"}]}]
     if not discovery.has_layout:
-        (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "navigation": navigation}, indent=2) + "\n", encoding="utf-8")
+        (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "unlisted": "exclude", "navigation": navigation}, indent=2) + "\n", encoding="utf-8")
         created.append("docs/layout.json")
     detected = ["Git repository" if discovery.is_git_repository else "non-Git project"]
     if discovery.github_remote_url:
@@ -169,7 +169,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Built {result.release_count} release(s), {result.page_count} page(s) total")
         elif args.command == "check":
             result = _check(root)
-            print(f"Documentation check passed: {result.section_count} section(s), {result.page_count} page(s)")
+            excluded = f"; {result.excluded_count} unlisted document(s) excluded" if result.excluded_count else ""
+            print(f"Documentation check passed: {result.section_count} section(s), {result.page_count} page(s){excluded}")
         elif args.command == "serve":
             if not 1 <= args.port <= 65535:
                 raise DocKitError("serve: port must be between 1 and 65535")

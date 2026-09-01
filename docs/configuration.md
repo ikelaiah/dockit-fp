@@ -43,6 +43,7 @@ Edit `docs/layout.json` to choose which pages appear and in what order:
 ```json
 {
   "schema_version": 1,
+  "unlisted": "exclude",
   "navigation": [
     {
       "title": "Get started",
@@ -65,9 +66,18 @@ Each default `path` starts inside `docs/`. For example,
 `"path": "reference/commands.md"` means the file is
 `docs/reference/commands.md`.
 
-List every Markdown file under `docs/`. This prevents a useful page from
-becoming invisible. If a file is missing or unlisted, `dockit-fp check` tells
-you which path to add, create or correct.
+`unlisted` controls what happens to Markdown under `docs/` that is not in
+navigation:
+
+- `"error"` is the default and preserves existing strict validation. A missing
+  page is reported by `dockit-fp check`.
+- `"exclude"` publishes only listed pages. `check` succeeds and reports the
+  number of unlisted documents excluded from the site.
+
+New layouts made by `dockit-fp init` use `"exclude"`. Existing layouts are
+never rewritten; add the field only when you want this explicit publication
+policy. There are no include/exclude patterns: the navigation list is the
+complete publication decision.
 
 ## Existing repositories and root README
 

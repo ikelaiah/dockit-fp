@@ -208,6 +208,45 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             with self.assertRaisesRegex(DocKitError, r"unlisted Markdown document 'reference\.md'.*Add it to navigation"):
                 load_config(root)
 
+    def test_explicit_error_policy_retains_strict_unlisted_markdown_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {"schema_version": 1, "project": {"name": "Demo"}},
+                {"schema_version": 1, "unlisted": "error", "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+            (root / "docs" / "private.md").write_text("# Private", encoding="utf-8")
+
+            with self.assertRaisesRegex(DocKitError, r"unlisted Markdown document 'private\.md'"):
+                load_config(root)
+
+    def test_exclude_policy_allows_unlisted_markdown_without_publishing_it(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {"schema_version": 1, "project": {"name": "Demo"}},
+                {"schema_version": 1, "unlisted": "exclude", "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+            (root / "docs" / "private.md").write_text("# Private", encoding="utf-8")
+
+            config = load_config(root)
+
+            self.assertEqual(("private.md",), config.excluded_documents)
+
+    def test_rejects_an_unknown_unlisted_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._write_config(
+                root,
+                {"schema_version": 1, "project": {"name": "Demo"}},
+                {"schema_version": 1, "unlisted": "include", "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+            )
+
+            with self.assertRaisesRegex(DocKitError, r"unlisted.*'error' or 'exclude'"):
+                load_config(root)
+
     def test_explains_the_schema_compatibility_policy(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

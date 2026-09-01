@@ -137,6 +137,7 @@ def _legacy_config(docs: Path) -> SiteConfig:
         banner=None, banner_alt=None, footer=None, project_links=(), pages=pages,
         legacy=True, home_document=home,
         homepage=Homepage(None, True, True, True, False),
+        excluded_documents=(),
     )
 
 
@@ -189,6 +190,9 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
     if not layout_path.exists():
         raise DocKitError(f"{layout_path}: required for modern documentation")
     layout = _read_json(layout_path)
+    unlisted = layout.get("unlisted", "error")
+    if unlisted not in {"error", "exclude"}:
+        raise DocKitError(f"{layout_path}: field 'unlisted' must be 'error' or 'exclude'")
     navigation = layout.get("navigation")
     if not isinstance(navigation, list) or not navigation:
         raise DocKitError(f"{layout_path}: field 'navigation' must be a non-empty list")
@@ -221,11 +225,11 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
             if any(page.path == path for page in pages):
                 raise DocKitError(f"{layout_path}: navigation page {path!r} appears more than once")
             pages.append(page)
-    if require_listed_documents:
-        listed_paths = {page.path for page in pages}
-        unlisted_paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md") if path.is_file() and path.relative_to(docs).as_posix() not in listed_paths)
-        if unlisted_paths:
-            raise DocKitError(f"{layout_path}: unlisted Markdown document {unlisted_paths[0]!r}. Add it to navigation or remove it.")
+    listed_paths = {page.path for page in pages}
+    unlisted_paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md") if path.is_file() and path.relative_to(docs).as_posix() not in listed_paths)
+    if require_listed_documents and unlisted == "error" and unlisted_paths:
+        raise DocKitError(f"{layout_path}: unlisted Markdown document {unlisted_paths[0]!r}. Add it to navigation or remove it.")
+    excluded_documents = tuple(unlisted_paths) if unlisted == "exclude" else ()
     banner = data.get("banner")
     if banner is not None and (not isinstance(banner, dict) or not isinstance(banner.get("path"), str) or not isinstance(banner.get("alt"), str)):
         raise DocKitError(f"{primary}: field 'banner' needs string path and alt fields")
@@ -264,4 +268,5 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         banner_alt=banner.get("alt") if banner else None, footer=footer.strip() if footer else None,
         project_links=tuple(project_links), pages=tuple(pages),
         legacy=False, home_document=home, homepage=homepage,
+        excluded_documents=excluded_documents,
     )

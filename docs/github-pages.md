@@ -35,7 +35,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.12.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.12.1
     with:
       versioned: false
       release: latest
@@ -54,7 +54,7 @@ dockit-fp build --release latest --output build/docs-site
 
 The final command should say how many pages it built. Open the result locally
 before pushing. The maintained
-[single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.0/examples/single-version)
+[single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.1/examples/single-version)
 contains the same setup.
 
 ## Historical site for versioned projects
@@ -79,7 +79,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.12.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.12.1
 ```
 
 The workflow runs when you push a tag such as `v1.2.0`. Historical mode is the
@@ -96,7 +96,7 @@ dockit-fp build-all --output build/docs-site
 
 Follow the [pre-publish checklist](pre-publish-checklist.md) for the exact
 commit, tag, check and push order. The maintained
-[historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.0/examples/historical)
+[historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.1/examples/historical)
 shows a small two-release project.
 
 ## Enable Pages in the repository
@@ -121,6 +121,6 @@ public site URL after deployment.
 - Run the same DocKit-FP command locally; local errors are usually faster to
   correct.
 
-Always pin a released workflow such as `@v0.12.0`. Do not use `@main` for a
+Always pin a released workflow such as `@v0.12.1`. Do not use `@main` for a
 published site: a future DocKit-FP change could alter your site without a
 deliberate upgrade.

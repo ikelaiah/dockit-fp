@@ -1,6 +1,7 @@
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from dockit_fp.github_pages import MANAGED_MARKER, inspect_workflow, render_workflow
 
@@ -39,3 +40,12 @@ class ManagedGitHubPagesWorkflowTests(unittest.TestCase):
         fixture = root / "examples" / "github-pages" / ".github" / "workflows" / "dockit-pages.yml"
 
         self.assertEqual(render_workflow("v0.14.0"), fixture.read_text(encoding="utf-8"))
+
+    def test_refuses_a_symlinked_managed_workflow_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            workflow = root / ".github" / "workflows" / "dockit-pages.yml"
+            workflow.parent.mkdir(parents=True)
+
+            with patch("dockit_fp.github_pages.Path.is_symlink", return_value=True):
+                self.assertEqual("unsafe", inspect_workflow(workflow, "v0.14.0").state)

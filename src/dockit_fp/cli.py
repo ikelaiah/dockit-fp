@@ -100,6 +100,10 @@ def _github_pages(root: Path, *, update: bool) -> list[str]:
         raise DocKitError(
             f"{WORKFLOW_RELATIVE_PATH} is marked as DocKit-managed but is malformed. Repair it manually; no files were changed."
         )
+    if inspection.state == "unsafe":
+        raise DocKitError(
+            f"{WORKFLOW_RELATIVE_PATH} contains a symlinked path component. Use a regular repository-local path; no files were changed."
+        )
     if update:
         if inspection.state == "absent":
             raise DocKitError(f"{WORKFLOW_RELATIVE_PATH} does not exist. Run 'dockit-fp github-pages' first.")
@@ -279,6 +283,8 @@ def _doctor(root: Path) -> list[str]:
         messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} is not managed by DocKit")
     elif managed.state == "malformed":
         messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} is marked DocKit-managed but malformed")
+    elif managed.state == "unsafe":
+        messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} contains a symlinked path component")
     else:
         workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
         workflow_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in workflows)

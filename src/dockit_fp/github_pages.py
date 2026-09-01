@@ -63,6 +63,11 @@ jobs:
 
 def inspect_workflow(path: Path, version: str) -> WorkflowInspection:
     """Classify only a workflow at DocKit's reserved, predictable path."""
+    # The command's root is resolved first, so these are the only mutable path
+    # components between it and the managed filename. Refuse indirection rather
+    # than allowing --update to follow a repository-controlled symlink.
+    if any(candidate.is_symlink() for candidate in (path.parent.parent, path.parent, path)):
+        return WorkflowInspection("unsafe")
     if not path.exists():
         return WorkflowInspection("absent")
     text = path.read_text(encoding="utf-8", errors="replace")

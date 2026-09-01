@@ -163,6 +163,7 @@ select:hover,.topbar .search-control input:hover{border-color:color-mix(in srgb,
 .capability-strip[data-card-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
 .capability-strip[data-card-count="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
 .capability-strip li{display:flex;flex-direction:column;align-self:stretch;min-height:0;padding:1rem 1.05rem;border-top:2px solid var(--dk-accent);border-radius:0 .35rem .35rem 0;box-shadow:0 1px 0 color-mix(in srgb,var(--border) 70%,transparent);line-height:1.5}
+.capability-strip li+li{margin-top:0}
 .capability-strip strong{font-size:.8rem;line-height:1.35}
 .capability-strip span{margin-top:.35rem;font-size:.78rem;line-height:1.5}
 .release-context{gap:.65rem;margin:1.5rem 0;padding:.75rem 1rem;border-left-width:3px;border-radius:0 .3rem .3rem 0}

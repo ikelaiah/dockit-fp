@@ -151,6 +151,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('.capability-strip[data-card-count="3"]', site_css)
             self.assertIn('align-items:stretch;grid-template-rows:minmax(0,1fr)', site_css)
             self.assertIn('.capability-strip li{display:flex;flex-direction:column;align-self:stretch;min-height:0;padding:1rem 1.05rem', site_css)
+            self.assertIn('.capability-strip li+li{margin-top:0}', site_css)
             self.assertIn('.header-controls', site_css)
             self.assertIn('.topbar{display:grid;grid-template-columns:auto minmax(12rem,30rem) max-content;grid-template-rows:auto var(--dk-control-height)', site_css)
             self.assertIn('.page-navigation a{min-height:0;max-width:none;padding:0;border:0;border-radius:0;background:transparent', site_css)

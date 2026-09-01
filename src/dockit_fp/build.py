@@ -71,10 +71,21 @@ def _page_navigation(*, page: Page, config, current_route: str) -> str:
 
 
 def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page, config, current_route: str, version_options: str, banner: str | None, release: str) -> str:
-    nav = "".join(f'<h2>{html.escape(section)}</h2>' + "".join(
-        f'<a class="{"active" if item.path == page.path else ""}" href="{html.escape(_relative(current_route, _route(item.path, config.home_document)), quote=True)}"{" aria-current=\"page\"" if item.path == page.path else ""}>{html.escape(item.title)}</a>'
-        for item in config.pages if item.section == section
-    ) for section in dict.fromkeys(item.section for item in config.pages))
+    navigation_sections: list[str] = []
+    for section in dict.fromkeys(item.section for item in config.pages):
+        section_links: list[str] = []
+        for item in config.pages:
+            if item.section != section:
+                continue
+            is_current = item.path == page.path
+            active_class = "active" if is_current else ""
+            aria_current = ' aria-current="page"' if is_current else ""
+            href = html.escape(_relative(current_route, _route(item.path, config.home_document)), quote=True)
+            section_links.append(
+                f'<a class="{active_class}" href="{href}"{aria_current}>{html.escape(item.title)}</a>'
+            )
+        navigation_sections.append(f'<h2>{html.escape(section)}</h2>{"".join(section_links)}')
+    nav = "".join(navigation_sections)
     banner_html = f'<img class="banner" src="{html.escape(banner, quote=True)}" alt="{html.escape(config.banner_alt or "", quote=True)}">' if banner else ""
     style = f"--dk-accent:{config.accent};--dk-accent-secondary:{config.accent_secondary}"
     brand_mark = '<svg class="brand-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 1.5h6l4 4v9H3zM9 1.5v4h4M5.5 9h5M5.5 11.5h4"/></svg>'

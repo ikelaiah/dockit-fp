@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from dockit_fp.cli import main
+from dockit_fp.cli import _PreviewBuilder, main
 
 
 class CliTests(unittest.TestCase):
@@ -126,6 +126,19 @@ class CliTests(unittest.TestCase):
             self.assertEqual(("address", ("127.0.0.1", 8000)), events[0])
             self.assertEqual(["serve", "close"], [event[0] for event in events[1:]])
             self.assertIn("Serving documentation at http://127.0.0.1:8000/", output.getvalue())
+
+    def test_preview_rebuilds_when_documentation_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.assertEqual(0, main(["init", "--root", str(root)]))
+            preview = _PreviewBuilder(root=root, output=root / "build" / "docs-site", release="preview")
+            preview.build_initial()
+
+            (root / "docs" / "index.md").write_text("# Updated preview\n\nThe rebuilt page is current.", encoding="utf-8")
+
+            self.assertTrue(preview.rebuild_if_changed())
+            self.assertIn("Updated preview", (root / "build" / "docs-site" / "index.html").read_text(encoding="utf-8"))
+            self.assertFalse(preview.rebuild_if_changed())
 
     def test_serve_does_not_start_when_validation_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

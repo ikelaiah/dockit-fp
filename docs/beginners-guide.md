@@ -74,7 +74,9 @@ dockit-fp serve
 ```
 
 Open <http://127.0.0.1:8000>. The command validates and builds first, then
-starts a local-only preview server. Press `Ctrl+C` to stop it. Use
+starts a local-only preview server. It watches `README.md` and `docs/`, rebuilding
+after a saved change; reload the browser to see the new page without restarting
+the command. Press `Ctrl+C` to stop it. Use
 `dockit-fp serve --port 8000` or `dockit-fp serve --host 127.0.0.1` when you
 need a specific local address.
 

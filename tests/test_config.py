@@ -219,3 +219,48 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
 
             with self.assertRaisesRegex(DocKitError, r"schema version 1.*migration"):
                 load_config(root)
+
+    def test_allows_only_the_exact_repository_root_readme_as_an_explicit_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (root / "README.md").write_text("# Root", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            layout = {"schema_version": 1, "navigation": [{"title": "Overview", "pages": [
+                {"title": "Overview", "path": "README.md", "source": "root"},
+            ]}]}
+            (docs / "layout.json").write_text(json.dumps(layout), encoding="utf-8")
+
+            config = load_config(root)
+            self.assertEqual("root", config.pages[0].source)
+
+            layout["navigation"][0]["pages"][0]["path"] = "../README.md"
+            (docs / "layout.json").write_text(json.dumps(layout), encoding="utf-8")
+            with self.assertRaisesRegex(DocKitError, "invalid Markdown path"):
+                load_config(root)
+
+            layout["navigation"][0]["pages"][0]["path"] = "CHANGELOG.md"
+            (docs / "layout.json").write_text(json.dumps(layout), encoding="utf-8")
+            with self.assertRaisesRegex(DocKitError, "repository-root source only supports README.md"):
+                load_config(root)
+
+    def test_rejects_a_docs_symlink_that_resolves_outside_the_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary, tempfile.TemporaryDirectory() as external:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            outside = Path(external) / "outside.md"
+            outside.write_text("# Outside", encoding="utf-8")
+            link = docs / "outside.md"
+            try:
+                link.symlink_to(outside)
+            except OSError as error:
+                self.skipTest(f"symlink creation is unavailable: {error}")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "navigation": [{"title": "Docs", "pages": [
+                {"title": "Outside", "path": "outside.md"},
+            ]}]}), encoding="utf-8")
+
+            with self.assertRaisesRegex(DocKitError, "outside the repository root"):
+                load_config(root)

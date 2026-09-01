@@ -61,13 +61,37 @@ Edit `docs/layout.json` to choose which pages appear and in what order:
 }
 ```
 
-Each `path` starts inside `docs/`. For example,
+Each default `path` starts inside `docs/`. For example,
 `"path": "reference/commands.md"` means the file is
 `docs/reference/commands.md`.
 
 List every Markdown file under `docs/`. This prevents a useful page from
 becoming invisible. If a file is missing or unlisted, `dockit-fp check` tells
 you which path to add, create or correct.
+
+## Existing repositories and root README
+
+On its first run, `dockit-fp init` considers only `README.md` at the repository
+root and Markdown under `docs/`. It does not modify either one. Ancillary root
+files such as `CHANGELOG.md` and `CONTRIBUTING.md` are deliberately excluded;
+detection is not permission to publish.
+
+The generated layout uses this narrow entry for a root README:
+
+```json
+{"title": "Overview", "path": "README.md", "source": "root"}
+```
+
+`"source": "root"` supports only the exact repository-root `README.md`; it
+does not permit `../README.md`, another root file, or any path outside the
+repository. A README can link to a configured `docs/` page and a docs page can
+link back to the README. Historical builds read the README from the matching
+Git release archive.
+
+After `layout.json` exists it is authoritative. DocKit will not discover new
+pages, alter order or titles, add ancillary files, or reorganise sections. Add
+an ancillary page only by deliberately listing an allowed docs-path in the
+layout (for example, after copying or authoring a public docs version yourself).
 
 ## Reading width
 

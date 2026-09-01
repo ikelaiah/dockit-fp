@@ -80,7 +80,29 @@ wrong.
 - [x] Add deterministic release fixtures and a clear pre-publish checklist.
 - [x] Document upgrade compatibility from every supported 0.x configuration.
 
-## v1.0.0: stable, beautiful documentation infrastructure
+## v0.11 — Existing Repo Magic
+
+Safe existing-repository adoption, conservative README/docs discovery, sensible
+initial navigation, explicit power-user control, safe root README support, and
+`dockit-fp serve`.
+
+## v0.12 — Beautiful by Default
+
+Further visual refinement.
+
+## v0.13 — GitHub in One Command
+
+Reduce GitHub Pages publishing ceremony.
+
+## v0.14 — Documentation Audit
+
+Help maintainers identify documentation weaknesses.
+
+## v0.15 — Qualification
+
+Python/OS/package/ecosystem/accessibility qualification.
+
+## v1.0 — Stable Contract
 
 Version 1.0 is the commitment point: the supported configuration and workflow
 become dependable foundations for Free Pascal projects.

@@ -8,6 +8,7 @@ class Page:
     path: str
     title: str
     section: str = "Documentation"
+    source: str = "docs"
 
 
 @dataclass(frozen=True)

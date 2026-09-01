@@ -12,7 +12,7 @@ import shutil
 from urllib.parse import urlsplit
 
 from .assets import MATH_JS, SITE_CSS, SITE_JS
-from .config import load_config
+from .config import load_config, page_source_path, page_source_reference
 from .errors import DocKitError
 from .markdown import render_markdown
 from .models import Page
@@ -37,14 +37,20 @@ class BuildResult:
 
 
 def _route(document: str, home: str) -> str:
-    return "index.html" if document == home else str(Path(document).with_suffix(".html").as_posix())
+    if document == home:
+        return "index.html"
+    # A root README is the home page. Keep an existing docs/index.md reachable
+    # instead of overwriting that generated index route.
+    if document == "index.md" and home == "README.md":
+        return "docs-index.html"
+    return str(Path(document).with_suffix(".html").as_posix())
 
 
 def _safe_url(target: str) -> str:
     parsed = urlsplit(target)
     if parsed.scheme and parsed.scheme.lower() not in {"https", "http", "mailto"}:
         raise DocKitError(f"Markdown: unsafe URL scheme in {target!r}")
-    if not parsed.scheme and (target.startswith("/") or ".." in Path(parsed.path).parts):
+    if not parsed.scheme and target.startswith("/"):
         raise DocKitError(f"Markdown: unsafe local link {target!r}")
     return target
 
@@ -121,13 +127,14 @@ def build_site(
         banner = f"assets/banner{suffix}"
         shutil.copyfile(root / config.banner, output / banner)
     routes = {item.path: _route(item.path, config.home_document) for item in config.pages}
+    source_documents = {page_source_reference(page): page.path for page in config.pages}
     anchors = {
-        page.path: {identifier for _level, _text, identifier in render_markdown((docs / page.path).read_text(encoding="utf-8"), lambda target: target).headings}
+        page.path: {identifier for _level, _text, identifier in render_markdown(page_source_path(root, page).read_text(encoding="utf-8"), lambda target: target).headings}
         for page in config.pages
     }
     entries: list[dict[str, str]] = []
     for page in config.pages:
-        source = (docs / page.path).read_text(encoding="utf-8")
+        source = page_source_path(root, page).read_text(encoding="utf-8")
         current_route = routes[page.path]
         def resolve(target: str) -> str:
             target = _safe_url(target)
@@ -135,8 +142,11 @@ def build_site(
             if parsed.scheme or target.startswith("#"):
                 return target
             document, marker, fragment = target.partition("#")
-            requested = (Path(page.path).parent / document).as_posix() if document else page.path
-            requested = str(Path(requested).as_posix())
+            current_source = page_source_reference(page)
+            requested_source = posixpath.normpath(posixpath.join(posixpath.dirname(current_source), document)) if document else current_source
+            if requested_source == ".." or requested_source.startswith("../"):
+                raise DocKitError(f"Markdown: unsafe local link {target!r}")
+            requested = source_documents.get(requested_source)
             if requested not in routes:
                 raise DocKitError(f"{docs / page.path}: linked document {document!r} does not exist")
             if marker and fragment not in anchors[requested]:

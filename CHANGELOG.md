@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.3
+
+### Changed
+
+- Expanded the beginner add-a-page example to show where a new navigation
+  entry belongs before and after the change.
+
 ## 0.11.2
 
 ### Changed

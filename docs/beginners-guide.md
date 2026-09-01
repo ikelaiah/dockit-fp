@@ -25,7 +25,7 @@ that normally contains `README.md` or `src/`.
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.2.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.3.zip"
 ```
 
 Then check that the command is available:
@@ -158,18 +158,75 @@ Install Star Mapper, then run `star-mapper import first-light.csv`.
 You should see `Created sky-map.html`.
 ```
 
-Open your existing `docs/layout.json` and add the new page to the appropriate
-existing section. Keep your current Overview or home entry unchanged: it may
-refer to the repository-root README rather than `docs/index.md`.
+Open `docs/layout.json`. Your file may look different from this example: in
+particular, its Overview or home entry may use `index.md` instead of the
+repository-root `README.md`. Keep that existing entry unchanged.
 
-Add only this new page entry to that section's `pages` list:
+Before the change, the file may look like this:
 
 ```json
-{"title": "Quick start", "path": "quick-start.md"}
+{
+  "schema_version": 1,
+  "unlisted": "exclude",
+  "navigation": [
+    {
+      "title": "Getting started",
+      "pages": [
+        {
+          "title": "Overview",
+          "path": "README.md",
+          "source": "root"
+        }
+      ]
+    }
+  ]
+}
 ```
 
-Run `dockit-fp check` and `dockit-fp serve` again. Reload the browser, and the
-new page should appear in the left navigation.
+Add this new page object to the same `pages` list:
+
+```json
+{
+  "title": "Quick start",
+  "path": "quick-start.md"
+}
+```
+
+After adding the page, the file may look like this:
+
+```json
+{
+  "schema_version": 1,
+  "unlisted": "exclude",
+  "navigation": [
+    {
+      "title": "Getting started",
+      "pages": [
+        {
+          "title": "Overview",
+          "path": "README.md",
+          "source": "root"
+        },
+        {
+          "title": "Quick start",
+          "path": "quick-start.md"
+        }
+      ]
+    }
+  ]
+}
+```
+
+In JSON lists, put a comma after each item except the last one.
+
+Run:
+
+```bash
+dockit-fp check
+dockit-fp serve
+```
+
+Reload the browser. **Quick start** should now appear in the left navigation.
 
 ## Where to go next
 
@@ -177,7 +234,7 @@ new page should appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.2/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.3/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

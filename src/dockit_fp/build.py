@@ -70,7 +70,7 @@ def _page_navigation(*, page: Page, config, current_route: str) -> str:
     return f'<nav class="page-navigation" aria-label="Page navigation">{"".join(links)}</nav>' if links else ""
 
 
-def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page, config, current_route: str, version_options: str, banner: str | None, release: str) -> str:
+def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page, config, current_route: str, version_options: str, banner: str | None, logo: str | None, release: str) -> str:
     navigation_sections: list[str] = []
     for section in dict.fromkeys(item.section for item in config.pages):
         section_links: list[str] = []
@@ -89,6 +89,7 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
     banner_html = f'<img class="banner" src="{html.escape(banner, quote=True)}" alt="{html.escape(config.banner_alt or "", quote=True)}">' if banner else ""
     style = f"--dk-accent:{config.accent};--dk-accent-secondary:{config.accent_secondary}"
     brand_mark = '<svg class="brand-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 1.5h6l4 4v9H3zM9 1.5v4h4M5.5 9h5M5.5 11.5h4"/></svg>'
+    brand_identity = f'<img class="brand-logo" src="{html.escape(_relative(current_route, logo), quote=True)}" alt="" aria-hidden="true">' if logo else brand_mark
     if page.path == config.home_document and not config.homepage.show_introduction:
         body = INITIAL_INTRODUCTION.sub(r"\1", body)
     cards = config.homepage.capabilities if config.homepage.capabilities is not None else DEFAULT_CAPABILITIES
@@ -118,7 +119,7 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
     header_controls = f'''<div class="header-controls" aria-label="Site controls"><label class="header-control"><span>Version</span><select id="version-select" aria-label="Documentation version">{version_options}</select></label><label class="header-control"><span>Style</span><select id="visual-theme" aria-label="Documentation visual theme"><option value="classic">Classic</option><option value="paper">Paper</option><option value="midnight">Midnight</option></select></label><label class="header-control"><span>Mode</span><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div>'''
     homepage = page.path == config.home_document
     main_context = ' data-homepage="true"' if homepage else ' data-homepage="false"'
-    return f'''<!doctype html><html lang="en" data-visual-theme="{html.escape(config.theme_style, quote=True)}" data-content-width="{html.escape(config.content_width, quote=True)}" style="{style}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{html.escape(config.description, quote=True)}"><title>{html.escape(page.title)} — {html.escape(config.name)}</title><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/site.css'), quote=True)}"><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/katex/katex.min.css'), quote=True)}"></head><body><div class="reading-progress" aria-hidden="true"><span></span></div><header class="site-header"><div class="topbar"><a class="brand" href="{html.escape(_relative(current_route, 'index.html'), quote=True)}">{brand_mark}<span>{html.escape(config.name)}</span> <em>docs</em></a><div class="search-control"><input id="search" type="search" placeholder="Search docs, commands, and versions" aria-label="Search documentation, commands, and versions" aria-controls="search-results" aria-describedby="search-help" aria-expanded="false" autocomplete="off" data-search-index="{html.escape(_relative(current_route, 'search-index.json'), quote=True)}"><kbd aria-hidden="true" title="Press / to search">/</kbd><span id="search-help" class="visually-hidden">Type to search. Use the arrow keys to move through results, Enter to open, and Escape to close.</span></div>{header_controls}</div><div id="search-results" class="search-results" role="region" aria-label="Search results" aria-live="polite" hidden></div></header><details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details><div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav><main class="prose" id="content"{main_context}>{banner_html}{release_context}{body}{page_navigation}</main><aside class="toc" aria-label="On this page">{toc}</aside></div>{footer}<script src="{html.escape(_relative(current_route, 'assets/katex/katex.min.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/math.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/site.js'), quote=True)}"></script></body></html>'''
+    return f'''<!doctype html><html lang="en" data-visual-theme="{html.escape(config.theme_style, quote=True)}" data-content-width="{html.escape(config.content_width, quote=True)}" style="{style}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{html.escape(config.description, quote=True)}"><title>{html.escape(page.title)} — {html.escape(config.name)}</title><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/site.css'), quote=True)}"><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/katex/katex.min.css'), quote=True)}"></head><body><div class="reading-progress" aria-hidden="true"><span></span></div><header class="site-header"><div class="topbar"><a class="brand" href="{html.escape(_relative(current_route, 'index.html'), quote=True)}">{brand_identity}<span>{html.escape(config.name)}</span> <em>docs</em></a><div class="search-control"><input id="search" type="search" placeholder="Search docs, commands, and versions" aria-label="Search documentation, commands, and versions" aria-controls="search-results" aria-describedby="search-help" aria-expanded="false" autocomplete="off" data-search-index="{html.escape(_relative(current_route, 'search-index.json'), quote=True)}"><kbd aria-hidden="true" title="Press / to search">/</kbd><span id="search-help" class="visually-hidden">Type to search. Use the arrow keys to move through results, Enter to open, and Escape to close.</span></div>{header_controls}</div><div id="search-results" class="search-results" role="region" aria-label="Search results" aria-live="polite" hidden></div></header><details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details><div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav><main class="prose" id="content"{main_context}>{banner_html}{release_context}{body}{page_navigation}</main><aside class="toc" aria-label="On this page">{toc}</aside></div>{footer}<script src="{html.escape(_relative(current_route, 'assets/katex/katex.min.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/math.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/site.js'), quote=True)}"></script></body></html>'''
 
 
 def build_site(
@@ -141,6 +142,11 @@ def build_site(
         suffix = Path(config.banner).suffix.lower()
         banner = f"assets/banner{suffix}"
         shutil.copyfile(root / config.banner, output / banner)
+    logo = None
+    if config.logo:
+        suffix = Path(config.logo).suffix.lower()
+        logo = f"assets/logo{suffix}"
+        shutil.copyfile(root / config.logo, output / logo)
     routes = {item.path: _route(item.path, config.home_document) for item in config.pages}
     source_documents = {page_source_reference(page): page.path for page in config.pages}
     anchors = {
@@ -182,7 +188,7 @@ def build_site(
             )
         else:
             version_options = f'<option value="index.html">{html.escape(release)}</option>'
-        path.write_text(_shell(body=rendered.html, headings=rendered.headings, page=page, config=config, current_route=current_route, version_options=version_options, banner=page_banner, release=release), encoding="utf-8")
+        path.write_text(_shell(body=rendered.html, headings=rendered.headings, page=page, config=config, current_route=current_route, version_options=version_options, banner=page_banner, logo=logo, release=release), encoding="utf-8")
         entries.append({"title": rendered.title, "section": page.section, "url": current_route, "text": rendered.text})
     (output / "search-index.json").write_text(json.dumps(entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (output / "release.json").write_text(json.dumps({"schema_version": 1, "release": release, "page_count": len(entries)}, indent=2) + "\n", encoding="utf-8")

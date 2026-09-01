@@ -30,6 +30,32 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('class="table-scroll"', home)
             self.assertIn("Long-form reading fixture", long_form)
 
+    def test_copies_an_identity_logo_into_the_header(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            (docs / "assets").mkdir(parents=True)
+            (docs / "index.md").write_text("# Home", encoding="utf-8")
+            (docs / "assets" / "logo.svg").write_text(
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"/>', encoding="utf-8"
+            )
+            (docs / "dockit.json").write_text(json.dumps({
+                "schema_version": 1,
+                "project": {"name": "Logo Demo"},
+                "identity": {"logo": "docs/assets/logo.svg"},
+            }), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}],
+            }), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            home = (root / "site" / "index.html").read_text(encoding="utf-8")
+            self.assertTrue((root / "site" / "assets" / "logo.svg").is_file())
+            self.assertIn('class="brand-logo" src="assets/logo.svg" alt="" aria-hidden="true"', home)
+            self.assertNotIn('class="brand-mark"', home)
+
     def test_builds_modern_navigation_search_and_theme_tokens(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -121,8 +147,14 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('--interactive:color-mix(in srgb,var(--dk-accent) 45%,#fff)', site_css)
             self.assertIn('html[data-content-width="wide"]{--dk-content-width:54rem', site_css)
             self.assertIn('--dk-space-1:.25rem', site_css)
+            self.assertIn('--dk-control-height:2.5rem', site_css)
             self.assertIn('.capability-strip[data-card-count="3"]', site_css)
+            self.assertIn('align-items:stretch;grid-auto-rows:minmax(0,1fr)', site_css)
+            self.assertIn('.capability-strip li{display:flex;flex-direction:column;height:100%;min-height:0;padding:1rem 1.05rem', site_css)
             self.assertIn('.header-controls', site_css)
+            self.assertIn('.topbar{display:grid;grid-template-columns:auto minmax(12rem,30rem) max-content;grid-template-rows:auto var(--dk-control-height)', site_css)
+            self.assertIn('.page-navigation a{min-height:0;max-width:none;padding:0;border:0;border-radius:0;background:transparent', site_css)
+            self.assertIn('.page-navigation .page-next{grid-column:1;justify-self:start}', site_css)
             self.assertIn('.prose[data-homepage="true"]>h1+p', site_css)
             self.assertIn('@media(prefers-reduced-motion:reduce)', site_css)
             self.assertIn('.syntax-highlight .tok-property{color:#93c5fd}', site_css)

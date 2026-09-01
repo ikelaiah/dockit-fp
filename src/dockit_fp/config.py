@@ -21,6 +21,7 @@ THEME_PRESETS = {
 }
 THEME_STYLES = {"classic", "paper", "midnight"}
 CONTENT_WIDTHS = {"compact", "comfortable", "wide"}
+IDENTITY_LOGO_SUFFIXES = {".png", ".svg"}
 HOMEPAGE_SECTION_DEFAULTS = {
     "capabilities": True,
     "banner": True,
@@ -124,6 +125,29 @@ def _homepage_config(data: dict, primary: Path) -> Homepage:
     )
 
 
+def _identity_logo_path(root: Path, identity: dict, primary: Path) -> str | None:
+    value = identity.get("logo")
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise DocKitError(f"{primary}: field 'identity.logo' must be a non-empty repository-local SVG or PNG path")
+    path = Path(value)
+    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
+        raise DocKitError(f"{primary}: identity.logo path is unsafe")
+    if path.suffix.lower() not in IDENTITY_LOGO_SUFFIXES:
+        raise DocKitError(f"{primary}: identity.logo must reference an SVG or PNG file")
+    candidate = root / path
+    try:
+        resolved = candidate.resolve()
+    except OSError as error:
+        raise DocKitError(f"{primary}: identity.logo asset {value!r} cannot be resolved") from error
+    if not resolved.is_relative_to(root.resolve()):
+        raise DocKitError(f"{primary}: identity.logo path is unsafe")
+    if not resolved.is_file():
+        raise DocKitError(f"{primary}: identity.logo asset {value!r} does not exist")
+    return path.as_posix()
+
+
 def _legacy_config(docs: Path) -> SiteConfig:
     paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md"))
     if not paths:
@@ -134,7 +158,7 @@ def _legacy_config(docs: Path) -> SiteConfig:
         name="Documentation", description="Historical documentation", repository_url=None,
         site_url=None, accent=DEFAULT_ACCENT, accent_secondary=DEFAULT_SECONDARY, theme_style="classic",
         content_width="comfortable",
-        banner=None, banner_alt=None, footer=None, project_links=(), pages=pages,
+        banner=None, banner_alt=None, logo=None, footer=None, project_links=(), pages=pages,
         legacy=True, home_document=home,
         homepage=Homepage(None, True, True, True, False),
         excluded_documents=(),
@@ -243,6 +267,7 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
     identity = data.get("identity", {})
     if not isinstance(identity, dict):
         raise DocKitError(f"{primary}: field 'identity' must be an object")
+    logo = _identity_logo_path(root, identity, primary)
     footer = identity.get("footer")
     if footer is not None and (not isinstance(footer, str) or not footer.strip()):
         raise DocKitError(f"{primary}: field 'identity.footer' must be a non-empty string when provided")
@@ -265,7 +290,7 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         repository_url=project.get("repository_url"), site_url=project.get("site_url"),
         accent=accent, accent_secondary=secondary, theme_style=theme_style, content_width=content_width,
         banner=banner_path,
-        banner_alt=banner.get("alt") if banner else None, footer=footer.strip() if footer else None,
+        banner_alt=banner.get("alt") if banner else None, logo=logo, footer=footer.strip() if footer else None,
         project_links=tuple(project_links), pages=tuple(pages),
         legacy=False, home_document=home, homepage=homepage,
         excluded_documents=excluded_documents,

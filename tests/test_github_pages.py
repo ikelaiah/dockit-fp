@@ -33,3 +33,9 @@ class ManagedGitHubPagesWorkflowTests(unittest.TestCase):
             self.assertEqual("unmanaged", inspect_workflow(path, "v0.14.0").state)
             path.write_text(f"{MANAGED_MARKER}\nname: Broken\n", encoding="utf-8")
             self.assertEqual("malformed", inspect_workflow(path, "v0.14.0").state)
+
+    def test_maintained_workflow_fixture_matches_the_template(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        fixture = root / "examples" / "github-pages" / ".github" / "workflows" / "dockit-pages.yml"
+
+        self.assertEqual(render_workflow("v0.13.0"), fixture.read_text(encoding="utf-8"))

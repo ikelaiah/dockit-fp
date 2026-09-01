@@ -270,15 +270,25 @@ def _doctor(root: Path) -> list[str]:
         messages.append("Versions: no versions.json (single-release preview only)")
         messages.append("Status: preview-ready")
         messages.append("Next: run dockit-fp serve.")
-    workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
-    workflow_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in workflows)
-    if "publish-docs.yml@" in workflow_text or "./.github/workflows/publish-docs.yml" in workflow_text:
-        mode = "single-version" if "versioned: false" in workflow_text else "historical"
-        messages.append(f"Pages: DocKit-FP {mode} workflow detected")
-        if "publish-docs.yml@main" in workflow_text:
-            messages.append("WARNING: Pages workflow uses moving ref @main; pin a released DocKit-FP tag.")
+    managed = inspect_workflow(root / WORKFLOW_RELATIVE_PATH, f"v{__version__}")
+    if managed.state == "current":
+        messages.append(f"GitHub Pages workflow: configured; DocKit version: {managed.version}")
+    elif managed.state == "outdated":
+        messages.append(f"GitHub Pages workflow: update available ({managed.version} → v{__version__}); run dockit-fp github-pages --update")
+    elif managed.state == "unmanaged":
+        messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} is not managed by DocKit")
+    elif managed.state == "malformed":
+        messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} is marked DocKit-managed but malformed")
     else:
-        messages.append("Pages: no DocKit-FP workflow detected; see the GitHub Pages guide.")
+        workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
+        workflow_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in workflows)
+        if "publish-docs.yml@" in workflow_text or "./.github/workflows/publish-docs.yml" in workflow_text:
+            mode = "single-version" if "versioned: false" in workflow_text else "historical"
+            messages.append(f"Pages: DocKit-FP {mode} workflow detected")
+            if "publish-docs.yml@main" in workflow_text:
+                messages.append("WARNING: Pages workflow uses moving ref @main; pin a released DocKit-FP tag.")
+        else:
+            messages.append("Pages: no DocKit-FP workflow detected; see the GitHub Pages guide.")
     return messages
 
 

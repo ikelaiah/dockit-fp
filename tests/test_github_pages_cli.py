@@ -116,3 +116,16 @@ class GitHubPagesCommandTests(unittest.TestCase):
             self.assertIn("existing DocKit configuration is invalid", output)
             self.assertFalse((root / WORKFLOW_RELATIVE_PATH).exists())
             self.assertEqual('{"schema_version": 1, "project": {"name": "Broken"}}\n', config.read_text(encoding="utf-8"))
+
+    def test_doctor_reports_a_current_managed_pages_workflow_and_its_pin(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self._git(root, "init")
+            self.assertEqual(0, self._run(root)[0])
+
+            output = io.StringIO()
+            with redirect_stdout(output):
+                self.assertEqual(0, main(["doctor", "--root", str(root)]))
+
+            self.assertIn("GitHub Pages workflow: configured", output.getvalue())
+            self.assertIn(f"DocKit version: v{__version__}", output.getvalue())

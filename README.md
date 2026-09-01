@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.1.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -34,8 +34,10 @@ docs/
 ```
 
 Visit <http://127.0.0.1:8000> in a browser. You should see your existing
-README and `docs/` pages with navigation, search and theme controls. Press
-`Ctrl+C` in the terminal to stop the preview server.
+README and `docs/` pages with navigation, search and theme controls. The preview
+watches `README.md` and `docs/`: after a saved change it rebuilds automatically,
+so reload the browser without restarting the command. Press `Ctrl+C` in the
+terminal to stop the preview server.
 
 That is a complete local documentation site. You can stop here and return when
 you are ready to add pages or publish it. `README.md` and `docs/**/*.md`

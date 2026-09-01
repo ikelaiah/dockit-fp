@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.1
+
+### Added
+
+- Optional safe `identity.logo` support for repository-local SVG and PNG header marks.
+
+### Changed
+
+- Refined homepage cards, previous/next navigation and header control alignment.
+- Local previews now rebuild documentation changes without restarting `dockit-fp serve`.
+
 ## 0.12.0
 
 ### Changed

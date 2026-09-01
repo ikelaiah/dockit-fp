@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+import threading
 
 from .build import build_site
 from .archive import write_offline_archive
@@ -74,21 +75,106 @@ def _check(root: Path):
     return result
 
 
+class _PreviewBuilder:
+    """Rebuild a local preview when its documentation sources change."""
+
+    def __init__(self, *, root: Path, output: Path, release: str) -> None:
+        self.root = root.resolve()
+        self.output = output.resolve()
+        self.release = release
+        self._snapshot: tuple[tuple[str, int, int], ...] = ()
+        self._lock = threading.Lock()
+
+    def _source_snapshot(self) -> tuple[tuple[str, int, int], ...]:
+        sources: list[Path] = []
+        readme = self.root / "README.md"
+        if readme.is_file():
+            sources.append(readme)
+        docs = self.root / "docs"
+        if docs.is_dir():
+            sources.extend(path for path in docs.rglob("*") if path.is_file())
+        return tuple(
+            (path.relative_to(self.root).as_posix(), path.stat().st_mtime_ns, path.stat().st_size)
+            for path in sorted(sources)
+        )
+
+    def build_initial(self) -> None:
+        with self._lock:
+            build_site(root=self.root, output=self.output, release=self.release)
+            self._snapshot = self._source_snapshot()
+
+    def rebuild_if_changed(self) -> bool:
+        with self._lock:
+            snapshot = self._source_snapshot()
+            if snapshot == self._snapshot:
+                return False
+            try:
+                build_site(root=self.root, output=self.output, release=self.release)
+            except DocKitError:
+                self._snapshot = snapshot
+                raise
+            self._snapshot = self._source_snapshot()
+            return True
+
+
+class _PreviewRequestHandler(SimpleHTTPRequestHandler):
+    """Serve a preview without allowing a browser cache to hide rebuilds."""
+
+    def __init__(self, *args, preview: _PreviewBuilder, **kwargs) -> None:
+        self._preview = preview
+        super().__init__(*args, **kwargs)
+
+    def _rebuild_if_needed(self) -> None:
+        try:
+            if self._preview.rebuild_if_changed():
+                print("Rebuilt documentation preview.")
+        except DocKitError as error:
+            print(f"Preview rebuild failed: {error}")
+
+    def do_GET(self) -> None:
+        self._rebuild_if_needed()
+        super().do_GET()
+
+    def do_HEAD(self) -> None:
+        self._rebuild_if_needed()
+        super().do_HEAD()
+
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-store, max-age=0")
+        super().end_headers()
+
+
+def _watch_preview(preview: _PreviewBuilder, stopped: threading.Event) -> None:
+    while not stopped.wait(0.25):
+        try:
+            if preview.rebuild_if_changed():
+                print("Rebuilt documentation preview.")
+        except DocKitError as error:
+            print(f"Preview rebuild failed: {error}")
+
+
 def _serve(root: Path, host: str, port: int) -> None:
     """Validate, build, and run a local-only documentation preview server."""
     _check(root)
     output = root / "build" / "docs-site"
     release = load_manifest(root).current if (root / "docs" / "versions.json").exists() else "preview"
-    build_site(root=root, output=output, release=release)
-    handler = partial(SimpleHTTPRequestHandler, directory=str(output))
+    preview = _PreviewBuilder(root=root, output=output, release=release)
+    preview.build_initial()
+    handler = partial(_PreviewRequestHandler, directory=str(output), preview=preview)
     server = ThreadingHTTPServer((host, port), handler)
+    stopped = threading.Event()
+    watcher = threading.Thread(target=_watch_preview, args=(preview, stopped), daemon=True)
+    watcher.start()
     print(f"Serving documentation at http://{host}:{port}/")
+    print("Watching documentation files for changes.")
     print("Press Ctrl+C to stop.")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("Stopped documentation server.")
     finally:
+        stopped.set()
+        watcher.join(timeout=1)
         server.server_close()
 
 

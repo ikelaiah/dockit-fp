@@ -32,6 +32,7 @@ class SiteConfig:
     content_width: str
     banner: str | None
     banner_alt: str | None
+    logo: str | None
     footer: str | None
     project_links: tuple[tuple[str, str], ...]
     pages: tuple[Page, ...]

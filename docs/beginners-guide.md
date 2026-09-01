@@ -25,7 +25,7 @@ that normally contains `README.md` or `src/`.
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.1.zip"
 ```
 
 Then check that the command is available:
@@ -74,7 +74,9 @@ dockit-fp serve
 ```
 
 Open <http://127.0.0.1:8000>. The command validates and builds first, then
-starts a local-only preview server. Press `Ctrl+C` to stop it. Use
+starts a local-only preview server. It watches `README.md` and `docs/`, rebuilding
+after a saved change; reload the browser to see the new page without restarting
+the command. Press `Ctrl+C` to stop it. Use
 `dockit-fp serve --port 8000` or `dockit-fp serve --host 127.0.0.1` when you
 need a specific local address.
 
@@ -234,7 +236,7 @@ Reload the browser. **Quick start** should now appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.0/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.1/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

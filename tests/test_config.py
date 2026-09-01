@@ -74,6 +74,50 @@ class ConfigurationDiagnosticsTests(unittest.TestCase):
             self.assertEqual("Built for Pascal maintainers.", config.footer)
             self.assertEqual((("Source code", "https://example.test/source"),), config.project_links)
 
+    def test_loads_a_repository_local_identity_logo(self) -> None:
+        for suffix, contents in ((".svg", "<svg></svg>"), (".png", b"png")):
+            with self.subTest(suffix=suffix), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                logo = f"docs/assets/logo{suffix}"
+                self._write_config(
+                    root,
+                    {
+                        "schema_version": 1,
+                        "project": {"name": "Demo"},
+                        "identity": {"logo": logo},
+                    },
+                    {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+                )
+                asset = root / logo
+                asset.parent.mkdir()
+                if isinstance(contents, bytes):
+                    asset.write_bytes(contents)
+                else:
+                    asset.write_text(contents, encoding="utf-8")
+
+                self.assertEqual(logo, load_config(root).logo)
+
+    def test_rejects_unsafe_or_unsupported_identity_logo_paths(self) -> None:
+        cases = (
+            ("../logo.svg", "identity.logo path is unsafe"),
+            ("docs/assets/logo.jpg", "identity.logo must reference an SVG or PNG"),
+        )
+        for logo, message in cases:
+            with self.subTest(logo=logo), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                self._write_config(
+                    root,
+                    {"schema_version": 1, "project": {"name": "Demo"}, "identity": {"logo": logo}},
+                    {"schema_version": 1, "navigation": [{"title": "Start", "pages": [{"title": "Home", "path": "index.md"}]}]},
+                )
+                if logo.endswith(".jpg"):
+                    asset = root / "docs" / "assets" / "logo.jpg"
+                    asset.parent.mkdir()
+                    asset.write_bytes(b"not an image")
+
+                with self.assertRaisesRegex(DocKitError, message):
+                    load_config(root)
+
     def test_loads_a_supported_visual_theme(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

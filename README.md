@@ -1,11 +1,11 @@
-# DocKit-FP
+# DocKit
 
 Turn Markdown files into a polished documentation website with search, themes,
 mobile navigation and optional release history.
 
-DocKit-FP is designed around Free Pascal and Lazarus projects, but the site
-builder does not require Pascal source code. If your project can keep Markdown
-files in a Git repository, you can use the same ideas and most of the tool.
+DocKit is a small, offline-friendly Markdown documentation-site builder for code
+projects. It originated in the Free Pascal ecosystem and remains Pascal-friendly,
+but it does not require Pascal source code.
 
 ## Make your first site in about 10 minutes
 
@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.1.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.13.0.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -49,7 +49,7 @@ Newly generated layouts use `"unlisted": "exclude"`, so only listed pages are
 published; existing layouts retain their strict validation unless you opt in.
 
 For a slower walkthrough with explanations and expected results, follow
-[Your first DocKit-FP site](docs/beginners-guide.md).
+[Your first DocKit site](docs/beginners-guide.md).
 
 ## Choose what you want to do next
 
@@ -57,12 +57,12 @@ For a slower walkthrough with explanations and expected results, follow
 | --- | --- |
 | Learn how to write useful documentation | [Write documentation people can use](docs/writing-great-docs.md) |
 | Add pages and navigation | [Configuration](docs/configuration.md) |
-| Change colours, themes or the homepage | [Themes](docs/themes.md) and [customize the home page](docs/homepage-recipes.md) |
+| Change colours, themes or home-page presentation | [Themes](docs/themes.md) and [customize the home page](docs/homepage-recipes.md) |
 | Publish only the latest site | [GitHub Pages: single-version site](docs/github-pages.md#single-version-site-the-simpler-choice) |
 | Keep documentation for older releases | [GitHub Pages: historical site](docs/github-pages.md#historical-site-for-versioned-projects) |
 | Understand an unfamiliar term | [Glossary](docs/glossary.md) |
 
-## What DocKit-FP gives you
+## What DocKit gives you
 
 - Responsive pages that work on phones and desktops.
 - System, Light and Dark colour modes.
@@ -74,14 +74,14 @@ For a slower walkthrough with explanations and expected results, follow
 - A reusable GitHub Pages workflow.
 
 Your repository keeps its Markdown, navigation, project identity and release
-tags. DocKit-FP supplies the renderer and shared website machinery. You should
+tags. DocKit supplies the renderer and shared website machinery. You should
 not need to copy its CSS or JavaScript into your project.
 
 ## What it does not do
 
-DocKit-FP does not read source code and invent API documentation. For Free
+DocKit does not read source code and invent API documentation. For Free
 Pascal API extraction, use [PasWeave](https://github.com/ikelaiah/pasweave) to
-produce Markdown, then let DocKit-FP combine that Markdown with your handwritten
+produce Markdown, then let DocKit combine that Markdown with your handwritten
 guides.
 
 ## Already have documentation?
@@ -91,7 +91,7 @@ configuration files around them, and introduce explicit navigation gradually.
 See [Configuration](docs/configuration.md) for the supported files and the
 explicit root-README entry.
 
-## Working on DocKit-FP itself
+## Working on DocKit itself
 
 Run the complete test suite from this repository:
 
@@ -102,4 +102,4 @@ python -m unittest discover -s tests -t . -v
 Project design details live in [Architecture](docs/architecture.md), and major
 decisions are recorded in [docs/decisions](docs/decisions/).
 
-DocKit-FP is released under the MIT licence.
+DocKit is released under the MIT licence.

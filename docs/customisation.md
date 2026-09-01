@@ -2,7 +2,7 @@
 
 Use configuration to rename sections, choose colours, add project links and use
 a small project mark in the header.
-DocKit-FP keeps the page layout and accessibility behaviour working, so you do
+DocKit keeps the page layout and accessibility behaviour working, so you do
 not need to copy or maintain its CSS.
 
 ## Before and after: navigation
@@ -66,4 +66,4 @@ without pushing the title or controls out of place.
 
 The project name remains the accessible name of the header link. The image is
 decorative because the adjacent text already names the project. Omit
-`identity.logo` to retain DocKit-FP's built-in document mark.
+`identity.logo` to retain DocKit's built-in document mark.

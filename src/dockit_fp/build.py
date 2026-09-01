@@ -40,9 +40,9 @@ class BuildResult:
 def _route(document: str, home: str) -> str:
     if document == home:
         return "index.html"
-    # A root README is the home page. Keep an existing docs/index.md reachable
-    # instead of overwriting that generated index route.
-    if document == "index.md" and home == "README.md":
+    # Keep docs/index.md reachable whenever a different page owns the site's
+    # index route, including an explicit docs page or repository-root README.
+    if document == "index.md" and home != "index.md":
         return "docs-index.html"
     return str(Path(document).with_suffix(".html").as_posix())
 

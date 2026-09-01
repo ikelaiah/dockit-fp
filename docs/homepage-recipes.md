@@ -1,18 +1,19 @@
 # Customize the home page
 
-The homepage is not another Markdown document. It is your existing home
-document rendered as the site's `index.html`: normally the repository-root
-`README.md` or `docs/index.md`, depending on your configuration. The
-`homepage` settings in `docs/dockit.json` only change how that first page is
-presented. You do not need them unless you want to customise the landing page.
+The home page is the Markdown document selected by `layout.json.home`, rendered
+as the site's `index.html`. It may be a listed page under `docs/` or the
+repository-root `README.md` with `"source": "root"`. The `homepage` object in
+`docs/dockit.json` only changes the selected home page's presentation; it does
+not choose the document. You do not need it unless you want to customise the
+landing page.
 
 The examples below are `homepage` values to add to your existing
 `docs/dockit.json`; keep your `schema_version`, `project` and other settings.
 
-## See it in DocKit-FP
+## See it in DocKit
 
-DocKit-FP uses the same configuration on this site. Its
-[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.12.1/docs/dockit.json)
+DocKit uses the same configuration on this site. Its
+[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.13.0/docs/dockit.json)
 contains capability cards and release context:
 
 ```json
@@ -32,14 +33,14 @@ docs/dockit.json
         ↓
 homepage.capabilities
         ↓
-capability cards below the opening summary on the DocKit-FP home page
+capability cards below the opening summary on the DocKit home page
 
 homepage.sections.release_context
         ↓
-the current release label above the DocKit-FP home page
+the current release label above the DocKit home page
 ```
 
-Open the generated [DocKit-FP home page](index.md) to see both effects.
+Open the generated [DocKit home page](index.md) to see both effects.
 
 The built-in presentation adapts to the number of cards: two, three and four
 cards form balanced columns on a desktop, then move to two columns on a tablet

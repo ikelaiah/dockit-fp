@@ -45,7 +45,12 @@ def _init(root: Path) -> list[str]:
             created.append("docs/index.md")
         navigation = [{"title": "Getting started", "pages": [{"title": "Introduction", "path": "index.md"}]}]
     if not discovery.has_layout:
-        (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "unlisted": "exclude", "navigation": navigation}, indent=2) + "\n", encoding="utf-8")
+        pages = [page for section in navigation for page in section["pages"]]
+        home = next((page for page in pages if page.get("source") == "root"), None)
+        if home is None:
+            home = next((page for page in pages if page["path"] == "index.md"), pages[0])
+        layout = {"schema_version": 1, "unlisted": "exclude", "home": {key: home[key] for key in ("path", "source") if key in home}, "navigation": navigation}
+        (docs / "layout.json").write_text(json.dumps(layout, indent=2) + "\n", encoding="utf-8")
         created.append("docs/layout.json")
     detected = ["Git repository" if discovery.is_git_repository else "non-Git project"]
     if discovery.github_remote_url:
@@ -221,7 +226,7 @@ def _doctor(root: Path) -> list[str]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="dockit-fp", description="Build versioned Free Pascal documentation sites.")
+    parser = argparse.ArgumentParser(prog="dockit-fp", description="Build offline-friendly Markdown documentation sites for code projects.")
     commands = parser.add_subparsers(dest="command", required=True)
     for name, help_text in (("build", "build current documentation"), ("build-all", "build every immutable release"), ("check", "validate documentation"), ("check-release", "validate release refs"), ("init", "adopt or create documentation safely"), ("serve", "validate, build, and preview documentation locally"), ("doctor", "diagnose project setup")):
         command = commands.add_parser(name, help=help_text)

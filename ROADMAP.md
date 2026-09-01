@@ -1,9 +1,9 @@
-# DocKit-FP roadmap
+# DocKit roadmap
 
-DocKit-FP is for Free Pascal projects that want polished, versioned Markdown
-documentation without maintaining a site generator. This roadmap is a guide to
-direction, not a promise of dates. Feedback from library maintainers will set
-the order within each milestone.
+DocKit is for code projects that want polished, versioned Markdown documentation
+without maintaining a site generator. It remains Pascal-friendly, but does not
+require Pascal source code. This roadmap is a guide to direction, not a promise
+of dates. Feedback from maintainers will set the order within each milestone.
 
 The path to 1.0 is guided by three promises:
 
@@ -103,22 +103,27 @@ configuration.
 - [ ] Preserve keyboard navigation, focus visibility, accessible names,
       reduced-motion behavior and offline/local assets.
 
-## v0.13 — GitHub in One Command
+## v0.13 — Explicit Home & DocKit Identity
+
+Select the published home page explicitly and make the public product identity
+language-neutral while preserving existing technical identifiers.
+
+## v0.14 — GitHub in One Command
 
 Reduce GitHub Pages publishing ceremony.
 
-## v0.14 — Documentation Audit
+## v0.15 — Documentation Audit
 
 Help maintainers identify documentation weaknesses.
 
-## v0.15 — Qualification
+## v0.16 — Qualification
 
 Python/OS/package/ecosystem/accessibility qualification.
 
 ## v1.0 — Stable Contract
 
 Version 1.0 is the commitment point: the supported configuration and workflow
-become dependable foundations for Free Pascal projects.
+become dependable foundations for code projects.
 
 - [ ] Declare the stable configuration contract, compatibility policy and
       deprecation process.
@@ -140,8 +145,8 @@ the existing responsive breakpoints and include a regression test or fixture.
 
 ## Non-goals
 
-DocKit-FP will not become a Pascal source parser or API extractor. PasWeave
-remains the companion tool for that job. DocKit-FP also will not require a
+DocKit will not become a Pascal source parser or API extractor. PasWeave
+remains the companion tool for that job. DocKit also will not require a
 hosted service, JavaScript framework or CDN to build a useful documentation
 site.
 

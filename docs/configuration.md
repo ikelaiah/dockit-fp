@@ -8,8 +8,8 @@ Git when possible.
 
 | File | What it controls | When you need it |
 | --- | --- | --- |
-| `docs/dockit.json` | Project name, colours and optional homepage choices | Created by `init` |
-| `docs/layout.json` | Page order and left navigation | Created by `init` |
+| `docs/dockit.json` | Project name, colours and home-page presentation | Created by `init` |
+| `docs/layout.json` | Published pages, navigation order and the home page | Created by `init` |
 | `docs/versions.json` | Published release history | Only for a historical site |
 
 These files use JSON. Keep the commas, quotation marks and braces exactly
@@ -37,6 +37,19 @@ The supported colour presets are `blue`, `teal`, `ocean` and `purple`. Start
 with a preset. You can choose exact colours later in [Themes](themes.md).
 
 ## Pages and navigation
+
+`layout.json` decides what is public and which published page is the front door.
+`home` selects the Markdown page generated as `index.html`; the `homepage`
+object in `dockit.json` only controls how that selected home page is presented.
+
+```json
+"home": {"path": "getting-started.md"}
+```
+
+The target must already be listed in `navigation`. For the repository-root
+README, use `"home": {"path": "README.md", "source": "root"}`. Existing
+layouts without `home` keep the compatible inference: root README, then
+`docs/index.md`, then the first listed page.
 
 Edit `docs/layout.json` to choose which pages appear and in what order:
 
@@ -145,13 +158,13 @@ You can add a short footer and a few useful links inside `docs/dockit.json`:
 }
 ```
 
-Link URLs must begin with `https://` or `http://`. DocKit-FP safely escapes the
+Link URLs must begin with `https://` or `http://`. DocKit safely escapes the
 visible text.
 
-## Homepage choices
+## Home-page presentation
 
-The default homepage works without extra configuration. When you want to
-change its cards or visible sections, add a `homepage` object to
+The default home page works without extra configuration. When you want to
+change that page's cards or visible sections, add a `homepage` object to
 `docs/dockit.json`:
 
 ```json

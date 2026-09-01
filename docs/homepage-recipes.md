@@ -12,7 +12,7 @@ The examples below are `homepage` values to add to your existing
 ## See it in DocKit-FP
 
 DocKit-FP uses the same configuration on this site. Its
-[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.11.4/docs/dockit.json)
+[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.12.0/docs/dockit.json)
 contains capability cards and release context:
 
 ```json
@@ -40,6 +40,11 @@ the current release label above the DocKit-FP home page
 ```
 
 Open the generated [DocKit-FP home page](index.md) to see both effects.
+
+The built-in presentation adapts to the number of cards: two, three and four
+cards form balanced columns on a desktop, then move to two columns on a tablet
+and one column on a phone. This is part of the default visual system, so card
+configuration remains content-only.
 
 ## Library
 

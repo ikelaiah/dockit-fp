@@ -1,8 +1,9 @@
 # Visual fixtures
 
 The maintained project in `examples/visual-fixtures` exercises typography,
-lists, inline code, fenced Pascal, tables, callouts, search, theme controls,
-page navigation, a long document and the reading-progress indicator.
+ordered and nested lists, inline code, definition lists, fenced Pascal, wide
+tables, callouts, search, theme controls, page navigation, a long document and
+the reading-progress indicator.
 
 Build it locally:
 
@@ -19,8 +20,9 @@ errors or warnings.
 
 | View | Width | Checks |
 | --- | ---: | --- |
-| Phone | 360px | Native navigation disclosure, visible copy control, no page overflow |
+| Phone | 360px and 390px | Native navigation disclosure, visible copy control, no page overflow |
 | Tablet | 768px | Search and controls wrap cleanly, readable table scrolling |
+| Narrow desktop | 1024px | Article measure, heading rhythm and compact navigation remain balanced |
 | Desktop | 1440px | Sidebar, article and on-page outline align without crowding |
 | Long document | 1024px or wider | Heading rhythm, reading progress and sticky local navigation |
 
@@ -32,4 +34,6 @@ visible and every control must retain an accessible name.
 
 The fixture sets `layout.content_width` to `wide` so table and code behavior is
 easy to inspect. Change it to `compact` and `comfortable` when reviewing the
-semantic width contract.
+semantic width contract. Review the homepage once with its default no-banner
+configuration and once with a local `banner` configured to confirm both
+opening states remain composed.

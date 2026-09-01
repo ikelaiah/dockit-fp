@@ -28,6 +28,17 @@ class MarkdownTests(unittest.TestCase):
             '<ul><li>Follow the <a href="beginners-guide.md">beginner\'s guide</a>.</li><li>Then build the site.</li></ul>',
         )
 
+    def test_preserves_indented_nested_lists_inside_their_parent_item(self) -> None:
+        rendered = render_markdown(
+            "- Parent\n  - Child\n  - Another child\n- Sibling",
+            lambda target: target,
+        )
+
+        self.assertEqual(
+            rendered.html,
+            "<ul><li>Parent<ul><li>Child</li><li>Another child</li></ul></li><li>Sibling</li></ul>",
+        )
+
     def test_keeps_following_quote_lines_inside_an_admonition(self) -> None:
         rendered = render_markdown(
             "> [!TIP] Start with one page.\n> It takes only a few minutes.",

@@ -35,6 +35,27 @@ visible without hover. At tablet width, the content uses the available space
 without horizontal page scrolling. At desktop width, local navigation and the
 on-page outline frame the reading column.
 
+## Reference table shape
+
+Reference pages often need more columns than a phone can display. The table is
+allowed to scroll inside its own frame while the page itself remains fixed:
+
+| API surface | Type | Required | Notes for maintainers | Since |
+| --- | --- | --- | --- | --- |
+| `Title` | `string` | yes | Appears in navigation and search | 0.12 |
+| `Description` | `string` | no | Keeps the page introduction useful | 0.12 |
+| `Source` | `path` | yes | Must remain inside the project | 0.12 |
+
+```pascal
+function BuildFixture(const Source: string; WideLayout: Boolean): string;
+begin
+  if WideLayout then
+    Result := 'Reference layout'
+  else
+    Result := 'Reading layout';
+end;
+```
+
 ## Closing check
 
 The final section makes the fixture tall enough to exercise reading progress and

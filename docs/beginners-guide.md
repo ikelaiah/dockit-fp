@@ -25,7 +25,7 @@ that normally contains `README.md` or `src/`.
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.4.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.12.0.zip"
 ```
 
 Then check that the command is available:
@@ -234,7 +234,7 @@ Reload the browser. **Quick start** should now appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.4/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.12.0/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

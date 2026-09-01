@@ -14,7 +14,13 @@ contrast.
 
 - [x] Theme tokens stay semantic.
 - [ ] Inspect the current viewport.
-- Nested lists keep a readable indent.
+- Nested lists keep a readable indent:
+  - Child items stay attached to their parent.
+  - Longer child text wraps without losing the hierarchy.
+
+1. Start with a small viewport.
+2. Switch through each visual theme.
+3. Repeat in both colour modes.
 
 ## Reference table
 
@@ -23,6 +29,14 @@ contrast.
 | Prose | Focused guides | Default reading | API tables |
 | Code | Scrolls safely | Scrolls safely | Shows more context |
 | Navigation | Responsive | Responsive | Responsive |
+
+## API reference shape
+
+`TFixturePage`
+: A representative page entry used to exercise reference-style prose.
+
+`TFixturePage.Title`
+: The visible name shown in navigation and search results.
 
 ## Code block
 

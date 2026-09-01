@@ -71,10 +71,21 @@ def _page_navigation(*, page: Page, config, current_route: str) -> str:
 
 
 def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page, config, current_route: str, version_options: str, banner: str | None, release: str) -> str:
-    nav = "".join(f'<h2>{html.escape(section)}</h2>' + "".join(
-        f'<a class="{"active" if item.path == page.path else ""}" href="{html.escape(_relative(current_route, _route(item.path, config.home_document)), quote=True)}">{html.escape(item.title)}</a>'
-        for item in config.pages if item.section == section
-    ) for section in dict.fromkeys(item.section for item in config.pages))
+    navigation_sections: list[str] = []
+    for section in dict.fromkeys(item.section for item in config.pages):
+        section_links: list[str] = []
+        for item in config.pages:
+            if item.section != section:
+                continue
+            is_current = item.path == page.path
+            active_class = "active" if is_current else ""
+            aria_current = ' aria-current="page"' if is_current else ""
+            href = html.escape(_relative(current_route, _route(item.path, config.home_document)), quote=True)
+            section_links.append(
+                f'<a class="{active_class}" href="{href}"{aria_current}>{html.escape(item.title)}</a>'
+            )
+        navigation_sections.append(f'<h2>{html.escape(section)}</h2>{"".join(section_links)}')
+    nav = "".join(navigation_sections)
     banner_html = f'<img class="banner" src="{html.escape(banner, quote=True)}" alt="{html.escape(config.banner_alt or "", quote=True)}">' if banner else ""
     style = f"--dk-accent:{config.accent};--dk-accent-secondary:{config.accent_secondary}"
     brand_mark = '<svg class="brand-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 1.5h6l4 4v9H3zM9 1.5v4h4M5.5 9h5M5.5 11.5h4"/></svg>'
@@ -87,7 +98,7 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
             f"<li><strong>{html.escape(title)}</strong><span>{html.escape(description)}</span></li>"
             for title, description in cards
         )
-        capability_strip = f'<ul class="capability-strip" aria-label="DocKit-FP capabilities">{card_html}</ul>'
+        capability_strip = f'<ul class="capability-strip" data-card-count="{len(cards)}" aria-label="{html.escape(config.name)} capabilities">{card_html}</ul>'
     if capability_strip:
         title_end = body.find("</h1>")
         insert_at = title_end + len("</h1>") if title_end >= 0 else 0
@@ -104,7 +115,10 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
     footer_links = "".join(f'<a href="{html.escape(url, quote=True)}">{html.escape(label)}</a>' for label, url in config.project_links)
     footer = f'<footer class="site-footer"><span>{html.escape(config.footer or config.name)}</span>{footer_links}</footer>' if config.footer or footer_links else ""
     release_context = f'<aside class="release-context" aria-label="Release context"><strong>Release</strong><span>{html.escape(release)}</span></aside>' if page.path == config.home_document and config.homepage.show_release_context else ""
-    return f'''<!doctype html><html lang="en" data-visual-theme="{html.escape(config.theme_style, quote=True)}" data-content-width="{html.escape(config.content_width, quote=True)}" style="{style}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{html.escape(config.description, quote=True)}"><title>{html.escape(page.title)} — {html.escape(config.name)}</title><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/site.css'), quote=True)}"><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/katex/katex.min.css'), quote=True)}"></head><body><div class="reading-progress" aria-hidden="true"><span></span></div><header class="site-header"><div class="topbar"><a class="brand" href="{html.escape(_relative(current_route, 'index.html'), quote=True)}">{brand_mark}<span>{html.escape(config.name)}</span> <em>docs</em></a><div class="search-control"><input id="search" type="search" placeholder="Search docs, commands, and versions" aria-label="Search documentation, commands, and versions" aria-controls="search-results" aria-describedby="search-help" aria-expanded="false" autocomplete="off" data-search-index="{html.escape(_relative(current_route, 'search-index.json'), quote=True)}"><kbd aria-hidden="true" title="Press / to search">/</kbd><span id="search-help" class="visually-hidden">Type to search. Use the arrow keys to move through results, Enter to open, and Escape to close.</span></div><select id="version-select" aria-label="Documentation version">{version_options}</select><select id="visual-theme" aria-label="Documentation visual theme"><option value="classic">Classic</option><option value="paper">Paper</option><option value="midnight">Midnight</option></select><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div id="search-results" class="search-results" role="region" aria-label="Search results" aria-live="polite" hidden></div></header><details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details><div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav><main class="prose" id="content">{banner_html}{release_context}{body}{page_navigation}</main><aside class="toc" aria-label="On this page">{toc}</aside></div>{footer}<script src="{html.escape(_relative(current_route, 'assets/katex/katex.min.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/math.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/site.js'), quote=True)}"></script></body></html>'''
+    header_controls = f'''<div class="header-controls" aria-label="Site controls"><label class="header-control"><span>Version</span><select id="version-select" aria-label="Documentation version">{version_options}</select></label><label class="header-control"><span>Style</span><select id="visual-theme" aria-label="Documentation visual theme"><option value="classic">Classic</option><option value="paper">Paper</option><option value="midnight">Midnight</option></select></label><label class="header-control"><span>Mode</span><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div>'''
+    homepage = page.path == config.home_document
+    main_context = ' data-homepage="true"' if homepage else ' data-homepage="false"'
+    return f'''<!doctype html><html lang="en" data-visual-theme="{html.escape(config.theme_style, quote=True)}" data-content-width="{html.escape(config.content_width, quote=True)}" style="{style}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{html.escape(config.description, quote=True)}"><title>{html.escape(page.title)} — {html.escape(config.name)}</title><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/site.css'), quote=True)}"><link rel="stylesheet" href="{html.escape(_relative(current_route, 'assets/katex/katex.min.css'), quote=True)}"></head><body><div class="reading-progress" aria-hidden="true"><span></span></div><header class="site-header"><div class="topbar"><a class="brand" href="{html.escape(_relative(current_route, 'index.html'), quote=True)}">{brand_mark}<span>{html.escape(config.name)}</span> <em>docs</em></a><div class="search-control"><input id="search" type="search" placeholder="Search docs, commands, and versions" aria-label="Search documentation, commands, and versions" aria-controls="search-results" aria-describedby="search-help" aria-expanded="false" autocomplete="off" data-search-index="{html.escape(_relative(current_route, 'search-index.json'), quote=True)}"><kbd aria-hidden="true" title="Press / to search">/</kbd><span id="search-help" class="visually-hidden">Type to search. Use the arrow keys to move through results, Enter to open, and Escape to close.</span></div>{header_controls}</div><div id="search-results" class="search-results" role="region" aria-label="Search results" aria-live="polite" hidden></div></header><details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details><div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav><main class="prose" id="content"{main_context}>{banner_html}{release_context}{body}{page_navigation}</main><aside class="toc" aria-label="On this page">{toc}</aside></div>{footer}<script src="{html.escape(_relative(current_route, 'assets/katex/katex.min.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/math.js'), quote=True)}"></script><script src="{html.escape(_relative(current_route, 'assets/site.js'), quote=True)}"></script></body></html>'''
 
 
 def build_site(

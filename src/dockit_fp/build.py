@@ -34,6 +34,7 @@ class BuildResult:
     section_count: int
     legacy: bool
     home_document: str
+    excluded_count: int = 0
 
 
 def _route(document: str, home: str) -> str:
@@ -171,4 +172,7 @@ def build_site(
         entries.append({"title": rendered.title, "section": page.section, "url": current_route, "text": rendered.text})
     (output / "search-index.json").write_text(json.dumps(entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (output / "release.json").write_text(json.dumps({"schema_version": 1, "release": release, "page_count": len(entries)}, indent=2) + "\n", encoding="utf-8")
-    return BuildResult(len(entries), len({page.section for page in config.pages}), config.legacy, config.home_document)
+    return BuildResult(
+        len(entries), len({page.section for page in config.pages}), config.legacy,
+        config.home_document, len(config.excluded_documents),
+    )

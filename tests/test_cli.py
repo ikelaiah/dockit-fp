@@ -45,6 +45,7 @@ class CliTests(unittest.TestCase):
                 self.assertEqual(0, main(["init", "--root", str(root)]))
 
             layout = json.loads((docs / "layout.json").read_text(encoding="utf-8"))
+            self.assertEqual("exclude", layout["unlisted"])
             pages = [page for section in layout["navigation"] for page in section["pages"]]
             self.assertEqual(
                 [
@@ -66,6 +67,10 @@ class CliTests(unittest.TestCase):
             docs.mkdir()
             (root / "README.md").write_text("# Existing", encoding="utf-8")
             (docs / "index.md").write_text("# Documentation", encoding="utf-8")
+            (docs / "layout.json").write_text(
+                '{"schema_version": 1, "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}]}]}\n',
+                encoding="utf-8",
+            )
             output = io.StringIO()
             with redirect_stdout(output):
                 self.assertEqual(0, main(["init", "--root", str(root)]))
@@ -131,6 +136,22 @@ class CliTests(unittest.TestCase):
             with patch("dockit_fp.cli.ThreadingHTTPServer") as server:
                 self.assertEqual(1, main(["serve", "--root", str(root)]))
             server.assert_not_called()
+
+    def test_check_reports_excluded_markdown_concisely(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home", encoding="utf-8")
+            (docs / "private.md").write_text("# Private", encoding="utf-8")
+            (docs / "dockit.json").write_text('{"schema_version": 1, "project": {"name": "Demo"}}', encoding="utf-8")
+            (docs / "layout.json").write_text('{"schema_version": 1, "unlisted": "exclude", "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}]}]}', encoding="utf-8")
+            output = io.StringIO()
+
+            with redirect_stdout(output):
+                self.assertEqual(0, main(["check", "--root", str(root)]))
+
+            self.assertIn("1 unlisted document(s) excluded", output.getvalue())
 
     def test_doctor_explains_the_next_preview_step(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

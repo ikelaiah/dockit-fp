@@ -25,7 +25,7 @@ that normally contains `README.md` or `src/`.
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.1.zip"
 ```
 
 Then check that the command is available:
@@ -120,6 +120,9 @@ it could, including a GitHub repository URL. Change the project name and descrip
 `docs/layout.json` is now maintainer-owned. DocKit never silently adds new
 Markdown, reorders sections, renames entries or removes pages after this file
 exists. Edit it whenever you want to include, remove, rename or reorder a page.
+New layouts set `"unlisted": "exclude"`, which means pages appear only when
+they are listed; `check` reports any Markdown it leaves out. Existing layouts
+keep strict unlisted-page errors until you explicitly add that setting.
 The [Configuration](configuration.md) guide shows the exact format, including
 the safe root README entry.
 
@@ -179,7 +182,7 @@ new page should appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.0/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.11.1/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

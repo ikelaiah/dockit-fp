@@ -163,6 +163,26 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('href="index.html"', (root / "site" / "guide.html").read_text(encoding="utf-8"))
             self.assertEqual("# Root documentation\n\n[Guide](docs/guide.md)", readme.read_text(encoding="utf-8"))
 
+    def test_excludes_unlisted_markdown_when_layout_requests_it(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home", encoding="utf-8")
+            (docs / "guide.md").write_text("# Guide", encoding="utf-8")
+            (docs / "private.md").write_text("# Private", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({"schema_version": 1, "unlisted": "exclude", "navigation": [{"title": "Docs", "pages": [
+                {"title": "Home", "path": "index.md"}, {"title": "Guide", "path": "guide.md"},
+            ]}]}), encoding="utf-8")
+
+            result = build_site(root=root, output=root / "site", release="dev")
+
+            self.assertEqual(2, result.page_count)
+            self.assertEqual(1, result.excluded_count)
+            self.assertTrue((root / "site" / "guide.html").is_file())
+            self.assertFalse((root / "site" / "private.html").exists())
+
     def test_root_readme_remains_the_home_when_docs_contains_index(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

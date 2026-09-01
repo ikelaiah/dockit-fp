@@ -63,8 +63,10 @@ class VersionedBuildTests(unittest.TestCase):
         self._git(root, "add", ".")
         self._git(root, "commit", "-m", "v1")
         self._git(root, "tag", "v1.0.0")
+        (docs / "private.md").write_text("# Private current note", encoding="utf-8")
         (docs / "layout.json").write_text(json.dumps({
             "schema_version": 1,
+            "unlisted": "exclude",
             "navigation": [{"title": "Docs", "pages": [
                 {"title": "Overview", "path": "index.md"},
                 {"title": "Archive", "path": "archive.md"},
@@ -100,6 +102,14 @@ class VersionedBuildTests(unittest.TestCase):
 
         self.assertEqual(2, result.release_count)
         self.assertTrue((root / "site" / "1.0.0" / "index.html").exists())
+
+    def test_build_all_does_not_publish_currently_excluded_documents(self) -> None:
+        root = self._modern_history_repository()
+
+        build_all(root=root, output=root / "site")
+
+        self.assertTrue((root / "site" / "2.0.0" / "archive.html").is_file())
+        self.assertFalse((root / "site" / "2.0.0" / "private.html").exists())
 
     def test_build_all_reads_root_readmes_from_each_historical_source(self) -> None:
         temporary = tempfile.TemporaryDirectory()

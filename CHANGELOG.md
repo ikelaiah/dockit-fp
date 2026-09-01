@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.1
+
+### Added
+
+- Optional `layout.json` `"unlisted": "exclude"` policy. It makes the
+  navigation list the complete publication decision and reports excluded docs
+  during `check`.
+
+### Changed
+
+- Newly generated layouts default to `"unlisted": "exclude"`; existing
+  layouts keep strict unlisted-Markdown validation unless changed explicitly.
+
 ## 0.11.0
 
 ### Added

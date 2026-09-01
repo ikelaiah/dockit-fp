@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.11.1.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -43,6 +43,8 @@ are the only automatic candidates. `CHANGELOG.md`, `CONTRIBUTING.md`,
 `SECURITY.md` and `CODE_OF_CONDUCT.md` are reported for deliberate inclusion,
 never published by surprise. Once `docs/layout.json` exists it is entirely
 yours: add, remove, rename and reorder pages without DocKit changing it.
+Newly generated layouts use `"unlisted": "exclude"`, so only listed pages are
+published; existing layouts retain their strict validation unless you opt in.
 
 For a slower walkthrough with explanations and expected results, follow
 [Your first DocKit-FP site](docs/beginners-guide.md).

@@ -14,7 +14,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertEqual(1, sum(line.startswith("# ") for line in readme.splitlines()))
         self.assertIn("first site in about 10 minutes", readme)
         self.assertIn("You can stop here", readme)
-        self.assertIn("dockit-fp/archive/refs/tags/v0.11.1.zip", readme)
+        self.assertIn("dockit-fp/archive/refs/tags/v0.11.2.zip", readme)
         self.assertNotIn('pip install "dockit-fp==', readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:
@@ -38,3 +38,14 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertIn("Pascal, Python, JavaScript or something else", words)
         self.assertIn("This page helps **[person]** to **[result]**", guide)
         self.assertIn("Show what success looks like", guide)
+
+    def test_beginner_add_page_guidance_preserves_the_existing_home_entry(self) -> None:
+        beginner = (self.root / "docs" / "beginners-guide.md").read_text(encoding="utf-8")
+        configuration = (self.root / "docs" / "configuration.md").read_text(encoding="utf-8")
+
+        self.assertIn("Keep your current Overview or home entry unchanged", beginner)
+        self.assertIn('{"title": "Quick start", "path": "quick-start.md"}', beginner)
+        self.assertNotIn('{"title": "Overview", "path": "index.md"}', beginner)
+        root_policy = "Only the repository-root `README.md` has special root-source support."
+        self.assertIn(root_policy, beginner)
+        self.assertIn(root_policy, configuration)

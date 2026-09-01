@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.2
+
+### Changed
+
+- Updated current publishing examples and maintained links to v0.11.2.
+- Clarified root Markdown support and made the beginner add-a-page example
+  preserve the project's existing layout and home entry.
+
 ## 0.11.1
 
 ### Added

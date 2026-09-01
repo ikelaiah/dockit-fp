@@ -13,9 +13,11 @@ import threading
 
 from .build import build_site
 from .archive import write_offline_archive
+from . import __version__
 from .config import load_config
 from .discovery import discover_repository, initial_navigation
 from .errors import DocKitError
+from .github_pages import WORKFLOW_RELATIVE_PATH, inspect_workflow, render_workflow
 from .versions import build_all, check_release, load_manifest
 
 
@@ -78,6 +80,65 @@ def _check(root: Path):
     with tempfile.TemporaryDirectory(prefix="dockit-fp-check-") as temporary:
         result = build_site(root=root, output=Path(temporary) / "site", release="preview")
     return result
+
+
+def _github_pages(root: Path, *, update: bool) -> list[str]:
+    """Prepare only DocKit-owned configuration and its Pages caller workflow."""
+    discovery = discover_repository(root)
+    if not discovery.is_git_repository:
+        raise DocKitError(
+            "github-pages: this folder is not a Git repository. Run the command from a repository you plan to push to GitHub."
+        )
+    workflow = root / WORKFLOW_RELATIVE_PATH
+    version = f"v{__version__}"
+    inspection = inspect_workflow(workflow, version)
+    if inspection.state == "unmanaged":
+        raise DocKitError(
+            f"{WORKFLOW_RELATIVE_PATH} already exists and is not managed by DocKit. No files were changed."
+        )
+    if inspection.state == "malformed":
+        raise DocKitError(
+            f"{WORKFLOW_RELATIVE_PATH} is marked as DocKit-managed but is malformed. Repair it manually; no files were changed."
+        )
+    if inspection.state == "unsafe":
+        raise DocKitError(
+            f"{WORKFLOW_RELATIVE_PATH} contains a symlinked path component. Use a regular repository-local path; no files were changed."
+        )
+    if update:
+        if inspection.state == "absent":
+            raise DocKitError(f"{WORKFLOW_RELATIVE_PATH} does not exist. Run 'dockit-fp github-pages' first.")
+        if inspection.state == "current":
+            return ["GitHub Pages workflow is already current. No changes required."]
+        workflow.write_text(render_workflow(version), encoding="utf-8")
+        return [f"Updated {WORKFLOW_RELATIVE_PATH} from {inspection.version} to {version}."]
+    if inspection.state == "outdated":
+        return [
+            f"{WORKFLOW_RELATIVE_PATH} is managed by DocKit but uses {inspection.version}; current DocKit is {version}.",
+            "Run 'dockit-fp github-pages --update' to update only that workflow.",
+        ]
+    if discovery.has_dockit_config or discovery.has_layout:
+        try:
+            load_config(root)
+        except DocKitError as error:
+            raise DocKitError(f"github-pages: existing DocKit configuration is invalid: {error}. No files were changed.") from error
+    initialisation = _init(root)
+    result = _check(root)
+    if inspection.state == "absent":
+        workflow.parent.mkdir(parents=True, exist_ok=True)
+        workflow.write_text(render_workflow(version), encoding="utf-8")
+    created = next((message for message in initialisation if message.startswith("Created:")), None)
+    messages = ["DocKit is ready for GitHub Pages."]
+    if created:
+        messages.extend((created, f"Created: {WORKFLOW_RELATIVE_PATH}."))
+    else:
+        messages.append("No changes required.")
+    messages.append(f"Home: {result.home_document}")
+    if discovery.github_remote_url:
+        messages.append(f"GitHub remote: {discovery.github_remote_url}")
+    else:
+        messages.append("GitHub remote: not connected to GitHub yet; add a remote before pushing.")
+    messages.extend(("Next:", "  git add .", '  git commit -m "Add DocKit documentation"', "  git push"))
+    return messages
 
 
 class _PreviewBuilder:
@@ -213,22 +274,34 @@ def _doctor(root: Path) -> list[str]:
         messages.append("Versions: no versions.json (single-release preview only)")
         messages.append("Status: preview-ready")
         messages.append("Next: run dockit-fp serve.")
-    workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
-    workflow_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in workflows)
-    if "publish-docs.yml@" in workflow_text or "./.github/workflows/publish-docs.yml" in workflow_text:
-        mode = "single-version" if "versioned: false" in workflow_text else "historical"
-        messages.append(f"Pages: DocKit-FP {mode} workflow detected")
-        if "publish-docs.yml@main" in workflow_text:
-            messages.append("WARNING: Pages workflow uses moving ref @main; pin a released DocKit-FP tag.")
+    managed = inspect_workflow(root / WORKFLOW_RELATIVE_PATH, f"v{__version__}")
+    if managed.state == "current":
+        messages.append(f"GitHub Pages workflow: configured; DocKit version: {managed.version}")
+    elif managed.state == "outdated":
+        messages.append(f"GitHub Pages workflow: update available ({managed.version} → v{__version__}); run dockit-fp github-pages --update")
+    elif managed.state == "unmanaged":
+        messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} is not managed by DocKit")
+    elif managed.state == "malformed":
+        messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} is marked DocKit-managed but malformed")
+    elif managed.state == "unsafe":
+        messages.append(f"WARNING: {WORKFLOW_RELATIVE_PATH} contains a symlinked path component")
     else:
-        messages.append("Pages: no DocKit-FP workflow detected; see the GitHub Pages guide.")
+        workflows = sorted((root / ".github" / "workflows").glob("*.y*ml"))
+        workflow_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in workflows)
+        if "publish-docs.yml@" in workflow_text or "./.github/workflows/publish-docs.yml" in workflow_text:
+            mode = "single-version" if "versioned: false" in workflow_text else "historical"
+            messages.append(f"Pages: DocKit-FP {mode} workflow detected")
+            if "publish-docs.yml@main" in workflow_text:
+                messages.append("WARNING: Pages workflow uses moving ref @main; pin a released DocKit-FP tag.")
+        else:
+            messages.append("Pages: no DocKit-FP workflow detected; see the GitHub Pages guide.")
     return messages
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="dockit-fp", description="Build offline-friendly Markdown documentation sites for code projects.")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name, help_text in (("build", "build current documentation"), ("build-all", "build every immutable release"), ("check", "validate documentation"), ("check-release", "validate release refs"), ("init", "adopt or create documentation safely"), ("serve", "validate, build, and preview documentation locally"), ("doctor", "diagnose project setup")):
+    for name, help_text in (("build", "build current documentation"), ("build-all", "build every immutable release"), ("check", "validate documentation"), ("check-release", "validate release refs"), ("init", "adopt or create documentation safely"), ("serve", "validate, build, and preview documentation locally"), ("github-pages", "prepare safe GitHub Pages deployment"), ("doctor", "diagnose project setup")):
         command = commands.add_parser(name, help=help_text)
         _root_argument(command)
         if name == "build":
@@ -240,6 +313,8 @@ def main(argv: list[str] | None = None) -> int:
         if name == "serve":
             command.add_argument("--host", default="127.0.0.1", help="Host interface (default: 127.0.0.1)")
             command.add_argument("--port", type=int, default=8000, help="Port number (default: 8000)")
+        if name == "github-pages":
+            command.add_argument("--update", action="store_true", help="Update only a recognised managed Pages workflow")
     args = parser.parse_args(argv)
     root = args.root.resolve()
     try:
@@ -266,6 +341,8 @@ def main(argv: list[str] | None = None) -> int:
             if not 1 <= args.port <= 65535:
                 raise DocKitError("serve: port must be between 1 and 65535")
             _serve(root, args.host, args.port)
+        elif args.command == "github-pages":
+            print("\n".join(_github_pages(root, update=args.update)))
         elif args.command == "check-release":
             manifest = check_release(root)
             print(f"Release check passed: {len(manifest.versions)} immutable release(s)")

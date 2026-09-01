@@ -110,7 +110,12 @@ language-neutral while preserving existing technical identifiers.
 
 ## v0.14 — GitHub in One Command
 
-Reduce GitHub Pages publishing ceremony.
+- [x] Prepare conservative DocKit configuration and a managed Pages workflow
+      with `dockit-fp github-pages`.
+- [x] Keep commits, pushes, repository settings and workflow upgrades under
+      maintainer control.
+- [x] Pin generated workflows, prevent feature-branch deployment and refuse
+      unmanaged workflow conflicts.
 
 ## v0.15 — Documentation Audit
 

@@ -22,7 +22,9 @@ class CliTests(unittest.TestCase):
             with redirect_stdout(output):
                 self.assertEqual(0, main(["init", "--root", str(root)]))
             self.assertTrue((root / "docs" / "dockit.json").exists())
-            self.assertEqual({"path": "index.md"}, json.loads((root / "docs" / "layout.json").read_text(encoding="utf-8"))["home"])
+            layout = json.loads((root / "docs" / "layout.json").read_text(encoding="utf-8"))
+            self.assertEqual({"path": "index.md"}, layout["home"])
+            self.assertEqual("exclude", layout["unlisted"])
             self.assertIn("Next: run dockit-fp serve.", output.getvalue())
             self.assertEqual(0, main(["init", "--root", str(root)]))
 

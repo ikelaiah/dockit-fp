@@ -25,7 +25,7 @@ that normally contains `README.md` or `src/`.
 Open a terminal in your project folder and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.15.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.16.0.zip"
 ```
 
 Then check that the command is available:
@@ -119,35 +119,7 @@ it could, including a GitHub repository URL. Change the project name and descrip
 }
 ```
 
-## 5. Control the navigation explicitly
-
-`docs/layout.json` is now maintainer-owned. DocKit never silently adds new
-Markdown, reorders sections, renames entries or removes pages after this file
-exists. Edit it whenever you want to include, remove, rename or reorder a page.
-New layouts set `"unlisted": "exclude"`, which means pages appear only when
-they are listed; `check` reports any Markdown it leaves out. Existing layouts
-keep strict unlisted-page errors until you explicitly add that setting.
-The [Configuration](configuration.md) guide shows the exact format, including
-the safe root README entry.
-
-## 6. Check before you publish
-
-Run:
-
-```bash
-dockit-fp check
-```
-
-Success looks similar to:
-
-```text
-Documentation check passed: 1 section(s), 1 page(s)
-```
-
-If a check fails, read the final line first. It normally names the file and the
-next correction. You can also run `dockit-fp doctor` for a setup summary.
-
-## 7. Add one useful page
+## 5. Add one useful page
 
 Think of the first thing a new user wants to achieve. Create
 `docs/quick-start.md` and show that one task:
@@ -160,15 +132,20 @@ Install Star Mapper, then run `star-mapper import first-light.csv`.
 You should see `Created sky-map.html`.
 ```
 
-Open `docs/layout.json`. Your file may look different from this example: in
-particular, its Overview or home entry may use `index.md` instead of the
-repository-root `README.md`. Keep that existing entry unchanged.
+Open `docs/layout.json`. It is now maintainer-owned: DocKit never silently
+adds Markdown, reorders sections, renames entries or removes pages after this
+file exists. The root-README project from step 2 starts with this generated
+layout. Keep the existing `home` entry unchanged while adding the page.
 
 Before the change, the file may look like this:
 
 ```json
 {
   "schema_version": 1,
+  "home": {
+    "path": "README.md",
+    "source": "root"
+  },
   "unlisted": "exclude",
   "navigation": [
     {
@@ -199,6 +176,10 @@ After adding the page, the file may look like this:
 ```json
 {
   "schema_version": 1,
+  "home": {
+    "path": "README.md",
+    "source": "root"
+  },
   "unlisted": "exclude",
   "navigation": [
     {
@@ -221,14 +202,50 @@ After adding the page, the file may look like this:
 
 In JSON lists, put a comma after each item except the last one.
 
+`"unlisted": "exclude"` means navigation is the complete publication decision:
+Markdown under `docs/` stays private until you list it. The generated layout
+for a project that starts with `docs/index.md` has the same structure, but
+selects that document as its home page:
+
+```json
+"home": {
+  "path": "index.md"
+}
+```
+
+For a fuller explanation of `home`, navigation and legacy layouts, see
+[Configuration](configuration.md).
+
+## 6. Choose the home page and appearance
+
+The **home page** is the page readers see at the site root. `layout.json.home`
+selects that existing published Markdown page; `dockit.json.homepage` changes
+only its cards, banner and visible sections. They are different settings.
+
+The root README shown above is already a valid home-page choice. If you want
+`docs/index.md` or another listed docs page instead, change only the `home`
+object and keep its matching navigation entry. Then choose colours, a **Style**
+(`Classic`, `Paper` or `Midnight`) and a **Mode** (`System`, `Light` or `Dark`)
+in [Themes](themes.md). [Customize the home page](homepage-recipes.md) has
+complete `dockit.json` examples.
+
+## 7. Check and audit
+
 Run:
 
 ```bash
 dockit-fp check
-dockit-fp serve
+dockit-fp audit
 ```
 
-Reload the browser. **Quick start** should now appear in the left navigation.
+`check` answers “Can DocKit safely build this site?” `audit` answers “What
+objective documentation problems should I fix?” If `check` fails, read its last
+line first; it normally names the file and next correction. Use
+`dockit-fp audit --strict` when warnings should also fail a CI job, and
+`dockit-fp doctor` for a setup summary.
+
+Run `dockit-fp serve` again and reload the browser. **Quick start** should now
+appear in the navigation.
 
 ## Where to go next
 
@@ -236,7 +253,7 @@ Reload the browser. **Quick start** should now appear in the left navigation.
   [Write documentation people can use](writing-great-docs.md).
 - Learn the three configuration files in [Configuration](configuration.md).
 - Copy a small working project from the
-  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.15.0/examples/minimal).
+  [minimal example](https://github.com/ikelaiah/dockit-fp/tree/v0.16.0/examples/minimal).
 - When you truly want a public site, choose the simpler or historical path in
   [GitHub Pages](github-pages.md).
 - Look up unfamiliar words in the [glossary](glossary.md).

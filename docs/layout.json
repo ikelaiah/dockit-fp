@@ -1,13 +1,15 @@
 {
   "schema_version": 1,
-  "home": {"path": "index.md"},
+  "home": {
+    "path": "index.md"
+  },
+  "unlisted": "exclude",
   "navigation": [
     {
       "title": "Start here",
       "pages": [
         {"title": "Overview", "path": "index.md"},
         {"title": "Your first site", "path": "beginners-guide.md"},
-        {"title": "Audit your documentation", "path": "audit.md"},
         {"title": "Write useful documentation", "path": "writing-great-docs.md"},
         {"title": "Glossary", "path": "glossary.md"}
       ]
@@ -27,6 +29,7 @@
     {
       "title": "Publish safely",
       "pages": [
+        {"title": "Audit your documentation", "path": "audit.md"},
         {"title": "GitHub Pages", "path": "github-pages.md"},
         {"title": "Pre-publish checklist", "path": "pre-publish-checklist.md"},
         {"title": "Historical documentation", "path": "historical-docs.md"},

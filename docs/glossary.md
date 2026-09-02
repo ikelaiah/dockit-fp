@@ -30,6 +30,11 @@ GitHub Actions
 GitHub Pages
 : GitHub's service for hosting a static website from a repository.
 
+Home page
+: The page a reader sees at the site's root. `layout.json.home` selects which
+  listed Markdown page becomes the home page; `dockit.json.homepage` controls
+  only that selected page's presentation.
+
 `HEAD`
 : Git's name for the exact commit currently checked out in your project folder.
 
@@ -66,6 +71,10 @@ Tag
 
 Versioned documentation
 : A site that keeps separate documentation for current and older releases.
+
+Unlisted
+: Markdown under `docs/` that does not appear in navigation. New layouts use
+  `"unlisted": "exclude"`, so it is not published.
 
 Workflow
 : An automated series of steps. A GitHub Actions workflow is stored as a YAML

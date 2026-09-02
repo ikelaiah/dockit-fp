@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.16.0
+
+### Changed
+
+- Aligned DocKit's guides, generated layouts, maintained examples and dogfooded
+  site on the modern explicit `home` and `"unlisted": "exclude"` contract.
+- Shortened and reordered the beginner path; clarified `home` versus
+  `homepage`, `check` versus `audit`, Style versus Mode, and the GitHub Pages
+  repository-setting prerequisite.
+- Added focused regression coverage so canonical layout examples and managed
+  GitHub Pages workflow documentation stay synchronized with the product.
+
 ## 0.15.0
 
 ### Added

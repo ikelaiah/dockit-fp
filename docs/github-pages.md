@@ -6,7 +6,11 @@ keep control of Git commits, pushes and repository settings.
 
 ## GitHub Pages in one command
 
-From the top of an existing Git repository, run:
+Once in the GitHub repository, enable **Settings → Pages → Source → GitHub
+Actions**. DocKit cannot change that repository setting because it does not use
+GitHub credentials.
+
+Then, from the top of the existing Git repository, run:
 
 ```bash
 dockit-fp github-pages
@@ -31,14 +35,12 @@ git commit -m "Add DocKit documentation"
 git push
 ```
 
-DocKit does not commit or push. If the repository has no GitHub remote yet,
-setup still succeeds; add a GitHub remote before the push.
-
-Enable **Settings → Pages → Source → GitHub Actions** once in the repository.
-The generated workflow runs after a push to the repository's GitHub default
-branch and can also be started manually from that branch. It validates,
-builds, uploads and deploys the documentation; pushes from feature branches do
-not deploy Pages.
+DocKit prepares GitHub; the maintainer controls Git. It does not commit or push.
+If the repository has no GitHub remote yet, setup still succeeds; add a
+GitHub remote before the push. The generated workflow runs after a push to the
+repository's GitHub default branch and can also be started manually from that
+branch. It validates, builds, uploads and deploys the documentation; pushes
+from feature branches do not deploy Pages.
 
 ### Safe reruns and updates
 
@@ -46,7 +48,7 @@ not deploy Pages.
 workflow are current, it makes no repository changes.
 
 The generated workflow carries a DocKit ownership marker and pins the reusable
-workflow to the installed release, such as `@v0.15.0`. It never follows
+workflow to the installed release, such as `@v0.16.0`. It never follows
 `@main`. If a recognised managed workflow is older, ordinary setup reports the
 version and leaves it unchanged. Update only that workflow deliberately:
 
@@ -84,13 +86,13 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.15.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.16.0
     with:
       versioned: false
       release: latest
 ```
 
-The maintained [single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.15.0/examples/single-version)
+The maintained [single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.16.0/examples/single-version)
 uses this form.
 
 ## Historical site for versioned projects
@@ -112,7 +114,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.15.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.16.0
 ```
 
 Check a historical release locally after creating its tag and before pushing:
@@ -123,7 +125,7 @@ dockit-fp check-release
 dockit-fp build-all --output build/docs-site
 ```
 
-The maintained [historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.15.0/examples/historical)
+The maintained [historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.16.0/examples/historical)
 uses this form. Follow the [pre-publish checklist](pre-publish-checklist.md)
 for the exact release order.
 

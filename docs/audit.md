@@ -6,9 +6,11 @@ Before publishing, run:
 dockit-fp audit
 ```
 
-`check` asks whether DocKit can safely build your site. `audit` asks what
-objectively looks broken before a reader finds it. Audit is read-only: it never
-rewrites Markdown, navigation or configuration.
+`check` asks, **“Can DocKit safely build this site?”** `audit` asks, **“What
+objective documentation problems should I fix?”** Run `check` after changing
+configuration or navigation; use this guide for the audit rules and report
+formats. Audit is read-only: it never rewrites Markdown, navigation or
+configuration.
 
 ## Read the report
 

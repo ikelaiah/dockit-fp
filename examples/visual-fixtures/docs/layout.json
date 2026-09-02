@@ -1,5 +1,7 @@
 {
   "schema_version": 1,
+  "home": {"path": "index.md"},
+  "unlisted": "exclude",
   "navigation": [
     {
       "title": "Visual fixtures",

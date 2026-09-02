@@ -149,6 +149,7 @@ def build_site(
         shutil.copyfile(root / config.logo, output / logo)
     routes = {item.path: _route(item.path, config.home_document) for item in config.pages}
     source_documents = {page_source_reference(page): page.path for page in config.pages}
+    content_assets: dict[str, str] = {}
     anchors = {
         page.path: {identifier for _level, _text, identifier in render_markdown(page_source_path(root, page).read_text(encoding="utf-8"), lambda target: target).headings}
         for page in config.pages
@@ -169,7 +170,23 @@ def build_site(
                 raise DocKitError(f"Markdown: unsafe local link {target!r}")
             requested = source_documents.get(requested_source)
             if requested not in routes:
-                raise DocKitError(f"{docs / page.path}: linked document {document!r} does not exist")
+                if requested_source == "README.md" or not requested_source.startswith("docs/"):
+                    raise DocKitError(f"Markdown: unsafe local link {target!r}")
+                source_asset = root / requested_source
+                try:
+                    resolved_asset = source_asset.resolve()
+                except OSError as error:
+                    raise DocKitError(f"{docs / page.path}: linked asset {document!r} cannot be resolved") from error
+                if not resolved_asset.is_relative_to(root) or not resolved_asset.is_file():
+                    raise DocKitError(f"{docs / page.path}: linked asset {document!r} does not exist")
+                asset_route = content_assets.get(requested_source)
+                if asset_route is None:
+                    asset_route = f"assets/content/{requested_source.removeprefix('docs/')}"
+                    destination = output / asset_route
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(resolved_asset, destination)
+                    content_assets[requested_source] = asset_route
+                return _relative(current_route, asset_route) + (marker + fragment if marker else "")
             if marker and fragment not in anchors[requested]:
                 raise DocKitError(
                     f"{docs / page.path}: heading fragment #{fragment} does not exist in {requested}"

@@ -119,7 +119,11 @@ language-neutral while preserving existing technical identifiers.
 
 ## v0.15 — Documentation Audit
 
-Help maintainers identify documentation weaknesses.
+- [x] Add a deterministic, offline documentation audit for publication-ready
+      page links, anchors and local assets.
+- [x] Report a small set of actionable accessibility and structure warnings
+      without turning DocKit into a writing-style linter.
+- [x] Keep `check` as the buildability gate and make strict audit opt-in.
 
 ## v0.16 — Qualification
 

@@ -12,6 +12,7 @@ import tempfile
 import threading
 
 from .build import build_site
+from .audit import audit_project, format_json as format_audit_json, format_text as format_audit_text
 from .archive import write_offline_archive
 from . import __version__
 from .config import load_config
@@ -300,8 +301,9 @@ def _doctor(root: Path) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="dockit-fp", description="Build offline-friendly Markdown documentation sites for code projects.")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name, help_text in (("build", "build current documentation"), ("build-all", "build every immutable release"), ("check", "validate documentation"), ("check-release", "validate release refs"), ("init", "adopt or create documentation safely"), ("serve", "validate, build, and preview documentation locally"), ("github-pages", "prepare safe GitHub Pages deployment"), ("doctor", "diagnose project setup")):
+    for name, help_text in (("build", "build current documentation"), ("build-all", "build every immutable release"), ("check", "validate documentation"), ("audit", "report publication-readiness diagnostics"), ("check-release", "validate release refs"), ("init", "adopt or create documentation safely"), ("serve", "validate, build, and preview documentation locally"), ("github-pages", "prepare safe GitHub Pages deployment"), ("doctor", "diagnose project setup")):
         command = commands.add_parser(name, help=help_text)
         _root_argument(command)
         if name == "build":
@@ -315,6 +317,9 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--port", type=int, default=8000, help="Port number (default: 8000)")
         if name == "github-pages":
             command.add_argument("--update", action="store_true", help="Update only a recognised managed Pages workflow")
+        if name == "audit":
+            command.add_argument("--strict", action="store_true", help="Treat warnings as a failing audit")
+            command.add_argument("--format", choices=("text", "json"), default="text", help="Output format (default: text)")
     args = parser.parse_args(argv)
     root = args.root.resolve()
     try:
@@ -337,6 +342,10 @@ def main(argv: list[str] | None = None) -> int:
             result = _check(root)
             excluded = f"; {result.excluded_count} unlisted document(s) excluded" if result.excluded_count else ""
             print(f"Documentation check passed: {result.section_count} section(s), {result.page_count} page(s){excluded}")
+        elif args.command == "audit":
+            result = audit_project(root)
+            print(format_audit_json(result) if args.format == "json" else format_audit_text(result))
+            return 1 if result.errors or (args.strict and result.warnings) else 0
         elif args.command == "serve":
             if not 1 <= args.port <= 65535:
                 raise DocKitError("serve: port must be between 1 and 65535")
@@ -352,5 +361,5 @@ def main(argv: list[str] | None = None) -> int:
             return 1 if any(message.startswith("ERROR:") for message in messages) else 0
     except DocKitError as error:
         print(f"dockit-fp: {error}")
-        return 1
+        return 2 if args.command == "audit" else 1
     return 0

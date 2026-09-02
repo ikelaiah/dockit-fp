@@ -18,6 +18,8 @@ Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
   [customize the home page](homepage-recipes.md).
 - **I want to publish.** Run `dockit-fp github-pages`, then follow [GitHub
   Pages](github-pages.md).
+- **I want to catch broken public docs.** Run `dockit-fp audit` and read the
+  [audit guide](audit.md).
 - **A word is unfamiliar.** Check the [glossary](glossary.md).
 
 ## What stays simple

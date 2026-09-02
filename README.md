@@ -16,7 +16,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.14.0.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.15.0.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -75,6 +75,7 @@ existing projects and advanced historical publishing.
 | --- | --- |
 | Learn how to write useful documentation | [Write documentation people can use](docs/writing-great-docs.md) |
 | Add pages and navigation | [Configuration](docs/configuration.md) |
+| Find likely publication mistakes | [Audit your documentation](docs/audit.md) |
 | Change colours, themes or home-page presentation | [Themes](docs/themes.md) and [customize the home page](docs/homepage-recipes.md) |
 | Publish with the recommended path | [GitHub Pages in one command](docs/github-pages.md#github-pages-in-one-command) |
 | Keep documentation for older releases | [GitHub Pages: historical site](docs/github-pages.md#historical-site-for-versioned-projects) |

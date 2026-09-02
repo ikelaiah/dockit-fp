@@ -46,7 +46,7 @@ not deploy Pages.
 workflow are current, it makes no repository changes.
 
 The generated workflow carries a DocKit ownership marker and pins the reusable
-workflow to the installed release, such as `@v0.14.0`. It never follows
+workflow to the installed release, such as `@v0.15.0`. It never follows
 `@main`. If a recognised managed workflow is older, ordinary setup reports the
 version and leaves it unchanged. Update only that workflow deliberately:
 
@@ -84,13 +84,13 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.14.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.15.0
     with:
       versioned: false
       release: latest
 ```
 
-The maintained [single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.14.0/examples/single-version)
+The maintained [single-version example](https://github.com/ikelaiah/dockit-fp/tree/v0.15.0/examples/single-version)
 uses this form.
 
 ## Historical site for versioned projects
@@ -112,7 +112,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.14.0
+    uses: ikelaiah/dockit-fp/.github/workflows/publish-docs.yml@v0.15.0
 ```
 
 Check a historical release locally after creating its tag and before pushing:
@@ -123,7 +123,7 @@ dockit-fp check-release
 dockit-fp build-all --output build/docs-site
 ```
 
-The maintained [historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.14.0/examples/historical)
+The maintained [historical example](https://github.com/ikelaiah/dockit-fp/tree/v0.15.0/examples/historical)
 uses this form. Follow the [pre-publish checklist](pre-publish-checklist.md)
 for the exact release order.
 

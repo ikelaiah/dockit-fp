@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15.0
+
+### Added
+
+- Read-only `dockit-fp audit` diagnostics for published local page links,
+  unpublished Markdown targets, anchors, local assets and unsafe paths.
+- Low-noise image-alt, heading-level and duplicate-anchor warnings, with
+  deterministic text/JSON reports and optional strict mode.
+- `dockit-fp --version` and local Markdown image publishing.
+
 ## 0.14.0
 
 ### Added

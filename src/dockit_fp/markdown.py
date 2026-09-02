@@ -18,6 +18,7 @@ ORDERED = re.compile(r"^\s*\d+[.)]\s+(.+)$")
 LIST_ITEM = re.compile(r"^(?P<indent>\s*)(?:(?P<unordered>[-*+])|(?P<ordered>\d+[.)]))\s+(?P<text>.+)$")
 TASK = re.compile(r"^\[([ xX])\]\s+(.+)$")
 LINK = re.compile(r"\[([^]]+)]\(([^)]+)\)")
+IMAGE = re.compile(r"!\[([^]]*)\]\(([^)]+)\)")
 CODE = re.compile(r"`([^`]+)`")
 INLINE_MATH = re.compile(r"(?<!\\)\$([^$\n]+)\$")
 DEFINITION_DESCRIPTION = re.compile(r"^:\s+(.+)$")
@@ -42,6 +43,10 @@ def _plain(value: str) -> str:
 
 def _inline(value: str, resolve: LinkResolver) -> str:
     escaped = html.escape(value, quote=False)
+    escaped = IMAGE.sub(
+        lambda match: f'<img src="{html.escape(resolve(html.unescape(match.group(2))), quote=True)}" alt="{match.group(1)}">',
+        escaped,
+    )
     escaped = LINK.sub(lambda match: f'<a href="{html.escape(resolve(html.unescape(match.group(2))), quote=True)}">{match.group(1)}</a>', escaped)
     escaped = CODE.sub(r"<code>\1</code>", escaped)
     escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
@@ -156,8 +161,6 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             flush_paragraph()
             level, text = len(heading.group(1)), _plain(heading.group(2))
             identifier = slugify(text)
-            if identifier in seen:
-                raise DocKitError(f"Markdown: duplicate heading id {identifier!r}")
             seen.add(identifier)
             headings.append((level, text, identifier))
             output.append(f"<h{level} id=\"{identifier}\">{_inline(heading.group(2), resolve_link)}</h{level}>")

@@ -8,6 +8,25 @@ from dockit_fp.errors import DocKitError
 
 
 class BuildSiteTests(unittest.TestCase):
+    def test_publishes_local_markdown_images_with_their_page(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            (docs / "images").mkdir(parents=True)
+            (docs / "index.md").write_text("# Home\n\n![Architecture](images/architecture.svg)\n", encoding="utf-8")
+            (docs / "images" / "architecture.svg").write_text("<svg/>", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}]}],
+            }), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            page = (root / "site" / "index.html").read_text(encoding="utf-8")
+            self.assertIn('<img src="assets/content/images/architecture.svg" alt="Architecture">', page)
+            self.assertEqual("<svg/>", (root / "site" / "assets" / "content" / "images" / "architecture.svg").read_text(encoding="utf-8"))
+
     def test_builds_the_maintained_minimal_example(self) -> None:
         root = Path(__file__).resolve().parents[1] / "examples" / "minimal"
         with tempfile.TemporaryDirectory() as temporary:

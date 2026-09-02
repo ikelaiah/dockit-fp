@@ -27,6 +27,52 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('<img src="assets/content/images/architecture.svg" alt="Architecture">', page)
             self.assertEqual("<svg/>", (root / "site" / "assets" / "content" / "images" / "architecture.svg").read_text(encoding="utf-8"))
 
+    def test_publishes_nested_page_assets_under_a_non_colliding_content_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            (docs / "guides").mkdir(parents=True)
+            (docs / "images").mkdir()
+            (docs / "assets").mkdir()
+            (docs / "index.md").write_text("# Home\n", encoding="utf-8")
+            (docs / "guides" / "advanced.md").write_text(
+                "# Advanced\n\n![Diagram](../images/diagram.svg)\n![Theme](../assets/site.css)\n", encoding="utf-8"
+            )
+            (docs / "images" / "diagram.svg").write_text("<svg/>", encoding="utf-8")
+            (docs / "assets" / "site.css").write_text("documentation asset", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "navigation": [{"title": "Docs", "pages": [
+                    {"title": "Home", "path": "index.md"},
+                    {"title": "Advanced", "path": "guides/advanced.md"},
+                ]}],
+            }), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            page = (root / "site" / "guides" / "advanced.html").read_text(encoding="utf-8")
+            self.assertIn('<img src="../assets/content/images/diagram.svg" alt="Diagram">', page)
+            self.assertIn('<img src="../assets/content/assets/site.css" alt="Theme">', page)
+            self.assertEqual("documentation asset", (root / "site" / "assets" / "content" / "assets" / "site.css").read_text(encoding="utf-8"))
+            self.assertNotEqual("documentation asset", (root / "site" / "assets" / "site.css").read_text(encoding="utf-8"))
+
+    def test_refuses_markdown_assets_that_escape_docs(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (root / "outside.svg").write_text("<svg/>", encoding="utf-8")
+            (docs / "index.md").write_text("# Home\n\n![Outside](../outside.svg)\n", encoding="utf-8")
+            (docs / "dockit.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}]}],
+            }), encoding="utf-8")
+
+            with self.assertRaisesRegex(DocKitError, "unsafe local link"):
+                build_site(root=root, output=root / "site", release="dev")
+
     def test_builds_the_maintained_minimal_example(self) -> None:
         root = Path(__file__).resolve().parents[1] / "examples" / "minimal"
         with tempfile.TemporaryDirectory() as temporary:

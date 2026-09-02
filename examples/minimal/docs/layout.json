@@ -1,4 +1,6 @@
 {
   "schema_version": 1,
+  "home": {"path": "index.md"},
+  "unlisted": "exclude",
   "navigation": [{"title": "Getting started", "pages": [{"title": "Introduction", "path": "index.md"}, {"title": "Quick start", "path": "quick-start.md"}]}]
 }

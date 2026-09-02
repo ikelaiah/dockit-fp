@@ -39,7 +39,7 @@ class ManagedGitHubPagesWorkflowTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         fixture = root / "examples" / "github-pages" / ".github" / "workflows" / "dockit-pages.yml"
 
-        self.assertEqual(render_workflow("v0.15.0"), fixture.read_text(encoding="utf-8"))
+        self.assertEqual(render_workflow("v0.16.0"), fixture.read_text(encoding="utf-8"))
 
     def test_refuses_a_symlinked_managed_workflow_path(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

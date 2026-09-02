@@ -61,6 +61,7 @@ docs/
 ```
 
 Start with concepts, then one page per logical unit or namespace. Add every
-public Markdown file to `layout.json`. New layouts use `"unlisted": "exclude"`,
-so other files remain private; older layouts retain strict checking until you
-explicitly choose that policy.
+public Markdown file to the `navigation` list in `docs/layout.json`; preserve
+its explicit `home` selection and `"unlisted": "exclude"` policy. New layouts
+keep other docs Markdown private; older layouts retain strict checking until
+you explicitly choose that policy.

@@ -16,17 +16,17 @@ colour preset and one visual style in `docs/dockit.json`:
 
 ## Two choices that do different jobs
 
-Visitors can choose **System**, **Light** or **Dark** mode. System follows their
-browser or operating-system preference. You do not need to configure these
-modes.
+Visitors can choose a **Mode**: **System**, **Light** or **Dark**. System
+follows their browser or operating-system preference. You do not need to
+configure modes.
 
-You choose the site's starting visual style:
+You choose the site's starting **Style**:
 
-- `classic` is the clean, dependable default;
-- `paper` gives long guides a warm reading surface;
-- `midnight` starts with a dark technical look.
+- **Classic** (`classic`) is the clean, dependable default;
+- **Paper** (`paper`) gives long guides a warm reading surface;
+- **Midnight** (`midnight`) starts with a dark technical look.
 
-Visitors can switch the visual style too. DocKit remembers both choices in
+Visitors can switch the Style too. DocKit remembers both choices in
 the browser when storage is available.
 
 Classic is the showcase default: it keeps the header, navigation and reading

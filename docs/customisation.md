@@ -7,13 +7,16 @@ not need to copy or maintain its CSS.
 
 ## Before and after: navigation
 
-Before, a small site has one section:
+Edit the `navigation` value inside your existing `docs/layout.json`; leave its
+`schema_version`, `home` and `unlisted` entries unchanged. Before, a small site
+has one section:
 
 ```json
 {"navigation": [{"title": "Getting started", "pages": [{"title": "Overview", "path": "index.md"}]}]}
 ```
 
-After, the left navigation has deliberate groups in the same written order:
+After, replace that `navigation` value with deliberate groups in the same
+written order:
 
 ```json
 {"navigation": [

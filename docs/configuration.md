@@ -8,8 +8,8 @@ Git when possible.
 
 | File | What it controls | When you need it |
 | --- | --- | --- |
-| `docs/dockit.json` | Project name, colours and home-page presentation | Created by `init` |
-| `docs/layout.json` | Published pages, navigation order and the home page | Created by `init` |
+| `docs/dockit.json` | Project identity, appearance and home-page presentation | Created by `init` |
+| `docs/layout.json` | Published pages, navigation order, home page and unlisted policy | Created by `init` |
 | `docs/versions.json` | Published release history | Only for a historical site |
 
 These files use JSON. Keep the commas, quotation marks and braces exactly
@@ -36,26 +36,23 @@ Edit `docs/dockit.json`:
 The supported colour presets are `blue`, `teal`, `ocean` and `purple`. Start
 with a preset. You can choose exact colours later in [Themes](themes.md).
 
-## Pages and navigation
+## Pages, home page and navigation
 
-`layout.json` decides what is public and which published page is the front door.
-`home` selects the Markdown page generated as `index.html`; the `homepage`
-object in `dockit.json` only controls how that selected home page is presented.
+`docs/layout.json` decides what is public. **Navigation** is the ordered list
+of published pages and sections. Its top-level `home` object selects which
+listed Markdown page becomes `index.html`, the page readers see at the site's
+root. `dockit.json.homepage` is different: it only controls the presentation of
+that selected home page.
 
-```json
-"home": {"path": "getting-started.md"}
-```
-
-The target must already be listed in `navigation`. For the repository-root
-README, use `"home": {"path": "README.md", "source": "root"}`. Existing
-layouts without `home` keep the compatible inference: root README, then
-`docs/index.md`, then the first listed page.
-
-Edit `docs/layout.json` to choose which pages appear and in what order:
+Edit `docs/layout.json`. Keep `home` and `unlisted` at the top level and add
+pages inside the `navigation` list:
 
 ```json
 {
   "schema_version": 1,
+  "home": {
+    "path": "index.md"
+  },
   "unlisted": "exclude",
   "navigation": [
     {
@@ -79,6 +76,21 @@ Each default `path` starts inside `docs/`. For example,
 `"path": "reference/commands.md"` means the file is
 `docs/reference/commands.md`.
 
+For a repository-root README home, keep the matching root navigation page and
+replace only the top-level `home` object with:
+
+```json
+"home": {
+  "path": "README.md",
+  "source": "root"
+}
+```
+
+`"source": "root"` is required only for the exact repository-root
+`README.md`. Existing layouts that omit `home` retain the compatible inference:
+root README, then `docs/index.md`, then the first listed page. New layouts
+should make the selection explicit.
+
 `unlisted` controls what happens to Markdown under `docs/` that is not in
 navigation:
 
@@ -99,7 +111,7 @@ root and Markdown under `docs/`. It does not modify either one. Ancillary root
 files such as `CHANGELOG.md` and `CONTRIBUTING.md` are deliberately excluded;
 detection is not permission to publish.
 
-The generated layout uses this narrow entry for a root README:
+The generated layout uses this narrow navigation entry for a root README:
 
 ```json
 {"title": "Overview", "path": "README.md", "source": "root"}

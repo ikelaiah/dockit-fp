@@ -117,7 +117,7 @@ language-neutral while preserving existing technical identifiers.
 - [x] Pin generated workflows, prevent feature-branch deployment and refuse
       unmanaged workflow conflicts.
 
-## v0.15 — Documentation Audit
+## v0.15 — Documentation Audit ✅
 
 - [x] Add a deterministic, offline documentation audit for publication-ready
       page links, anchors and local assets.
@@ -125,7 +125,16 @@ language-neutral while preserving existing technical identifiers.
       without turning DocKit into a writing-style linter.
 - [x] Keep `check` as the buildability gate and make strict audit opt-in.
 
-## v0.16 — Qualification
+## v0.16 — Documentation Refinement
+
+- [x] Align the guides, examples, generated layouts and DocKit's own site on
+      explicit `home` and `unlisted` configuration.
+- [x] Make the beginner path follow the generated configuration and separate
+      `home`, `homepage`, `check`, `audit` and Pages responsibilities clearly.
+- [x] Add focused regression checks for canonical layouts and documented
+      publishing contracts.
+
+## v0.17 — Qualification
 
 Python/OS/package/ecosystem/accessibility qualification.
 

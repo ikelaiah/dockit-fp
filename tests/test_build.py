@@ -81,6 +81,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertEqual(2, result.page_count)
             page = (Path(temporary) / "site" / "quick-start.html").read_text(encoding="utf-8")
             self.assertIn("Change the accent colours", page)
+            self.assertIn('data-content-width="compact"', page)
 
     def test_builds_the_maintained_visual_fixture(self) -> None:
         root = Path(__file__).resolve().parents[1] / "examples" / "visual-fixtures"
@@ -94,6 +95,8 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('class="admonition important"', home)
             self.assertIn('class="table-scroll"', home)
             self.assertIn("Long-form reading fixture", long_form)
+            self.assertTrue((Path(temporary) / "site" / "assets" / "banner.svg").is_file())
+            self.assertIn('class="banner" src="assets/banner.svg"', home)
 
     def test_copies_an_identity_logo_into_the_header(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -155,6 +158,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('id="visual-theme"', home)
             self.assertIn('data-visual-theme="classic"', home)
             self.assertIn('data-content-width="comfortable"', home)
+            self.assertIn('<link rel="icon" href="data:image/svg+xml,', home)
             self.assertIn("System", home)
             self.assertIn("search-index.json", home)
             self.assertIn('placeholder="Search docs, commands, and versions"', home)

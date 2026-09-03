@@ -16,7 +16,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertEqual(1, sum(line.startswith("# ") for line in readme.splitlines()))
         self.assertIn("first site in about 10 minutes", readme)
         self.assertIn("You can stop here", readme)
-        self.assertIn("dockit-fp/archive/refs/tags/v0.16.0.zip", readme)
+        self.assertIn("dockit-fp/archive/refs/tags/v0.16.1.zip", readme)
         self.assertNotIn('pip install "dockit-fp==', readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:
@@ -52,7 +52,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
     def test_release_metadata_and_version_manifest_agree(self) -> None:
         manifest = json.loads((self.root / "docs" / "versions.json").read_text(encoding="utf-8"))
 
-        self.assertEqual("0.16.0", __version__)
+        self.assertEqual("0.16.1", __version__)
         self.assertEqual(__version__, manifest["current"])
         self.assertEqual(f"v{__version__}", manifest["versions"][0]["source_ref"])
 
@@ -101,6 +101,67 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertTrue(config["homepage"]["sections"]["release_context"])
         self.assertIn("The home page is the Markdown document selected by `layout.json.home`", guide)
         self.assertIn("## See it in DocKit", guide)
+
+    def test_docs_project_dogfoods_its_identity_configuration(self) -> None:
+        config = json.loads((self.root / "docs" / "dockit.json").read_text(encoding="utf-8"))
+        customisation = (self.root / "docs" / "customisation.md").read_text(encoding="utf-8")
+
+        self.assertEqual("purple", config["theme"]["preset"])
+        self.assertEqual("docs/assets/dockit-mark.svg", config["identity"]["logo"])
+        self.assertTrue((self.root / config["identity"]["logo"]).is_file())
+        self.assertEqual("Built with DocKit.", config["identity"]["footer"])
+        self.assertEqual(
+            [{"label": "Project", "url": "https://github.com/ikelaiah/dockit-fp"}],
+            config["identity"]["links"],
+        )
+        self.assertIn("### Before (default configuration)", customisation)
+        self.assertIn("### After (DocKit's own configuration)", customisation)
+        self.assertIn("blue colour preset", customisation)
+        self.assertIn("no custom identity footer or link", customisation)
+
+    def test_banner_guide_points_to_the_maintained_banner_fixture(self) -> None:
+        config = json.loads(
+            (self.root / "examples" / "visual-fixtures" / "docs" / "dockit.json").read_text(encoding="utf-8")
+        )
+        themes = (self.root / "docs" / "themes.md").read_text(encoding="utf-8")
+        fixtures = (self.root / "docs" / "visual-fixtures.md").read_text(encoding="utf-8")
+
+        self.assertEqual("docs/assets/visual-fixture-banner.svg", config["banner"]["path"])
+        fixture_root = self.root / "examples" / "visual-fixtures"
+        self.assertTrue((fixture_root / config["banner"]["path"]).is_file())
+        self.assertIn("[visual fixture](visual-fixtures.md)", themes)
+        self.assertIn("visual-fixture-banner.svg", fixtures)
+
+    def test_theme_guide_points_to_maintained_exact_colour_and_style_examples(self) -> None:
+        minimal = json.loads((self.root / "examples" / "minimal" / "docs" / "dockit.json").read_text(encoding="utf-8"))
+        single_version = json.loads(
+            (self.root / "examples" / "single-version" / "docs" / "dockit.json").read_text(encoding="utf-8")
+        )
+        themes = (self.root / "docs" / "themes.md").read_text(encoding="utf-8")
+
+        self.assertEqual("#0f766e", minimal["theme"]["accent"])
+        self.assertEqual("#0891b2", minimal["theme"]["accent_secondary"])
+        self.assertEqual("paper", single_version["theme"]["style"])
+        self.assertIn("[minimal example]", themes)
+        self.assertIn("[single-version example]", themes)
+
+    def test_configuration_documents_metadata_homepage_defaults_and_archives(self) -> None:
+        configuration = (self.root / "docs" / "configuration.md").read_text(encoding="utf-8")
+        checklist = (self.root / "docs" / "pre-publish-checklist.md").read_text(encoding="utf-8")
+        fixture_guide = (self.root / "docs" / "visual-fixtures.md").read_text(encoding="utf-8")
+        minimal = json.loads((self.root / "examples" / "minimal" / "docs" / "dockit.json").read_text(encoding="utf-8"))
+
+        self.assertIn("becomes each generated page's description metadata", configuration)
+        self.assertIn("does not render `repository_url` or `site_url`", configuration)
+        self.assertIn("| `capabilities` | `true` |", configuration)
+        self.assertIn("| `banner` | `true` |", configuration)
+        self.assertIn("| `introduction` | `true` |", configuration)
+        self.assertIn("| `release_context` | `false` |", configuration)
+        self.assertIn("`--offline-archive`", checklist)
+        self.assertIn("deterministic ZIP", checklist)
+        self.assertEqual("compact", minimal["layout"]["content_width"])
+        self.assertIn("maintained minimal example uses `compact`", configuration)
+        self.assertIn("maintained minimal example uses `compact`", fixture_guide)
 
     def test_github_pages_guide_leads_with_the_one_command_setup_path(self) -> None:
         readme = (self.root / "README.md").read_text(encoding="utf-8")

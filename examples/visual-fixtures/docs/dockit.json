@@ -8,6 +8,10 @@
     "preset": "teal",
     "style": "classic"
   },
+  "banner": {
+    "path": "docs/assets/visual-fixture-banner.svg",
+    "alt": "DocKit visual fixture banner"
+  },
   "layout": {
     "content_width": "wide"
   },

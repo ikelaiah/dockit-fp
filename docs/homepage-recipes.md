@@ -13,7 +13,7 @@ The examples below are `homepage` values to add to your existing
 ## See it in DocKit
 
 DocKit uses the same configuration on this site. Its
-[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.16.0/docs/dockit.json)
+[`docs/dockit.json`](https://github.com/ikelaiah/dockit-fp/blob/v0.16.1/docs/dockit.json)
 contains capability cards and release context:
 
 ```json
@@ -81,6 +81,11 @@ but hides capability cards.
   }
 }
 ```
+
+For a checked-in banner example, build the maintained
+[visual fixture](visual-fixtures.md). Its local SVG and `banner` configuration
+produce the image above the fixture's opening content without editing the
+fixture first.
 
 ## API reference
 

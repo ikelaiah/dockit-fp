@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.16.1
+
+### Fixed
+
+- Made DocKit's own documentation a maintained identity example: a local SVG
+  logo, purple preset, footer text and Project footer link now build together.
+- Added a checked-in visual-fixture banner and connected banner, identity and
+  footer/link guides to their reproducible rendered examples.
+- Rewrote the project-identity before-and-after example so both configurations
+  and every visible result are explicit.
+- Added an inline favicon to generated sites so ordinary local previews do not
+  report a missing favicon request.
+
 ## 0.16.0
 
 ### Changed

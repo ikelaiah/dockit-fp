@@ -16,7 +16,7 @@ These files use JSON. Keep the commas, quotation marks and braces exactly
 paired. Every file starts with `"schema_version": 1`; leave that value alone.
 If the punctuation is wrong, `dockit-fp check` names the file and error.
 
-## Project name and colours
+## Project metadata and colours
 
 Edit `docs/dockit.json`:
 
@@ -32,6 +32,14 @@ Edit `docs/dockit.json`:
   }
 }
 ```
+
+`project.name` appears in the header and browser page title.
+`project.description` becomes each generated page's description metadata; it
+is not ordinary visible page text. `dockit-fp init` may add
+`project.repository_url` from a GitHub remote. DocKit stores that value and an
+optional `project.site_url`, but does not render `repository_url` or `site_url`
+as a footer or project link. Add an `identity.links` entry when readers should
+be able to follow a visible project link.
 
 The supported colour presets are `blue`, `teal`, `ocean` and `purple`. Start
 with a preset. You can choose exact colours later in [Themes](themes.md).
@@ -152,6 +160,9 @@ Choose:
 - `wide` for large tables and code samples.
 
 Omit this setting to keep `comfortable`.
+The maintained minimal example uses `compact`, this DocKit site uses the
+omitted `comfortable` default, and the [visual fixture](visual-fixtures.md)
+uses `wide` for tables and code.
 
 ## Footer links
 
@@ -171,7 +182,9 @@ You can add a short footer and a few useful links inside `docs/dockit.json`:
 ```
 
 Link URLs must begin with `https://` or `http://`. DocKit safely escapes the
-visible text.
+visible text. The [DocKit site itself](customisation.md#before-and-after-project-identity)
+is the maintained example: its footer text and `Project` link appear together
+at the bottom of every generated page.
 
 ## Home-page presentation
 
@@ -198,7 +211,14 @@ change that page's cards or visible sections, add a `homepage` object to
 Each card needs a non-empty `title` and `description`. An empty
 `capabilities` list hides all cards. The optional section names are
 `capabilities`, `banner`, `introduction` and `release_context`, and each accepts
-`true` or `false`.
+`true` or `false`. Omitted section names use these defaults:
+
+| Section | Default | Effect on the selected home page |
+| --- | --- | --- |
+| `capabilities` | `true` | Shows the configured cards, or the four standard cards when `homepage.capabilities` is omitted. |
+| `banner` | `true` | Shows the configured `banner` image above the home-page content. It has no effect when no banner is configured. |
+| `introduction` | `true` | Keeps the first paragraph after the H1 heading. |
+| `release_context` | `false` | Hides the release label above the home-page content. |
 
 Start from a complete example in [Customize the home page](homepage-recipes.md).
 

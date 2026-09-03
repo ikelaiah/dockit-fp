@@ -139,7 +139,7 @@ select:hover,.topbar .search-control input:hover{border-color:color-mix(in srgb,
 .sidebar a.active{border-left-width:2px;background:color-mix(in srgb,var(--dk-accent) 9%,transparent);text-decoration:none}
 .prose{padding-bottom:var(--dk-space-2)}
 .prose h1,.prose h2,.prose h3{scroll-margin-top:6.5rem}
-.prose h1{max-width:var(--dk-reading-width);margin-bottom:1.25rem}
+.prose h1{max-width:none;margin-bottom:1.25rem}
 .prose[data-homepage="true"]>h1{font-size:clamp(2.5rem,5vw,3.35rem);letter-spacing:-.04em}
 .prose[data-homepage="true"]>h1+p{max-width:42rem;color:var(--muted);font-size:1.16rem;line-height:1.62}
 .prose h2{margin-top:3.5rem;padding-top:.25rem}

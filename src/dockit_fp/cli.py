@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import importlib
 import json
 from pathlib import Path
 import shutil
@@ -12,6 +13,8 @@ import tempfile
 import threading
 
 from .build import build_site
+from . import assets as assets_module
+from . import build as build_module
 from .audit import audit_project, format_json as format_audit_json, format_text as format_audit_text
 from .archive import write_offline_archive
 from . import __version__
@@ -145,11 +148,19 @@ def _github_pages(root: Path, *, update: bool) -> list[str]:
 class _PreviewBuilder:
     """Rebuild a local preview when its documentation sources change."""
 
-    def __init__(self, *, root: Path, output: Path, release: str) -> None:
+    def __init__(
+        self, *, root: Path, output: Path, release: str, renderer_sources: tuple[Path, ...] | None = None,
+    ) -> None:
         self.root = root.resolve()
         self.output = output.resolve()
         self.release = release
         self._snapshot: tuple[tuple[str, int, int], ...] = ()
+        package = Path(__file__).resolve().parent
+        self._renderer_sources = tuple(
+            path.resolve()
+            for path in (renderer_sources if renderer_sources is not None else (package / "assets.py", package / "build.py"))
+        )
+        self._renderer_snapshot: tuple[tuple[str, int, int], ...] = ()
         self._lock = threading.Lock()
 
     def _source_snapshot(self) -> tuple[tuple[str, int, int], ...]:
@@ -165,22 +176,39 @@ class _PreviewBuilder:
             for path in sorted(sources)
         )
 
+    def _renderer_source_snapshot(self) -> tuple[tuple[str, int, int], ...]:
+        return tuple(
+            (path.as_posix(), path.stat().st_mtime_ns, path.stat().st_size)
+            for path in self._renderer_sources if path.is_file()
+        )
+
+    @staticmethod
+    def _reload_renderer() -> None:
+        importlib.reload(assets_module)
+        importlib.reload(build_module)
+
     def build_initial(self) -> None:
         with self._lock:
-            build_site(root=self.root, output=self.output, release=self.release)
+            build_module.build_site(root=self.root, output=self.output, release=self.release)
             self._snapshot = self._source_snapshot()
+            self._renderer_snapshot = self._renderer_source_snapshot()
 
     def rebuild_if_changed(self) -> bool:
         with self._lock:
             snapshot = self._source_snapshot()
-            if snapshot == self._snapshot:
+            renderer_snapshot = self._renderer_source_snapshot()
+            if snapshot == self._snapshot and renderer_snapshot == self._renderer_snapshot:
                 return False
+            if renderer_snapshot != self._renderer_snapshot:
+                self._reload_renderer()
             try:
-                build_site(root=self.root, output=self.output, release=self.release)
+                build_module.build_site(root=self.root, output=self.output, release=self.release)
             except DocKitError:
                 self._snapshot = snapshot
+                self._renderer_snapshot = renderer_snapshot
                 raise
             self._snapshot = self._source_snapshot()
+            self._renderer_snapshot = self._renderer_source_snapshot()
             return True
 
 

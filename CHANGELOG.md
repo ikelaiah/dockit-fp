@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.2
+
+### Added
+
+- Added a shared SVG banner to the README and DocKit home page, plus clearer
+  emoji signposts in the README.
+
 ## 0.16.1
 
 ### Fixed

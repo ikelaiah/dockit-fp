@@ -1,4 +1,6 @@
-# Make code documentation people can use
+# 📚 Make code documentation people can use
+
+![DocKit banner — Build documentation people can use.](assets/dockit-banner.svg)
 
 DocKit turns Markdown into a searchable, responsive documentation website for
 code projects. It originated in the Free Pascal ecosystem and remains
@@ -7,7 +9,7 @@ Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
 > [!TIP] New here? Start with [Your first DocKit site](beginners-guide.md).
 > It takes you to a working local preview and explains each step.
 
-## Pick one goal
+## 🧭 Pick one goal
 
 - **I want a working site first.** Follow the
   [beginner's guide](beginners-guide.md).
@@ -22,7 +24,7 @@ Pascal-friendly, but the input is ordinary Markdown, not Pascal source code.
   [audit guide](audit.md).
 - **A word is unfamiliar.** Check the [glossary](glossary.md).
 
-## What stays simple
+## ✨ What stays simple
 
 Your project owns its words, Markdown files and visual identity. DocKit owns
 the shared page layout, search, themes, validation and publishing machinery.

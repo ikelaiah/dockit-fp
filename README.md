@@ -1,4 +1,6 @@
-# DocKit
+# 📚 DocKit
+
+![DocKit banner — Build documentation people can use.](docs/assets/dockit-banner.svg)
 
 Turn Markdown files into a polished documentation website with search, themes,
 mobile navigation and optional release history.
@@ -7,7 +9,7 @@ DocKit is a small, offline-friendly Markdown documentation-site builder for code
 projects. It originated in the Free Pascal ecosystem and remains Pascal-friendly,
 but it does not require Pascal source code.
 
-## Make your first site in about 10 minutes
+## 🚀 Make your first site in about 10 minutes
 
 You need Python 3.10 or newer and an internet connection for installation. You
 do not need Git or a GitHub account for this first preview.
@@ -16,7 +18,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.16.1.zip"
+python -m pip install "https://github.com/ikelaiah/dockit-fp/archive/refs/tags/v0.16.2.zip"
 dockit-fp init
 dockit-fp serve
 ```
@@ -51,7 +53,7 @@ published; existing layouts retain their strict validation unless you opt in.
 For a slower walkthrough with explanations and expected results, follow
 [Your first DocKit site](docs/beginners-guide.md).
 
-## Publish with GitHub Pages in one command
+## 🌐 Publish with GitHub Pages in one command
 
 When this is a Git repository and you are ready to publish, run:
 
@@ -69,7 +71,7 @@ push to the repository's default branch publishes the site. See [GitHub Pages
 in one command](docs/github-pages.md#github-pages-in-one-command) for updates,
 existing projects and advanced historical publishing.
 
-## Choose what you want to do next
+## 🧭 Choose what you want to do next
 
 | Your goal | Read this |
 | --- | --- |
@@ -81,36 +83,36 @@ existing projects and advanced historical publishing.
 | Keep documentation for older releases | [GitHub Pages: historical site](docs/github-pages.md#historical-site-for-versioned-projects) |
 | Understand an unfamiliar term | [Glossary](docs/glossary.md) |
 
-## What DocKit gives you
+## ✨ What DocKit gives you
 
-- Responsive pages that work on phones and desktops.
-- System, Light and Dark colour modes.
-- Classic, Paper and Midnight visual themes.
-- Search and keyboard-friendly navigation.
-- Local KaTeX mathematics without a CDN.
-- Checks for broken links, missing pages and unsafe configuration.
-- Optional immutable documentation for every tagged release.
-- A reusable GitHub Pages workflow.
+- 📱 Responsive pages that work on phones and desktops.
+- 🌓 System, Light and Dark colour modes.
+- 🎨 Classic, Paper and Midnight visual themes.
+- 🔎 Search and keyboard-friendly navigation.
+- 📐 Local KaTeX mathematics without a CDN.
+- ✅ Checks for broken links, missing pages and unsafe configuration.
+- 🏷️ Optional immutable documentation for every tagged release.
+- 🚀 A reusable GitHub Pages workflow.
 
 Your repository keeps its Markdown, navigation, project identity and release
 tags. DocKit supplies the renderer and shared website machinery. You should
 not need to copy its CSS or JavaScript into your project.
 
-## What it does not do
+## 🚫 What it does not do
 
 DocKit does not read source code and invent API documentation. For Free
 Pascal API extraction, use [PasWeave](https://github.com/ikelaiah/pasweave) to
 produce Markdown, then let DocKit combine that Markdown with your handwritten
 guides.
 
-## Already have documentation?
+## 📝 Already have documentation?
 
 You do not need to rewrite it. Keep the Markdown files you have, add the small
 configuration files around them, and introduce explicit navigation gradually.
 See [Configuration](docs/configuration.md) for the supported files and the
 explicit root-README entry.
 
-## Working on DocKit itself
+## 🛠️ Working on DocKit itself
 
 Run the complete test suite from this repository:
 

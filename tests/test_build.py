@@ -166,6 +166,11 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('class="capability-strip"', home)
             self.assertIn('data-card-count="4"', home)
             self.assertIn('data-homepage="true"', home)
+            self.assertIn('<script>try{const root=document.documentElement,theme=localStorage.getItem(\'dockit-fp-theme\')', home)
+            self.assertLess(
+                home.index("localStorage.getItem('dockit-fp-visual-theme')"),
+                home.index('<link rel="stylesheet" href="assets/site.css">'),
+            )
             self.assertIn('class="header-controls"', home)
             self.assertIn('aria-current="page"', home)
             self.assertIn('aria-label="Demo-FP capabilities"', home)
@@ -226,6 +231,8 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('.page-navigation a{min-height:0;max-width:none;padding:0;border:0;border-radius:0;background:transparent', site_css)
             self.assertIn('.page-navigation .page-next{grid-column:1;justify-self:start}', site_css)
             self.assertIn('.prose[data-homepage="true"]>h1+p', site_css)
+            self.assertIn('.prose h1,.prose h2,.prose h3{font-family:var(--dk-font-display);font-weight:720;letter-spacing:-.032em;text-wrap:balance}', site_css)
+            self.assertIn('.prose h1{max-width:none;margin-bottom:1.25rem}', site_css)
             self.assertIn('@media(prefers-reduced-motion:reduce)', site_css)
             self.assertIn('.syntax-highlight .tok-property{color:#93c5fd}', site_css)
             self.assertIn('.syntax-highlight .tok-keyword{color:#c4b5fd}', site_css)

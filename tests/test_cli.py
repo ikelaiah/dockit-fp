@@ -143,6 +143,26 @@ class CliTests(unittest.TestCase):
             self.assertIn("Updated preview", (root / "build" / "docs-site" / "index.html").read_text(encoding="utf-8"))
             self.assertFalse(preview.rebuild_if_changed())
 
+    def test_preview_rebuilds_when_renderer_source_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.assertEqual(0, main(["init", "--root", str(root)]))
+            renderer = root / "renderer.py"
+            renderer.write_text("first renderer", encoding="utf-8")
+            preview = _PreviewBuilder(
+                root=root,
+                output=root / "build" / "docs-site",
+                release="preview",
+                renderer_sources=(renderer,),
+            )
+            preview.build_initial()
+
+            renderer.write_text("updated renderer", encoding="utf-8")
+
+            with patch("dockit_fp.cli.importlib.reload") as reload:
+                self.assertTrue(preview.rebuild_if_changed())
+            self.assertTrue(reload.called)
+
     def test_serve_does_not_start_when_validation_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

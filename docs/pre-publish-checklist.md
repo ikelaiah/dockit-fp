@@ -16,6 +16,20 @@ easier to repair than a broken public tag.
       Light and Dark mode.
 - [ ] Confirm **Settings → Pages → Source** is **GitHub Actions**.
 
+### Optional offline archive
+
+To distribute the same local site as a download, add `--offline-archive` to a
+normal build:
+
+```bash
+dockit-fp build --output build/docs-site --offline-archive dist/mylibrary-docs.zip
+```
+
+This writes a deterministic ZIP and the matching
+`dist/mylibrary-docs.zip.sha256` checksum. Keep the site output and archive
+under review together: both contain the generated documentation and local
+assets from that build.
+
 ## Single-version site
 
 This path updates the public site from a branch such as `main`.

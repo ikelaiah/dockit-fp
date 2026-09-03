@@ -134,6 +134,14 @@ language-neutral while preserving existing technical identifiers.
 - [x] Add focused regression checks for canonical layouts and documented
       publishing contracts.
 
+## v0.16.1 — Documentation Examples & Dogfooding
+
+- [x] Pair documented identity and theme configuration with a visible,
+      repository-local DocKit example.
+- [x] Keep a built visual fixture for the optional home-page banner.
+- [x] Protect canonical visual examples with focused documentation and build
+      regression tests.
+
 ## v0.17 — Qualification
 
 Python/OS/package/ecosystem/accessibility qualification.

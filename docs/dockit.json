@@ -7,8 +7,14 @@
     "site_url": "https://ikelaiah.github.io/dockit-fp"
   },
   "theme": {
-    "accent": "#4f46e5",
-    "accent_secondary": "#0891b2"
+    "preset": "purple"
+  },
+  "identity": {
+    "logo": "docs/assets/dockit-mark.svg",
+    "footer": "Built with DocKit.",
+    "links": [
+      {"label": "Project", "url": "https://github.com/ikelaiah/dockit-fp"}
+    ]
   },
   "homepage": {
     "capabilities": [

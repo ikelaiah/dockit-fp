@@ -2,8 +2,11 @@
 
 The maintained project in `examples/visual-fixtures` exercises typography,
 ordered and nested lists, inline code, definition lists, fenced Pascal, wide
-tables, callouts, search, theme controls, page navigation, a long document and
-the reading-progress indicator.
+tables, callouts, search, theme controls, page navigation, a long document,
+the reading-progress indicator and a home-page banner. Its checked-in
+`docs/dockit.json` configures `docs/assets/visual-fixture-banner.svg`, so every
+fixture build includes the banner above the opening content without a manual
+file edit.
 
 Build it locally:
 
@@ -33,7 +36,8 @@ version, visual-theme and colour controls. Every focus indicator must be
 visible and every control must retain an accessible name.
 
 The fixture sets `layout.content_width` to `wide` so table and code behavior is
-easy to inspect. Change it to `compact` and `comfortable` when reviewing the
-semantic width contract. Review the homepage once with its default no-banner
-configuration and once with a local `banner` configured to confirm both
-opening states remain composed.
+easy to inspect. The maintained minimal example uses `compact`; DocKit's own
+site uses the omitted `comfortable` default. Together, those checked-in builds
+cover the semantic width contract. The checked-in banner is the canonical visual
+banner state; use a separate temporary project when you need to inspect the
+optional no-banner default.

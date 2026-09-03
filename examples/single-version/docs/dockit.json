@@ -4,5 +4,5 @@
     "name": "Single-version Pascal library",
     "description": "Release-ready documentation that always publishes the main branch."
   },
-  "theme": {"preset": "ocean"}
+  "theme": {"preset": "ocean", "style": "paper"}
 }

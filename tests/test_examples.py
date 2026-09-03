@@ -20,6 +20,7 @@ class ReleaseExampleTests(unittest.TestCase):
             self.assertEqual(1, result.page_count)
             self.assertTrue((output / "index.html").exists())
             self.assertFalse((output / "latest").exists())
+            self.assertIn('data-visual-theme="paper"', (output / "index.html").read_text(encoding="utf-8"))
 
     def test_doctor_recognises_the_single_version_pages_workflow(self) -> None:
         output = io.StringIO()

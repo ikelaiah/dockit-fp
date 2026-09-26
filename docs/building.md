@@ -27,8 +27,10 @@ asset is local, and `index.html` opens directly in a browser.
 docsprout build --release 1.2.0 --offline-archive dist/docsprout-docs-1.2.0.zip
 ```
 
-The archive stores the built pages under `docsprout-docs-<release>/` with fixed
-metadata, so building the same content twice produces byte-identical files. The
+The release label used for an offline archive must start with a letter or
+number and otherwise contain only letters, numbers, dots, underscores or
+hyphens. The archive stores the built pages under `docsprout-docs-<release>/`
+with fixed metadata, so building the same content twice produces byte-identical files. The
 ownership marker is not included. The sidecar `...zip.sha256` records the
 digest for verification.
 

@@ -1,6 +1,6 @@
-# Qualification evidence for DocSprout v1.1.8
+# Qualification evidence for DocSprout v1.1.9
 
-DocSprout v1.1.8 is a protected-context correctness patch with the v1.0.0
+DocSprout v1.1.9 is a correctness and safety patch with the v1.0.0
 stable contract preserved. The claims below
 are the contract that CI and the maintained fixtures exercise. Every row names
 how it is verified. "Supported" means the combination is run by automated
@@ -14,8 +14,9 @@ the typography evidence, v1.1.3 adds the documentation-quality evidence,
 v1.1.4 adds the brand-hero, contrast and four-style evidence, v1.1.5 adds
 the grouped-navigation and Markdown-coverage evidence, v1.1.6 adds the
 image-alt escaping and custom-CSS contract evidence, v1.1.7 adds the
-inline-code literalness and documentation-accuracy evidence, and v1.1.8 adds
-the protected math/resolver/auditor evidence below.
+inline-code literalness and documentation-accuracy evidence, v1.1.8 adds
+the protected math/resolver/auditor evidence, and v1.1.9 adds the audit,
+preview and release-safety regressions below.
 
 Evidence levels: **automated** rows run in CI with no browser or network
 dependency; **manual** rows are explicit review steps; **unavailable** rows are
@@ -271,6 +272,18 @@ site configuration; no schema, route or token value changes:
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
 
+## v1.1.9 additions
+
+- **Audit parity**: regression tests cover multiline inline code and math,
+  unmatched indented fence markers, and backticks inside display math. The
+  auditor reports only links and images the renderer treats as content.
+- **Preview recovery**: a failed build leaves its source snapshot pending, so
+  the next poll retries without another edit; a save during a successful build
+  still triggers another pass.
+- **Release safety**: historical archive tests reject link members before
+  extraction on the Python 3.10–3.11 path, offline ZIPs reject traversal in
+  release labels, and `check-release` catches edits to a published root README.
+
 ## v1.1.8 additions
 
 The protected-context correctness patch makes inline math consistent with
@@ -406,7 +419,7 @@ operation requires a network connection after installation.
 - **Browser automation status:** browser automation is intentionally not part
   of CI (Chrome DevTools MCP was not available during v1.0.0 qualification).
   Full browser geometry, console and keyboard inspection therefore remains
-   unavailable for every release, including v1.1.8; the automated
+   unavailable for every release, including v1.1.9; the automated
   structural/fixture coverage and live Pages sanity checks are reported
   separately and do not imply a full browser review.
 - External URLs in documentation are never network-checked; `audit` reports

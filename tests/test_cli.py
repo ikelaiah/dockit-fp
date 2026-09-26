@@ -196,6 +196,21 @@ class CliTests(unittest.TestCase):
             self.assertIn("Saved mid-build", built)
             self.assertFalse(preview.rebuild_if_changed())
 
+    def test_preview_retries_a_failed_build_without_another_source_change(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.assertEqual(0, main(["init", "--root", str(root)]))
+            preview = _PreviewBuilder(root=root, output=root / "build" / "docs-site", release="preview")
+            preview.build_initial()
+            (root / "docs" / "index.md").write_text("# Updated after retry\n", encoding="utf-8")
+
+            with patch.object(build_module, "build_site", side_effect=OSError("temporary read failure")):
+                with self.assertRaisesRegex(OSError, "temporary read failure"):
+                    preview.rebuild_if_changed()
+
+            self.assertTrue(preview.rebuild_if_changed())
+            self.assertIn("Updated after retry", (root / "build" / "docs-site" / "index.html").read_text(encoding="utf-8"))
+
     def test_preview_watcher_survives_transient_source_errors(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

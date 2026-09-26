@@ -258,9 +258,11 @@ class _PreviewBuilder:
     def _build(self) -> None:
         # Snapshot before building: a source saved while the build runs must
         # stay dirty so the next poll rebuilds it instead of serving it stale.
-        self._snapshot = self._source_snapshot()
-        self._renderer_snapshot = self._renderer_source_snapshot()
+        source_snapshot = self._source_snapshot()
+        renderer_snapshot = self._renderer_source_snapshot()
         build_module.build_site(root=self.root, output=self.output, release=self.release)
+        self._snapshot = source_snapshot
+        self._renderer_snapshot = renderer_snapshot
 
     def build_initial(self) -> None:
         with self._lock:

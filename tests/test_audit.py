@@ -163,6 +163,68 @@ class AuditTests(unittest.TestCase):
             self.assertEqual("DK001", findings[0].code)
             self.assertEqual("missing.md", findings[0].target)
 
+    def test_audit_ignores_links_inside_multiline_inline_code_and_math(self) -> None:
+        from docsprout.audit import audit_project
+        from docsprout.markdown import render_markdown
+
+        source = "# Home\n\n`start\n[fake](missing.md)\nend`\n\n$start\n[math fake](missing-too.md)\nend$\n"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_project(root, {"index.md": source})
+
+            self.assertNotIn("<a ", render_markdown(source, lambda target: target).html)
+            self.assertEqual((), audit_project(root).findings)
+
+    def test_audit_checks_links_after_an_unmatched_indented_fence_marker(self) -> None:
+        from docsprout.audit import audit_project
+        from docsprout.markdown import render_markdown
+
+        source = "# Home\n\n  ```\n[Missing](missing.md)\n"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_project(root, {"index.md": source})
+
+            self.assertIn("<a ", render_markdown(source, lambda target: target).html)
+            self.assertEqual([("DK001", 4)], [(finding.code, finding.line) for finding in audit_project(root).findings])
+
+    def test_audit_keeps_display_math_open_when_it_contains_backticks(self) -> None:
+        from docsprout.audit import audit_project
+
+        source = "# Home\n\n$$\n```\n$$\n[Missing](missing.md)\n"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_project(root, {"index.md": source})
+
+            self.assertEqual([("DK001", 6)], [(finding.code, finding.line) for finding in audit_project(root).findings])
+
+    def test_audit_does_not_carry_code_spans_across_definition_entries(self) -> None:
+        from docsprout.audit import audit_project
+        from docsprout.markdown import render_markdown
+
+        source = "# Home\n\n`Term\n: [Missing](missing.md)`\n"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_project(root, {"index.md": source})
+
+            self.assertIn("<a ", render_markdown(source, lambda target: target).html)
+            self.assertEqual([("DK001", 4)], [(finding.code, finding.line) for finding in audit_project(root).findings])
+
+    def test_audit_does_not_carry_code_spans_into_quotes_or_tables(self) -> None:
+        from docsprout.audit import audit_project
+        from docsprout.markdown import render_markdown
+
+        cases = (
+            ("# Home\n\n`Before\n> [Missing](missing.md)`\n", 4),
+            ("# Home\n\n`Before\n| Heading |\n| --- |\n| [Missing](missing.md)` |\n", 6),
+        )
+        for source, line in cases:
+            with self.subTest(source=source), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                _write_project(root, {"index.md": source})
+
+                self.assertIn("<a ", render_markdown(source, lambda target: target).html)
+                self.assertEqual([("DK001", line)], [(finding.code, finding.line) for finding in audit_project(root).findings])
+
     def test_audit_still_checks_genuine_links_and_images(self) -> None:
         from docsprout.audit import audit_project
 

@@ -22,11 +22,12 @@ IMAGE = re.compile(r"!\[([^]]*)\]\(([^)]+)\)")
 CODE = re.compile(r"`([^`]+)`")
 STRIKE = re.compile(r"~~(.+?)~~")
 HR = re.compile(r"^\s{0,3}(?:-[ \t]*){3,}$|^\s{0,3}(?:_[ \t]*){3,}$|^\s{0,3}(?:\*[ \t]*){3,}$")
+TABLE_SEPARATOR = re.compile(r"^\s*\|?\s*:?-{3,}")
 INLINE_MATH = re.compile(r"(?<!\\)\$([^$\n]+)\$")
 DEFINITION_DESCRIPTION = re.compile(r"^:\s+(.+)$")
 PROTECTED_INLINE = re.compile(r"(`[^`]+`|(?<!\\)\$[^$\n]+\$|!?\[[^\]]*\]\([^)]*\))")
 LINK_COMPONENTS = re.compile(r"(!?)\[([^\]]*)\]\(([^)]*)\)", re.DOTALL)
-PROTECTED_SPAN = re.compile(r"`([^`]+)`|(?<!\\)\$([^$\n]+)\$")
+PROTECTED_SPAN = re.compile(r"`([^`]+)`|(?<!\\)\$([^$]+)\$")
 
 
 def mask_protected_spans(line: str) -> str:
@@ -36,7 +37,7 @@ def mask_protected_spans(line: str) -> str:
     Spans are replaced with equal-length spaces to preserve positions.
     """
 
-    return PROTECTED_SPAN.sub(lambda match: " " * len(match.group(0)), line)
+    return PROTECTED_SPAN.sub(lambda match: re.sub(r"[^\n]", " ", match.group(0)), line)
 
 
 @dataclass(frozen=True)
@@ -302,7 +303,7 @@ def render_markdown(source: str, resolve_link: LinkResolver) -> RenderedMarkdown
             list_html, index = render_list(index)
             output.append(list_html)
             continue
-        elif "|" in line and index + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[index + 1]):
+        elif "|" in line and index + 1 < len(lines) and TABLE_SEPARATOR.match(lines[index + 1]):
             flush_paragraph()
             headers = [cell.strip() for cell in line.strip().strip("|").split("|")]
             index += 2

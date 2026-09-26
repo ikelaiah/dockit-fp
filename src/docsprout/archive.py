@@ -6,9 +6,14 @@ import hashlib
 from pathlib import Path
 import zipfile
 
+from .errors import DocSproutError
+from .versions import RELEASE_NAME
+
 
 def write_offline_archive(site: Path, archive: Path, release: str) -> str:
     """Write a deterministic ZIP and matching SHA-256 sidecar."""
+    if not RELEASE_NAME.fullmatch(release):
+        raise DocSproutError("Offline archive release must use letters, numbers, dots, underscores, or hyphens")
     site, archive = site.resolve(), archive.resolve()
     archive.parent.mkdir(parents=True, exist_ok=True)
     root = f"docsprout-docs-{release}"

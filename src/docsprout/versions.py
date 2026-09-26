@@ -13,7 +13,7 @@ import tarfile
 import tempfile
 
 from .build import build_site
-from .config import MANIFEST_FIELDS, VERSION_FIELDS, _reject_unknown_fields
+from .config import MANIFEST_FIELDS, VERSION_FIELDS, _reject_unknown_fields, load_config
 from .errors import DocSproutError
 from .safety import prepare_output
 
@@ -132,7 +132,9 @@ def check_release(root: Path) -> VersionManifest:
             f"docs/versions.json: current release {current.release!r} source_ref {current.source_ref!r} does not match HEAD. "
             "Tag the commit being published or check out the declared release commit."
         )
-    changed_docs = str(_run_git(root, "status", "--porcelain", "--untracked-files=all", "--", "docs")).strip()
+    published_readme = any(page.source == "root" for page in load_config(root).pages)
+    source_paths = ("docs", "README.md") if published_readme else ("docs",)
+    changed_docs = str(_run_git(root, "status", "--porcelain", "--untracked-files=all", "--", *source_paths)).strip()
     if changed_docs:
         raise DocSproutError("Documentation differs from HEAD. Commit docs changes before publishing the current release.")
     return manifest
@@ -146,6 +148,8 @@ def _archive_to(root: Path, source_ref: str, destination: Path) -> None:
             target = (destination / member.name).resolve()
             if not target.is_relative_to(destination.resolve()):
                 raise DocSproutError(f"Git archive contains unsafe path {member.name!r}")
+            if not (member.isdir() or member.isfile()):
+                raise DocSproutError(f"Git archive contains unsupported link or special file {member.name!r}")
         if sys.version_info >= (3, 12):
             bundle.extractall(destination, filter="data")
         else:

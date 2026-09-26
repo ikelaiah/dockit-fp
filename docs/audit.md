@@ -42,6 +42,9 @@ Audit uses the same configured navigation, root `README.md` handling and
 heading IDs as the builder. A Markdown file that exists but is excluded from
 `layout.json` is only reported when a published page links to it; drafts are
 otherwise intentionally quiet.
+Links and images inside inline code, inline math, fenced code or display math
+are treated as literal content, including when inline spans continue across
+several lines of one paragraph.
 
 | Code | Severity | Meaning |
 | --- | --- | --- |

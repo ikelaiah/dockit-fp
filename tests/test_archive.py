@@ -4,9 +4,21 @@ import unittest
 import zipfile
 
 from docsprout.archive import write_offline_archive
+from docsprout.errors import DocSproutError
 
 
 class OfflineArchiveTests(unittest.TestCase):
+    def test_rejects_release_names_with_archive_path_traversal(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "site"
+            root.mkdir()
+            (root / "index.html").write_text("Hello", encoding="utf-8")
+            archive = Path(temporary) / "docs.zip"
+
+            with self.assertRaisesRegex(DocSproutError, "release"):
+                write_offline_archive(root, archive, "../../../outside")
+            self.assertFalse(archive.exists())
+
     def test_writes_deterministic_zip_and_sha256(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "site"

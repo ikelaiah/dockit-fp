@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.1.9
+
+A correctness and safety patch for auditing, previews and release archives.
+No configuration schema, route, machine-format or dependency changes are
+required. Update package and workflow pins to `v1.1.9` and rebuild.
+
+### Fixed
+
+- Audit multiline inline code and math as literal content, and use the
+  renderer's fence boundaries so real links remain visible to the audit.
+- Retry preview builds after a transient failure without requiring another
+  source edit.
+- Reject unsafe release labels in offline ZIP paths and reject links or
+  special files in historical Git archives before extraction.
+- Require a published root `README.md` to match the release commit before
+  building historical documentation.
+
 ## 1.1.8
 
 A protected-context correctness patch. Inline math is now protected from

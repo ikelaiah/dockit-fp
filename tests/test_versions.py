@@ -139,6 +139,40 @@ class VersionedBuildTests(unittest.TestCase):
         self.assertIn("Version one", (root / "site" / "1.0.0" / "index.html").read_text(encoding="utf-8"))
         self.assertIn("Version two", (root / "site" / "2.0.0" / "index.html").read_text(encoding="utf-8"))
 
+        (root / "README.md").write_text("# Uncommitted home page", encoding="utf-8")
+        with self.assertRaisesRegex(DocSproutError, "Documentation differs from HEAD"):
+            check_release(root)
+
+    def test_git_archive_rejects_symlinks_before_extraction(self) -> None:
+        import io
+        import tarfile
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        import docsprout.versions as versions_module
+
+        archive = io.BytesIO()
+        with tarfile.open(fileobj=archive, mode="w") as bundle:
+            link = tarfile.TarInfo("docs/link")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "../../outside"
+            bundle.addfile(link)
+            content = b"overwrite"
+            file = tarfile.TarInfo("docs/link/file.txt")
+            file.size = len(content)
+            bundle.addfile(file, io.BytesIO(content))
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            destination = root / "source"
+            destination.mkdir()
+            with patch.object(versions_module, "_run_git", return_value=archive.getvalue()), patch.object(
+                versions_module, "sys", SimpleNamespace(version_info=(3, 11, 0, "final", 0))
+            ):
+                with self.assertRaisesRegex(DocSproutError, "link"):
+                    versions_module._archive_to(root, "v1.0.0", destination)
+            self.assertFalse((root / "outside" / "file.txt").exists())
+
     def test_check_release_rejects_moving_refs(self) -> None:
         root = self._repository()
         manifest = root / "docs" / "versions.json"

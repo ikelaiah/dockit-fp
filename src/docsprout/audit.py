@@ -10,13 +10,12 @@ import re
 from urllib.parse import urlsplit
 
 from .config import CONFIG_FILENAME, load_config, page_source_path, page_source_reference
-from .markdown import HEADING, mask_protected_spans, render_markdown, slugify
+from .markdown import DEFINITION_DESCRIPTION, FENCE, HEADING, HR, LIST_ITEM, TABLE_SEPARATOR, mask_protected_spans, render_markdown, slugify
 from .models import SiteConfig
 
 
 IMAGE = re.compile(r"!\[([^]]*)\]\(([^)]+)\)")
 LINK = re.compile(r"(?<!!)\[([^]]+)\]\(([^)]+)\)")
-FENCE = re.compile(r"^\s*```")
 SAFE_EXTERNAL_SCHEMES = {"http", "https", "mailto"}
 
 
@@ -131,6 +130,58 @@ def _audit_image(page: _AuditPage, line: int, alt: str, target: str, root: Path)
     return findings
 
 
+def _visible_prose_lines(source: str) -> list[str]:
+    """Mask protected spans after joining the same prose lines the renderer joins."""
+    lines = source.splitlines()
+    visible = [""] * len(lines)
+    paragraph: list[int] = []
+    inside_fence = False
+    inside_display_math = False
+    inside_table = False
+
+    def flush() -> None:
+        if paragraph:
+            masked = mask_protected_spans("\n".join(lines[index] for index in paragraph)).split("\n")
+            for index, value in zip(paragraph, masked):
+                visible[index] = value
+            paragraph.clear()
+
+    for index, line in enumerate(lines):
+        if inside_display_math:
+            if line.strip() == "$$":
+                inside_display_math = False
+            continue
+        if FENCE.match(line):
+            flush()
+            inside_fence = not inside_fence
+            continue
+        if inside_fence:
+            continue
+        if line.strip() == "$$":
+            flush()
+            inside_display_math = True
+            continue
+        if inside_table or ("|" in line and index + 1 < len(lines) and TABLE_SEPARATOR.match(lines[index + 1])):
+            flush()
+            inside_table = index + 1 < len(lines) and "|" in lines[index + 1] and bool(lines[index + 1].strip())
+            visible[index] = mask_protected_spans(line)
+            continue
+        if not line.strip():
+            flush()
+            continue
+        quoted = line.lstrip().startswith(">")
+        if paragraph and quoted != lines[paragraph[0]].lstrip().startswith(">"):
+            flush()
+        separate = HEADING.match(line) or HR.match(line) or LIST_ITEM.match(line) or DEFINITION_DESCRIPTION.match(line)
+        if separate:
+            flush()
+        paragraph.append(index)
+        if HEADING.match(line) or HR.match(line) or DEFINITION_DESCRIPTION.match(line) or (quoted and line.strip() == ">"):
+            flush()
+    flush()
+    return visible
+
+
 def _audit_page(page: _AuditPage, pages: dict[str, _AuditPage], root: Path) -> list[Finding]:
     findings: list[Finding] = []
     structural_findings: list[Finding] = []
@@ -140,11 +191,15 @@ def _audit_page(page: _AuditPage, pages: dict[str, _AuditPage], root: Path) -> l
     anchors: set[str] = set()
     heading_lines: list[int] = []
     for line_number, source_line in enumerate(page.text.splitlines(), start=1):
+        if inside_display_math:
+            if source_line.strip() == "$$":
+                inside_display_math = False
+            continue
         if FENCE.match(source_line):
             inside_fence = not inside_fence
         elif not inside_fence and source_line.strip() == "$$":
-            inside_display_math = not inside_display_math
-        elif not inside_fence and not inside_display_math and HEADING.match(source_line):
+            inside_display_math = True
+        elif not inside_fence and HEADING.match(source_line):
             heading_lines.append(line_number)
     for (level, text, _identifier), line_number in zip(page.headings, heading_lines):
         anchor = slugify(text)
@@ -154,20 +209,7 @@ def _audit_page(page: _AuditPage, pages: dict[str, _AuditPage], root: Path) -> l
         if previous_level is not None and level > previous_level + 1:
             structural_findings.append(_finding("DK102", "warning", page, line_number, f"Heading level jumps from H{previous_level} to H{level}", "Use an intermediate heading level when it represents document structure."))
         previous_level = level
-    inside_fence = False
-    inside_display_math = False
-    for line_number, source_line in enumerate(page.text.splitlines(), start=1):
-        if FENCE.match(source_line):
-            inside_fence = not inside_fence
-            continue
-        if inside_fence:
-            continue
-        if source_line.strip() == "$$":
-            inside_display_math = not inside_display_math
-            continue
-        if inside_display_math:
-            continue
-        visible = mask_protected_spans(source_line)
+    for line_number, visible in enumerate(_visible_prose_lines(page.text), start=1):
         matches = [(match.start(), "image", match) for match in IMAGE.finditer(visible)]
         matches.extend((match.start(), "link", match) for match in LINK.finditer(visible))
         for _position, kind, match in sorted(matches, key=lambda item: item[0]):

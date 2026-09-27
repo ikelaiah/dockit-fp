@@ -4,6 +4,7 @@ import unittest
 
 from docsprout import __version__
 from docsprout.config import THEME_STYLES
+from docsprout.layout_markdown import read_markdown_layout
 
 
 class DocumentationUsabilityTests(unittest.TestCase):
@@ -37,7 +38,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertNotIn("python-3.10%2B", readme)
 
     def test_navigation_puts_learning_before_project_internals(self) -> None:
-        layout = json.loads((self.root / "docs" / "layout.json").read_text(encoding="utf-8"))
+        layout = read_markdown_layout(self.root / "docs" / "layout.md")
         sections = layout["navigation"]
 
         def _leaf_paths(entries: list) -> list:
@@ -68,10 +69,10 @@ class DocumentationUsabilityTests(unittest.TestCase):
         start_groups = [entry["title"] for entry in sections[0]["pages"] if "pages" in entry]
         self.assertIn("Quickstart", start_groups)
         self.assertIn("Writing documentation", start_groups)
+        self.assertTrue(next(entry for entry in sections[0]["pages"] if entry["title"] == "Quickstart")["expanded"])
 
     def test_recommended_layouts_use_the_explicit_modern_contract(self) -> None:
         layouts = {
-            "DocSprout": self.root / "docs" / "layout.json",
             "minimal example": self.root / "examples" / "minimal" / "docs" / "layout.json",
             "single-version example": self.root / "examples" / "single-version" / "docs" / "layout.json",
             "historical example": self.root / "examples" / "historical" / "docs" / "layout.json",
@@ -84,17 +85,21 @@ class DocumentationUsabilityTests(unittest.TestCase):
                 layout = json.loads(path.read_text(encoding="utf-8"))
                 self.assertEqual({"path": "index.md"}, layout["home"])
                 self.assertEqual("exclude", layout["unlisted"])
+        markdown_layout = read_markdown_layout(self.root / "docs" / "layout.md")
+        self.assertFalse((self.root / "docs" / "layout.json").exists())
+        self.assertEqual({"path": "index.md"}, markdown_layout["home"])
+        self.assertEqual("exclude", markdown_layout["unlisted"])
 
     def test_release_metadata_and_version_manifest_agree(self) -> None:
         manifest = json.loads((self.root / "docs" / "versions.json").read_text(encoding="utf-8"))
 
-        self.assertEqual("1.1.10", __version__)
+        self.assertEqual("1.2.0", __version__)
         self.assertEqual(__version__, manifest["current"])
         self.assertEqual(f"v{__version__}", manifest["versions"][0]["source_ref"])
 
         pyproject = (self.root / "pyproject.toml").read_text(encoding="utf-8")
         self.assertIn('name = "docsprout"', pyproject)
-        self.assertIn('version = "1.1.10"', pyproject)
+        self.assertIn('version = "1.2.0"', pyproject)
         self.assertIn('license = "MIT"', pyproject)
         self.assertIn('name = "DocSprout contributors"', pyproject)
         self.assertNotIn('Development Status :: 3 - Alpha', pyproject)
@@ -281,7 +286,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertIn("wheel", qualification)
         self.assertIn("sdist", qualification)
         self.assertIn("## Manual browser/keyboard matrix", qualification)
-        self.assertIn("# Qualification evidence for DocSprout v1.1.10", qualification)
+        self.assertIn("# Qualification evidence for DocSprout v1.2.0", qualification)
         self.assertIn("Browser automation status", qualification)
         self.assertIn("ruff check", qualification)
         self.assertIn("ruff check .", ci)
@@ -375,7 +380,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
                 self.assertIn(message, troubleshooting)
 
     def test_stable_contract_guides_and_examples_are_maintained(self) -> None:
-        layout = json.loads((self.root / "docs" / "layout.json").read_text(encoding="utf-8"))
+        layout = read_markdown_layout(self.root / "docs" / "layout.md")
 
         def _leaf_paths(entries: list) -> list:
             found: list = []

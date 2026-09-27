@@ -3,7 +3,7 @@
 The 1.x upgrades are deliberately boring: v1.0.0 froze the qualified v0.18.1
 surface, and every later 1.x release adds no configuration schema change. Pin
 the released package and workflow, then run the same checks you already use.
-Current guidance targets `v1.1.10`; each section below remains authoritative for
+Current guidance targets `v1.2.0`; each section below remains authoritative for
 its own step.
 
 ## DocKit to DocSprout (1.x rebrand)
@@ -64,7 +64,7 @@ each published release manifest on immutable tags while upgrading.
 ## Upgrade directly from any supported 0.x release
 
 All released 0.x configurations use schema version 1. Upgrade the pinned package
-and workflow to the latest 1.x release (`v1.1.10`), then use this table before
+and workflow to the latest 1.x release (`v1.2.0`), then use this table before
 running `doctor`, `check`, and the appropriate publish build.
 
 | Starting release | Required compatibility work |
@@ -95,6 +95,18 @@ For historical publication, v0.9.0 additionally rejects unsafe release path
 segments and option-like refs, requires the current source to match `HEAD`, and
 requires documentation changes to be committed. These checks make existing
 valid manifests more dependable; they do not change generated routes.
+
+## v1.1.10 to v1.2.0
+
+No configuration change is required. Existing `docs/layout.json` files keep
+working. To use the optional Markdown outline, move `docs/layout.json` out of
+`docs/` and write `docs/layout.md` with `Layout-Version: 1`, a `Home:` path,
+an `Unlisted:` policy, `#` sections, page links and optional `##` groups.
+Indent group page links by two spaces; leave section page links unindented.
+`## Quickstart {expanded=true}` starts that group open on every page. The two
+layout files cannot coexist. Compare the page count and routes with
+`docsprout check` before publishing. DocSprout's own documentation now uses
+`layout.md` as an example.
 
 ## v1.1.9 to v1.1.10
 
@@ -256,7 +268,7 @@ the contract qualified by v0.18.1:
 
 1. Pin the package archive or source installation to `v1.0.0` and pin the
    reusable Pages workflow to `@v1.0.0`; never use `main`. For a new upgrade
-   today, pin the latest 1.x release (`v1.1.10`) instead.
+   today, pin the latest 1.x release (`v1.2.0`) instead.
 2. Keep `"schema_version": 1` in `docsprout.json`, `layout.json` and
    `versions.json`. There is no schema rewrite or generated-route migration.
 3. If custom CSS still uses pre-v0.18 generic names such as `--bg`, `--text`
@@ -388,9 +400,9 @@ safe, readable plain code.
 
 Version 1.0 is the formal commitment point for the contracts that v0.18.1
 qualified, and later 1.x releases keep that contract. There is no schema change.
-Before adopting the latest 1.x release (`v1.1.10`):
+Before adopting the latest 1.x release (`v1.2.0`):
 
-1. Upgrade the pinned package and Pages workflow to `v1.1.10` following this
+1. Upgrade the pinned package and Pages workflow to `v1.2.0` following this
    guide's patterns (config-compatible, then rebuild).
 2. Remove references to any pre-v0.18 generic theme token names
    (`--bg`, `--text`, `--interactive`, …) in custom CSS; the `--dk-*` names
@@ -399,8 +411,8 @@ Before adopting the latest 1.x release (`v1.1.10`):
    `{"schema_version": 1, "entries": [...]}` shape.
 4. Run `docsprout check` and resolve every strict-field diagnostic: fields
    outside the released schema-1 surface are errors from v0.18 onward.
-5. Keep `unlisted` and `home` explicit in `layout.json` where you author new
-   layouts.
+5. Keep `unlisted` and `home` explicit in the navigation layout where you author
+   new layouts.
 6. Re-run the quality gate: `docsprout check`, `docsprout audit --strict`,
    a local `serve` preview, and the historical `check-release` +
    `build-all` flow when `versions.json` is configured.

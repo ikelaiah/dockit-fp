@@ -39,8 +39,11 @@ def read_markdown_layout(path: Path) -> dict:
         line = raw.strip()
         if not line:
             continue
-        if raw != raw.lstrip():
-            fail(number, "indentation is unsupported; use headings and unindented page links")
+        indent = len(raw) - len(raw.lstrip(" "))
+        if indent not in {0, 2} or "\t" in raw[:len(raw) - len(raw.lstrip())]:
+            fail(number, "use no indentation for sections and pages, or two spaces for group pages")
+        if indent and not line.startswith("- "):
+            fail(number, "only group page links may be indented")
         if not started and ":" in line and not line.startswith(("#", "- ")):
             key, value = (part.strip() for part in line.split(":", 1))
             if key not in {"Layout-Version", "Home", "Unlisted"}:
@@ -93,6 +96,12 @@ def read_markdown_layout(path: Path) -> dict:
         if match:
             if section is None:
                 fail(number, "page needs a preceding # section")
+            if indent == 2 and group is None:
+                fail(number, "indented page needs a preceding ## group")
+            if indent == 0 and group is not None:
+                if not group["pages"]:
+                    fail(group_line, f"navigation group {group['title']!r} needs pages")
+                group = None
             title = _ESCAPE.sub(r"\1", match.group(1))
             target = match.group(2)
             target = target[1:-1] if target.startswith("<") else _ESCAPE.sub(r"\1", target)
@@ -113,7 +122,7 @@ def read_markdown_layout(path: Path) -> dict:
                 fail(number, f"navigation page {target!r} appears more than once")
             seen_pages.add(identity)
             listed_sources.add((entry.get("source", "docs"), identity))
-            (group or section)["pages"].append(entry)
+            (group if indent else section)["pages"].append(entry)
             continue
         fail(number, "unsupported outline line; use a # section, ## group, or - [Title](path.md) page")
 

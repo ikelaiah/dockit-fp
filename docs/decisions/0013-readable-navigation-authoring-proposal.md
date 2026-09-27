@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted and implemented in source after v1.1.10. `layout.json` remains supported.
+Accepted in v1.2.0. `layout.json` remains supported.
 
 ## Problem
 
@@ -31,15 +31,16 @@ Unlisted: exclude
 - [Overview](index.md)
 
 ## Quickstart {expanded=true}
-- [Your first site](beginners-guide.md)
-- [Build and inspect](building.md)
+  - [Your first site](beginners-guide.md)
+  - [Build and inspect](building.md)
 
 # Reference
 - [Configuration](configuration.md)
 ```
 
 The headings express sections and groups; links express page titles, paths and
-order. The top lines express publication settings. A root README would use the
+order. Group links use two spaces of indentation, so unindented section pages
+can follow a group. The top lines express publication settings. A root README would use the
 exact relative target `../README.md`, never arbitrary traversal. A simple
 group attribute `## Quickstart {expanded=true}` preserves the existing
 expansion option. `{expanded}` is an equivalent short form; omitting it or

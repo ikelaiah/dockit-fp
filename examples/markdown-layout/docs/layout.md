@@ -6,4 +6,4 @@ Unlisted: exclude
 - [Overview](index.md)
 
 ## Quickstart {expanded=true}
-- [Your first site](first-site.md)
+  - [Your first site](first-site.md)

@@ -1,11 +1,16 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
+
+An optional Markdown navigation format. Existing JSON layouts keep working;
+sites can choose either format without changing their page routes.
 
 ### Added
 
 - Support `docs/layout.md` as an optional navigation outline, including
   `{expanded=true}` on collapsible groups. JSON layouts continue to work.
+- Use `layout.md` for DocSprout's own 41-page documentation site, preserving
+  its section and page order.
 
 ## 1.1.10
 

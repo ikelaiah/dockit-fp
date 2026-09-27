@@ -27,7 +27,7 @@ class MarkdownLayoutTests(unittest.TestCase):
             (docs / "layout.md").write_text(
                 "Layout-Version: 1\nHome: index.md\nUnlisted: exclude\n\n"
                 "# Start here\n- [Overview](index.md)\n\n"
-                "## Quickstart {expanded=true}\n- [Guide](guide.md)\n",
+                "## Quickstart {expanded=true}\n  - [Guide](guide.md)\n",
                 encoding="utf-8",
             )
             markdown = load_config(root)
@@ -97,7 +97,7 @@ class MarkdownLayoutTests(unittest.TestCase):
             outline = (
                 "Layout-Version: 1\nHome: index.md\nUnlisted: exclude\n\n"
                 "# Start\n- [Home](index.md)\n"
-                "## Quickstart {expanded=true}\n- [Guide](guide.md)\n"
+                "## Quickstart {expanded=true}\n  - [Guide](guide.md)\n"
             )
             (docs / "layout.md").write_text(outline, encoding="utf-8")
             result = build_site(root=root, output=root / "site", release="preview")
@@ -168,6 +168,20 @@ class MarkdownLayoutTests(unittest.TestCase):
                 )
                 with self.assertRaisesRegex(DocSproutError, rf"layout\.md:2:.*{message}"):
                     load_config(root)
+
+    def test_section_page_can_follow_a_group(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = self.make_project(root)
+            (docs / "layout.md").write_text(
+                "Layout-Version: 1\nHome: index.md\nUnlisted: exclude\n"
+                "# Start\n## Quickstart {expanded=true}\n  - [Guide](guide.md)\n"
+                "- [Overview](index.md)\n",
+                encoding="utf-8",
+            )
+            config = load_config(root)
+            self.assertEqual(("guide.md", "index.md"), tuple(page.path for page in config.pages))
+            self.assertIsNone(config.pages[1].subsection)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # 🌱 DocSprout
 
-[![CI](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml?query=branch%3Amain) [![Docs](https://img.shields.io/website?url=https%3A%2F%2Fikelaiah.github.io%2Fdocsprout%2F1.1.10%2F&label=docs)](https://ikelaiah.github.io/docsprout/1.1.10/) [![Latest release](https://img.shields.io/github/v/release/ikelaiah/docsprout?display_name=tag&sort=semver)](https://github.com/ikelaiah/docsprout/releases/latest) [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB?logo=python&logoColor=white)](https://github.com/ikelaiah/docsprout/blob/main/docs/qualification.md#supported-python-versions) [![License: MIT](https://img.shields.io/github/license/ikelaiah/docsprout)](https://github.com/ikelaiah/docsprout/blob/main/LICENSE)
+[![CI](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml?query=branch%3Amain) [![Docs](https://img.shields.io/website?url=https%3A%2F%2Fikelaiah.github.io%2Fdocsprout%2F1.2.0%2F&label=docs)](https://ikelaiah.github.io/docsprout/1.2.0/) [![Latest release](https://img.shields.io/github/v/release/ikelaiah/docsprout?display_name=tag&sort=semver)](https://github.com/ikelaiah/docsprout/releases/latest) [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB?logo=python&logoColor=white)](https://github.com/ikelaiah/docsprout/blob/main/docs/qualification.md#supported-python-versions) [![License: MIT](https://img.shields.io/github/license/ikelaiah/docsprout)](https://github.com/ikelaiah/docsprout/blob/main/LICENSE)
 
 ![DocSprout banner — Build documentation people can use.](docs/assets/docsprout-banner.svg)
 
@@ -23,7 +23,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/docsprout/archive/refs/tags/v1.1.10.zip"
+python -m pip install "https://github.com/ikelaiah/docsprout/archive/refs/tags/v1.2.0.zip"
 docsprout init
 docsprout serve
 ```
@@ -64,8 +64,7 @@ DocSprout commands for editing pages, sections or themes:
 - **Markdown** (`README.md`, `docs/*.md`) is your content.
 - **`docs/layout.json` or `docs/layout.md`** decides what is published: sections,
   titles, order, the home page and the unlisted policy. `init` creates JSON;
-  a source checkout after v1.1.10 can
-  [switch to a Markdown outline](docs/configuration.md#authoring-navigation-in-layoutmd).
+  you can [switch to a Markdown outline](docs/configuration.md#authoring-navigation-in-layoutmd).
 - **`docs/docsprout.json`** decides how it looks: name, colours, visual theme,
   logo, footer, banner and homepage presentation.
 

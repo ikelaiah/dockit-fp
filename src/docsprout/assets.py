@@ -143,6 +143,7 @@ html[data-visual-theme="e-ink"] ::selection,html[data-visual-theme="e-ink"]::sel
 .inline-toc nav{margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--dk-border)}
 .prose .inline-toc a{display:block;padding:.5rem .25rem;color:var(--dk-text);font-family:var(--dk-font-ui);font-size:.85rem;font-weight:500;line-height:1.4;text-decoration:none;overflow-wrap:anywhere}
 .prose .inline-toc a:hover{color:var(--dk-interactive);text-decoration:underline}
+.prose .inline-toc a.is-active{color:var(--dk-interactive);font-weight:700;background:color-mix(in srgb,var(--dk-accent) 9%,transparent);box-shadow:inset 2px 0 var(--dk-accent)}
 .prose .inline-toc .toc-level-3{padding-left:1rem}.prose .inline-toc .toc-level-4{padding-left:1.75rem}.prose .inline-toc .toc-level-5{padding-left:2.5rem}.prose .inline-toc .toc-level-6{padding-left:3.25rem}
 .toc-title{margin:0 0 .65rem;font-family:var(--dk-font-display);font-size:.68rem;font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--dk-text)}
 .toc a{display:block;padding:.3rem .6rem;border-left:2px solid transparent;color:var(--dk-muted);text-decoration:none;overflow-wrap:anywhere}.toc a:hover{background:var(--dk-surface);color:var(--dk-text)}.toc .toc-level-3{padding-left:1.15rem;font-size:.94em}.toc-empty-copy{margin:0;font-size:.9em}
@@ -369,12 +370,12 @@ SITE_JS = r'''
   function updateProgress(){if(!progress)return;const range=document.documentElement.scrollHeight-window.innerHeight;const amount=range>0?Math.min(1,Math.max(0,window.scrollY/range)):0;progress.style.transform=`scaleX(${amount})`}
   if(progress){window.addEventListener('scroll',updateProgress,{passive:true});window.addEventListener('resize',updateProgress);updateProgress()}
 
-  const tocLinks=[...document.querySelectorAll('.toc a[href^="#"]')];
+  const tocLinks=[...document.querySelectorAll('.toc a[href^="#"],.inline-toc a[href^="#"]')];
   if(tocLinks.length&&'IntersectionObserver'in globalThis){
-    const linksById=new Map(tocLinks.map(link=>[link.getAttribute('href').slice(1),link]));
-    const activate=id=>tocLinks.forEach(link=>{const current=link===linksById.get(id);link.classList.toggle('is-active',current);if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')});
+    const headingIds=new Set(tocLinks.map(link=>link.getAttribute('href').slice(1)));
+    const activate=id=>tocLinks.forEach(link=>{const current=link.getAttribute('href').slice(1)===id;link.classList.toggle('is-active',current);if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current')});
     const observer=new IntersectionObserver(entries=>{const visible=entries.find(entry=>entry.isIntersecting);if(visible)activate(visible.target.id)},{rootMargin:'0px 0px -70% 0px'});
-    linksById.forEach((_link,id)=>{const heading=document.getElementById(id);if(heading)observer.observe(heading)});
+    headingIds.forEach(id=>{const heading=document.getElementById(id);if(heading)observer.observe(heading)});
   }
 })();
 '''

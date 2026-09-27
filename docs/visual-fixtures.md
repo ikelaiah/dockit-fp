@@ -45,7 +45,9 @@ visible and every control must retain an accessible name.
 On `long-form.html`, check that its section label sits above the title and
 that Previous names its destination's section. Expand the inline outline with
 the keyboard at 1024px and below, follow a nested heading link, and check that
-the heading is visible below the sticky header. On `build/minimal/quick-start.html`,
+the heading is visible below the sticky header. Reopen the outline and check
+that the current section is marked, as it is in the desktop outline. On
+`build/minimal/quick-start.html`,
 check that a page without section headings has no empty outline or reserved
 right column, and that Previous names the destination's section. Repeat these
 checks in print preview: the section label remains, while page navigation and

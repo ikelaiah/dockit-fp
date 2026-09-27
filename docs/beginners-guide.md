@@ -172,9 +172,11 @@ selects that document as its home page:
 }
 ```
 
-### The two editing cheat sheets
+### Editing cheat sheet
 
-Every common change is an edit to a JSON file, not a command:
+With the default JSON layout created by `init`, each change below is a file
+edit, not a command. For a shorter navigation outline as your site grows, see
+[Authoring navigation in `layout.md`](configuration.md#authoring-navigation-in-layoutmd).
 
 | What you want | Edit |
 | --- | --- |

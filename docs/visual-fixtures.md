@@ -19,6 +19,9 @@ $env:PYTHONPATH='src'
 python -m docsprout build `
   --root examples/visual-fixtures `
   --output build/visual-fixtures
+python -m docsprout build `
+  --root examples/minimal `
+  --output build/minimal
 ```
 
 Open `build/visual-fixtures/index.html`, then verify this matrix. Browser
@@ -27,17 +30,31 @@ errors or warnings.
 
 | View | Width | Checks |
 | --- | ---: | --- |
-| Phone | 360px and 390px | Native navigation disclosure, visible copy control, no page overflow; the hero stacks its banner band above the copy, action buttons wrap, oversized Markdown images stay within the prose column and small badges remain intrinsic |
-| Tablet | 768px | Search and controls wrap cleanly, readable table scrolling, responsive Markdown images |
-| Narrow desktop | 1024px | Article measure, heading rhythm and compact navigation remain balanced |
+| Phone | 320px, 360px and 390px | Native navigation disclosure, visible copy control, no page overflow; the hero stacks its banner band above the copy, action buttons wrap, oversized Markdown images stay within the prose column and small badges remain intrinsic |
+| Tablet | 768px | Search and controls wrap cleanly, readable table scrolling, responsive Markdown images; the long-form page has a closed, keyboard-operable “On this page” disclosure after its title |
+| Narrow desktop | 1024px | Article measure and heading rhythm remain balanced; the long-form page uses the inline outline instead of a right rail |
 | Desktop | 1440px | Sidebar, article and on-page outline align without crowding; the hero banner spans the content width without cutting its text; card icons align on the card baseline; oversized Markdown images stay within the prose column |
-| Long document | 1024px or wider | Heading rhythm, reading progress and sticky local navigation |
+| Long document | Above 1024px | Heading rhythm, reading progress and sticky local navigation |
 
 At each useful width, switch among Classic, Paper, E-ink and
 Glassmorphic and repeat with Light and Dark. Use only the keyboard to focus search with `/`, move among
 results with Arrow keys/Home/End, close results with Escape, and tab through
 version, visual-theme and colour controls. Every focus indicator must be
 visible and every control must retain an accessible name.
+
+On `long-form.html`, check that its section label sits above the title and
+that Previous names its destination's section. Expand the inline outline with
+the keyboard at 1024px and below, follow a nested heading link, and check that
+the heading is visible below the sticky header. Reopen the outline and check
+that the current section is marked, as it is in the desktop outline. On
+`build/minimal/quick-start.html`, check that a page without section headings
+has no empty outline or reserved right column, and that Previous names the
+destination's section. Repeat these checks in print preview: the section label
+remains, while page navigation and both versions of the outline are omitted.
+
+With a screen reader, confirm that the disclosure announces its collapsed and
+expanded state, the "Page outline" navigation is labelled, and the current
+section link is announced after opening it.
 
 The fixture sets `layout.content_width` to `wide` so table and code behavior is
 easy to inspect. The maintained minimal example uses `compact`; DocSprout's own

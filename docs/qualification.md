@@ -1,10 +1,11 @@
-# Qualification evidence for DocSprout v1.2.0
+# Qualification evidence for DocSprout v1.2.1
 
-DocSprout v1.2.0 adds a Markdown navigation outline while preserving JSON
-layout compatibility and the v1.0.0 stable contract. The claims below
-are the contract that CI and the maintained fixtures exercise. Every row names
-how it is verified. "Supported" means the combination is run by automated
-qualification on every pull request and release, not merely believed to work.
+DocSprout v1.2.1 improves reading-page orientation and small-screen outlines
+while preserving JSON and Markdown layout compatibility and the v1.0.0 stable
+contract. The claims below are the contract that CI and the maintained fixtures
+exercise. Every row names how it is verified. "Supported" means the combination
+is run by automated qualification on every pull request and release, not merely
+believed to work.
 
 The v0.17 and v0.18 matrices are retained as historical evidence for the
 contract candidate that v1.0.0 freezes. v1 adds the Five Promises assessment,
@@ -18,7 +19,8 @@ inline-code literalness and documentation-accuracy evidence, v1.1.8 adds
 the protected math/resolver/auditor evidence, and v1.1.9 adds the audit,
 preview and release-safety regressions below. v1.1.10 adds compact generated
 navigation and accurate `init` publication guidance. v1.2.0 adds Markdown
-layout parsing, group expansion, and a full-site migration from JSON.
+layout parsing, group expansion, and a full-site migration from JSON. v1.2.1
+adds reading-page context, responsive outlines and active-section parity.
 
 Evidence levels: **automated** rows run in CI with no browser or network
 dependency; **manual** rows are explicit review steps; **unavailable** rows are
@@ -274,6 +276,23 @@ site configuration; no schema, route or token value changes:
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
 
+## v1.2.1 additions
+
+- **Reading-page structure**: generated-page tests cover section and subsection
+  context, destination labels, a closed inline outline for one or many headings,
+  no empty outline rail when a page has no sections, and unchanged home-page
+  markup. The maintained fixture records visual checks for these states.
+- **Browser behaviour**: local Chromium viewport checks cover 320, 390, 768,
+  1024 and 1440 CSS pixels, all three content widths, four styles and both
+  colour modes without page overflow. The small-screen outline receives the
+  same active heading and `aria-current="location"` as the desktop rail;
+  keyboard navigation and anchored-heading clearance below the sticky header
+  are checked manually. Touch emulation opens the 44px disclosure target, the
+  accessibility tree exposes its summary and labelled navigation, and print
+  hides both outlines. The visual fixture guide records how to repeat these
+  checks. This browser evidence is manual, separate from the automated CI
+  suite; a real screen-reader pass remains a pre-publish review step.
+
 ## v1.2.0 additions
 
 - **Compatible authoring formats**: `layout.md` and `layout.json` produce the
@@ -412,7 +431,7 @@ values; no schema, route, machine-format or token-name change:
 | --- | --- | --- |
 | **Easy to use** | Installed wheel and sdist journeys run `init`, `serve`, `check`, `audit`, `build`, `doctor` and Pages preparation from outside the source tree. | Automated pass |
 | **Easy to learn** | README, beginner guide, configuration, publishing, audit and migration paths are checked for the short preview path, declarative mental model and next-step links. | Automated documentation pass |
-| **Easy to look good** | Structural accessibility, token, responsive-image, theme/mode, content-width, hero/contrast, custom-CSS and maintained visual-fixture tests cover phone/tablet/desktop cases without brittle screenshots. | Automated pass; see Browser automation status |
+| **Easy to look good** | Structural accessibility, token, responsive-image, theme/mode, content-width, hero/contrast, custom-CSS and maintained visual-fixture tests cover phone/tablet/desktop cases without brittle screenshots. | Automated pass; see Known limitations |
 | **Easy to create from existing repositories** | Generic/Pascal-shaped, root-README, nested, Unicode, spaces, assets, explicit-home, unlisted and ancillary-file adoption fixtures pass; Pages setup is idempotent and non-mutating. | Automated pass |
 | **Easy to maintain** | Schema corpus, route collision checks, machine-format checks, workflow pin checks, deterministic archive/build tests, contributor guidance and release checks pass. | Automated pass |
 
@@ -439,14 +458,10 @@ operation requires a network connection after installation.
   junctions (see Operating systems above).
 - Git must be installed and on `PATH` for `build-all`, `check-release` and
   `github-pages`; discovery and previews degrade gracefully without Git.
-- Browser automation is intentionally not part of CI: the remaining visual
-  checks are the small manual matrix below.
-- **Browser automation status:** browser automation is intentionally not part
-  of CI (Chrome DevTools MCP was not available during v1.0.0 qualification).
-  Full browser geometry, console and keyboard inspection therefore remains
-   unavailable for every release, including v1.1.10; the automated
-  structural/fixture coverage and live Pages sanity checks are reported
-  separately and do not imply a full browser review.
+- Browser automation is not part of CI. v1.2.1 was checked locally with Chromium
+  viewport emulation and the DevTools Protocol, while structural tests run in
+  CI. A real screen-reader and native touch-device pass remain manual release
+  checks; the matrix below does not imply they run in CI.
 - External URLs in documentation are never network-checked; `audit` reports
   this explicitly.
 - Custom CSS is author-owned: its accessibility, contrast, responsiveness and
@@ -473,3 +488,4 @@ automated contract above.
 | 5 | With the OS reduced-motion preference on, search results, the reading-progress bar and theme changes do not animate. |
 | 6 | With Windows high-contrast / forced-colors enabled, focus outlines and the reading-progress indicator remain visible. |
 | 7 | At desktop and phone widths the home-page hero keeps its copy readable, the derived actions stay keyboard reachable, and a configured banner spans the content width without cutting its text. |
+| 8 | On a long reading page, open the phone outline by touch and keyboard, confirm its current section and labelled navigation with a screen reader, follow a nested heading link, and check that the heading clears the sticky header. On desktop, confirm the rail marks the same section. |

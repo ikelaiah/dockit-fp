@@ -98,14 +98,23 @@ def _relative(source_route: str, target_route: str) -> str:
     return posixpath.relpath(target_route, posixpath.dirname(source_route) or ".")
 
 
-def _page_navigation(*, page: Page, config, current_route: str) -> str:
+def _page_navigation(*, page: Page, config, current_route: str, include_context: bool) -> str:
     position = config.pages.index(page)
     links: list[str] = []
     for label, item in (("Previous", config.pages[position - 1] if position else None), ("Next", config.pages[position + 1] if position + 1 < len(config.pages) else None)):
         if item is not None:
             href = html.escape(_relative(current_route, _route(item.path, config.home_document)), quote=True)
-            links.append(f'<a class="page-{label.lower()}" href="{href}"><small>{label}</small><span>{html.escape(item.title)}</span></a>')
+            context = f'<span class="page-nav-context">{_page_context(item)}</span>' if include_context else ""
+            links.append(
+                f'<a class="page-{label.lower()}" href="{href}"><small>{label}</small>'
+                f'{context}<span>{html.escape(item.title)}</span></a>'
+            )
     return f'<nav class="page-navigation" aria-label="Page navigation">{"".join(links)}</nav>' if links else ""
+
+
+def _page_context(page: Page) -> str:
+    location = " / ".join(part for part in (page.section, page.subsection) if part)
+    return html.escape(location)
 
 
 def _hero_title_has_emoji(body: str) -> bool:
@@ -223,7 +232,14 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
         for level, text, identifier in headings if level > 1
     )
     toc = f'<p class="toc-title">On this page</p>{toc_links}' if toc_links else '<p class="toc-title">Documentation</p><p class="toc-empty-copy">Browse the sections in the navigation.</p>'
-    page_navigation = _page_navigation(page=page, config=config, current_route=current_route)
+    if not homepage:
+        context = f'<div class="page-context">{_page_context(page)}</div>'
+        if toc_links:
+            inline_toc = f'<details class="inline-toc"><summary>On this page</summary><nav aria-label="Page outline">{toc_links}</nav></details>'
+            before_title, title_end, after_title = body.partition("</h1>")
+            body = before_title + title_end + inline_toc + after_title if title_end else inline_toc + body
+        body = context + body
+    page_navigation = _page_navigation(page=page, config=config, current_route=current_route, include_context=not homepage)
     footer_links = "".join(f'<a href="{html.escape(url, quote=True)}">{html.escape(label)}</a>' for label, url in config.project_links)
     footer = f'<footer class="site-footer"><span>{html.escape(config.footer or config.name)}</span>{footer_links}</footer>' if config.footer or footer_links else ""
     header_controls = f'''<div class="header-controls" aria-label="Site controls"><label class="header-control"><span>Version</span><select id="version-select" aria-label="Documentation version">{version_options}</select></label><label class="header-control"><span>Style</span><select id="visual-theme" aria-label="Documentation visual theme"><option value="classic">Classic</option><option value="paper">Paper</option><option value="e-ink">E-ink</option><option value="glassmorphic">Glassmorphic</option></select></label><label class="header-control"><span>Mode</span><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div>'''
@@ -269,10 +285,12 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
         ' aria-label="Search results" aria-live="polite" hidden></div></header>'
     )
     mobile_navigation = f'<details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details>'
+    shell_class = "shell" if homepage or toc_links else "shell shell-no-toc"
+    toc_aside = f'<aside class="toc" aria-label="On this page">{toc}</aside>' if homepage or toc_links else ""
     document_body = (
-        f'<div class="shell"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav>'
+        f'<div class="{shell_class}"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav>'
         f'<main class="prose" id="content"{main_context}>{hero}{body}{page_navigation}</main>'
-        f'<aside class="toc" aria-label="On this page">{toc}</aside></div>'
+        f'{toc_aside}</div>'
     )
     document_close = (
         f"{footer}"

@@ -1,12 +1,17 @@
 # Changelog
 
-## Unreleased
+## 1.1.10
+
+A layout authoring and guidance patch. Existing schema-1 configuration keeps
+working, and `layout.md` is a proposal rather than a supported format. Update
+package and workflow pins to `v1.1.10` and rebuild.
 
 ### Changed
 
 - Generate `layout.json` with one page per line so navigation is easier to
   scan and edit. Existing layouts are left untouched.
 - Shorten the beginner layout walkthrough and document the compact style.
+- Record a proposed Markdown navigation format and its compatibility rules.
 
 ### Fixed
 

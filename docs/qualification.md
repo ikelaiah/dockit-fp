@@ -1,6 +1,6 @@
-# Qualification evidence for DocSprout v1.1.9
+# Qualification evidence for DocSprout v1.1.10
 
-DocSprout v1.1.9 is a correctness and safety patch with the v1.0.0
+DocSprout v1.1.10 is a layout authoring and guidance patch with the v1.0.0
 stable contract preserved. The claims below
 are the contract that CI and the maintained fixtures exercise. Every row names
 how it is verified. "Supported" means the combination is run by automated
@@ -16,7 +16,8 @@ the grouped-navigation and Markdown-coverage evidence, v1.1.6 adds the
 image-alt escaping and custom-CSS contract evidence, v1.1.7 adds the
 inline-code literalness and documentation-accuracy evidence, v1.1.8 adds
 the protected math/resolver/auditor evidence, and v1.1.9 adds the audit,
-preview and release-safety regressions below.
+preview and release-safety regressions below. v1.1.10 adds compact generated
+navigation and accurate `init` publication guidance.
 
 Evidence levels: **automated** rows run in CI with no browser or network
 dependency; **manual** rows are explicit review steps; **unavailable** rows are
@@ -272,6 +273,19 @@ site configuration; no schema, route or token value changes:
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
 
+## v1.1.10 additions
+
+- **Readable generated navigation**: `init` writes each generated page on one
+  line while preserving schema-1 data and leaving existing layouts untouched.
+  CLI tests cover the generated layout and non-destructive re-initialisation.
+- **Accurate publication guidance**: `init` identifies an existing layout as
+  authoritative instead of claiming discovery published all Markdown. A
+  regression test covers this case.
+- **Documentation quality**: the beginner guide has one complete, compact
+  layout example; documentation tests parse it and check the listed pages and
+  selected home. Decision 0013 describes a proposed Markdown outline, with
+  no new accepted configuration syntax in this release.
+
 ## v1.1.9 additions
 
 - **Audit parity**: regression tests cover multiline inline code and math,
@@ -419,7 +433,7 @@ operation requires a network connection after installation.
 - **Browser automation status:** browser automation is intentionally not part
   of CI (Chrome DevTools MCP was not available during v1.0.0 qualification).
   Full browser geometry, console and keyboard inspection therefore remains
-   unavailable for every release, including v1.1.9; the automated
+   unavailable for every release, including v1.1.10; the automated
   structural/fixture coverage and live Pages sanity checks are reported
   separately and do not imply a full browser review.
 - External URLs in documentation are never network-checked; `audit` reports

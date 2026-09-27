@@ -3,7 +3,7 @@
 ## Status
 
 Proposed. This file describes a possible next change; `layout.json` remains
-the supported format in v1.1.9.
+the supported format in v1.1.10.
 
 ## Problem
 

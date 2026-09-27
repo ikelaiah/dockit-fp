@@ -261,7 +261,11 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
     """Load configuration, optionally applying current navigation completeness rules."""
     docs = root / "docs"
     primary = resolve_config_path(docs)
-    layout_path = docs / "layout.json"
+    json_layout = docs / "layout.json"
+    markdown_layout = docs / "layout.md"
+    if json_layout.is_file() and markdown_layout.is_file():
+        raise DocSproutError(f"{docs}: both layout.json and layout.md exist. Keep exactly one navigation layout.")
+    layout_path = markdown_layout if markdown_layout.is_file() else json_layout
     if primary is None and not layout_path.exists():
         return _legacy_config(docs)
     if primary is None:
@@ -322,7 +326,12 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
         )
     if not layout_path.exists():
         raise DocSproutError(f"{layout_path}: required for modern documentation")
-    layout = _read_json(layout_path)
+    if layout_path.suffix == ".md":
+        from .layout_markdown import read_markdown_layout
+
+        layout = read_markdown_layout(layout_path)
+    else:
+        layout = _read_json(layout_path)
     _reject_unknown_fields(layout, LAYOUT_FIELDS, "layout", layout_path)
     unlisted = layout.get("unlisted", "error")
     if unlisted not in {"error", "exclude"}:
@@ -423,7 +432,11 @@ def load_config(root: Path, *, require_listed_documents: bool = True) -> SiteCon
                     "Use 'path' for a page or 'pages' with child page entries for a collapsible group."
                 )
     listed_paths = {page.path for page in pages}
-    unlisted_paths = sorted(path.relative_to(docs).as_posix() for path in docs.rglob("*.md") if path.is_file() and path.relative_to(docs).as_posix() not in listed_paths)
+    unlisted_paths = sorted(
+        path.relative_to(docs).as_posix() for path in docs.rglob("*.md")
+        if path.is_file() and path.relative_to(docs).as_posix() not in listed_paths
+        and path != markdown_layout
+    )
     if require_listed_documents and unlisted == "error" and unlisted_paths:
         raise DocSproutError(f"{layout_path}: unlisted Markdown document {unlisted_paths[0]!r}. Add it to navigation or remove it.")
     excluded_documents = tuple(unlisted_paths) if unlisted == "exclude" else ()

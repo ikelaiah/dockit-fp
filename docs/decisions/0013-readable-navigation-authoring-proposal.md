@@ -2,8 +2,7 @@
 
 ## Status
 
-Proposed. This file describes a possible next change; `layout.json` remains
-the supported format in v1.1.10.
+Accepted and implemented in source after v1.1.10. `layout.json` remains supported.
 
 ## Problem
 
@@ -18,9 +17,9 @@ are published when `unlisted` is `exclude`. It must also represent the home
 page, display titles, order, sections, one level of collapsible groups, the
 root README, and a group's `expanded` setting.
 
-## Recommendation
+## Decision
 
-Explore an optional `docs/layout.md` as a single, constrained outline format.
+Support an optional `docs/layout.md` as a single, constrained outline format.
 For example:
 
 ```markdown
@@ -31,7 +30,7 @@ Unlisted: exclude
 # Start here
 - [Overview](index.md)
 
-## Quickstart
+## Quickstart {expanded=true}
 - [Your first site](beginners-guide.md)
 - [Build and inspect](building.md)
 
@@ -42,15 +41,19 @@ Unlisted: exclude
 The headings express sections and groups; links express page titles, paths and
 order. The top lines express publication settings. A root README would use the
 exact relative target `../README.md`, never arbitrary traversal. A simple
-group attribute, such as `## Quickstart {expanded}`, could preserve the
-existing expansion option. The precise syntax needs a separate specification
-before implementation, especially escaping in titles and paths and useful
-line-numbered errors.
+group attribute `## Quickstart {expanded=true}` preserves the existing
+expansion option. `{expanded}` is an equivalent short form; omitting it or
+using `{expanded=false}` keeps the group collapsed unless one of its pages is
+active. Attributes are supported only on group headings. `Layout-Version: 1`
+is required; `Home` and `Unlisted` are optional with the JSON defaults. Titles
+and bare paths escape literal brackets, parentheses and backslashes with `\`;
+angle brackets around a path allow spaces. Unsupported lines fail with file
+and line context.
 
-`layout.json` must continue to load unchanged throughout v1.x. A project
-would use exactly one of `layout.json` and `layout.md`; both present would be
-an error. The new outline would map into the same validated navigation model,
-so publishing, auditing, search, and routes would not gain a second set of
+`layout.json` continues to load unchanged throughout v1.x. A project
+uses exactly one of `layout.json` and `layout.md`; both present are
+an error. The new outline maps into the same validated navigation model,
+so publishing, auditing, search, and routes do not gain a second set of
 rules. An explicit converter could help large existing sites migrate without
 rewriting their content.
 
@@ -67,7 +70,7 @@ rewriting their content.
 - **Keep only JSON:** compact entries improve the generated file, but nested
   editing remains the main authoring task.
 
-## Acceptance criteria for a follow-up implementation
+## Acceptance criteria
 
 - Existing schema-1 `layout.json` sites build without changes.
 - The two formats produce identical site models for equivalent layouts.

@@ -36,7 +36,7 @@ those documents:
 ```text
 docs/
 ├── docsprout.json   # project name and colours
-├── layout.json      # navigation order
+├── layout.json      # navigation order; layout.md is also supported
 └── index.md         # only for a project with no existing documentation
 ```
 
@@ -48,9 +48,9 @@ terminal to stop the preview server.
 
 That is a complete local documentation site. You can stop here and return when
 you are ready to add pages or publish it. `README.md` and `docs/**/*.md`
-are the only automatic candidates. `CHANGELOG.md`, `CONTRIBUTING.md`,
+(apart from `docs/layout.md`) are the only automatic candidates. `CHANGELOG.md`, `CONTRIBUTING.md`,
 `SECURITY.md` and `CODE_OF_CONDUCT.md` are reported for deliberate inclusion,
-never published by surprise. Once `docs/layout.json` exists it is entirely
+never published by surprise. Once a navigation layout exists it is entirely
 yours: add, remove, rename and reorder pages without DocSprout changing it.
 Newly generated layouts use `"unlisted": "exclude"`, so only listed pages are
 published; existing layouts retain their strict validation unless you
@@ -62,15 +62,15 @@ Commands perform actions. Configuration describes intent. There are no
 DocSprout commands for editing pages, sections or themes:
 
 - **Markdown** (`README.md`, `docs/*.md`) is your content.
-- **`docs/layout.json`** decides what is published: page objects, section
-  names, titles, order, the home page and the unlisted policy. Add a page by
-  adding one page object; reorder by moving objects; rename by changing
-  `"title"`; change the home page by editing the top-level `"home"`.
+- **`docs/layout.json` or `docs/layout.md`** decides what is published: sections,
+  titles, order, the home page and the unlisted policy. `init` creates JSON;
+  a source checkout after v1.1.10 can
+  [switch to a Markdown outline](docs/configuration.md#authoring-navigation-in-layoutmd).
 - **`docs/docsprout.json`** decides how it looks: name, colours, visual theme,
   logo, footer, banner and homepage presentation.
 
 `docsprout init` explains exactly this when it finishes. `docsprout serve`
-watches `README.md` and everything under `docs/`, including `layout.json` and
+watches `README.md` and everything under `docs/`, including either layout and
 `docsprout.json`, so you edit, save and reload.
 
 For a slower walkthrough with explanations and expected results, follow

@@ -117,10 +117,11 @@ def _init(root: Path) -> list[str]:
         )
         messages.append(f"Navigation sections: {sections}.")
     config_filename = LEGACY_CONFIG_FILENAME if discovery.has_legacy_dockit_config else CONFIG_FILENAME
+    layout_filename = "layout.md" if (docs / "layout.md").is_file() else "layout.json"
     messages.extend((
         "DocSprout is ready.",
         "  Write documentation: README.md and docs/*.md",
-        "  Add, rename, group or reorder pages:  docs/layout.json",
+        f"  Add, rename, group or reorder pages:  docs/{layout_filename}",
         f"  Change colours, logo and presentation:  docs/{config_filename}",
         "  Preview:  docsprout serve",
     ))

@@ -81,7 +81,7 @@ def discover_repository(root: Path) -> RepositoryDiscovery:
 
     documents = tuple(sorted(
         path.relative_to(docs).as_posix() for path in docs.rglob("*.md")
-        if path.is_file() and inside_root(path)
+        if path.is_file() and inside_root(path) and path != docs / "layout.md"
     )) if docs.is_dir() else ()
     ancillary = tuple(name for name in ANCILLARY_MARKDOWN if (root / name).is_file() and inside_root(root / name))
     project_name = root.name
@@ -96,7 +96,7 @@ def discover_repository(root: Path) -> RepositoryDiscovery:
         ancillary_documents=ancillary,
         has_docsprout_config=(docs / "docsprout.json").is_file(),
         has_legacy_dockit_config=(docs / "dockit.json").is_file(),
-        has_layout=(docs / "layout.json").is_file(),
+        has_layout=(docs / "layout.json").is_file() or (docs / "layout.md").is_file(),
     )
 
 

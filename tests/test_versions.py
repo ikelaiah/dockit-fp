@@ -103,6 +103,39 @@ class VersionedBuildTests(unittest.TestCase):
         self.assertEqual(2, result.release_count)
         self.assertTrue((root / "site" / "1.0.0" / "index.html").exists())
 
+    def test_build_all_reads_markdown_layouts_from_each_tag(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        self._git(root, "init")
+        self._git(root, "config", "user.email", "tests@example.test")
+        self._git(root, "config", "user.name", "Tests")
+        docs = root / "docs"
+        docs.mkdir()
+        (docs / "docsprout.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+        (docs / "index.md").write_text("# Old home", encoding="utf-8")
+        (docs / "layout.md").write_text(
+            "Layout-Version: 1\nHome: index.md\nUnlisted: exclude\n# Start\n- [Home](index.md)\n", encoding="utf-8",
+        )
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "v1")
+        self._git(root, "tag", "v1.0.0")
+        (docs / "index.md").write_text("# New home", encoding="utf-8")
+        (docs / "versions.json").write_text(json.dumps({
+            "schema_version": 1, "current": "2.0.0", "versions": [
+                {"release": "2.0.0", "source_ref": "v2.0.0"},
+                {"release": "1.0.0", "source_ref": "v1.0.0"},
+            ],
+        }), encoding="utf-8")
+        self._git(root, "add", ".")
+        self._git(root, "commit", "-m", "v2")
+        self._git(root, "tag", "v2.0.0")
+
+        result = build_all(root=root, output=root / "site")
+        self.assertEqual(2, result.release_count)
+        self.assertIn("Old home", (root / "site" / "1.0.0" / "index.html").read_text(encoding="utf-8"))
+        self.assertIn("New home", (root / "site" / "2.0.0" / "index.html").read_text(encoding="utf-8"))
+
     def test_build_all_does_not_publish_currently_excluded_documents(self) -> None:
         root = self._modern_history_repository()
 

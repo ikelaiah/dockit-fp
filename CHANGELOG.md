@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Support `docs/layout.md` as an optional navigation outline, including
+  `{expanded=true}` on collapsible groups. JSON layouts continue to work.
+
 ## 1.1.10
 
 A layout authoring and guidance patch. Existing schema-1 configuration keeps

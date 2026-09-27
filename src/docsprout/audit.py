@@ -104,7 +104,7 @@ def _audit_link(page: _AuditPage, line: int, target: str, pages: dict[str, _Audi
     target_page = pages.get(requested_source)
     if target_page is None:
         if (root / Path(requested_source)).is_file():
-            return _finding("DK002", "error", page, line, "Link targets unpublished Markdown", "The Markdown file exists but is not in layout.json navigation.", target)
+            return _finding("DK002", "error", page, line, "Link targets unpublished Markdown", "The Markdown file exists but is not in the navigation layout.", target)
         return _finding("DK001", "error", page, line, "Broken local page link", "The target is not part of the published documentation.", target)
     if marker and fragment not in {identifier for _level, _text, identifier in target_page.headings}:
         return _finding("DK003", "error", page, line, "Broken heading anchor", "The published page does not contain that heading anchor.", target)

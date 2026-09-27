@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Generate `layout.json` with one page per line so navigation is easier to
+  scan and edit. Existing layouts are left untouched.
+- Shorten the beginner layout walkthrough and document the compact style.
+
+### Fixed
+
+- Make `init` say when an existing layout controls publication instead of
+  claiming that detected Markdown was published automatically.
+
 ## 1.1.9
 
 A correctness and safety patch for auditing, previews and release archives.

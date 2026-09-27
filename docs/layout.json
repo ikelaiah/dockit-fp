@@ -110,7 +110,8 @@
             {"title": "Simple configuration", "path": "decisions/0009-simple-configuration-and-stable-customisation.md"},
             {"title": "v1.0 stable contract", "path": "decisions/0010-v1-stable-contract.md"},
             {"title": "DocSprout rebrand", "path": "decisions/0011-docsprout-rebrand.md"},
-            {"title": "Brand hero and proven contrast", "path": "decisions/0012-brand-hero-and-proven-contrast.md"}
+            {"title": "Brand hero and proven contrast", "path": "decisions/0012-brand-hero-and-proven-contrast.md"},
+            {"title": "Readable navigation (proposal)", "path": "decisions/0013-readable-navigation-authoring-proposal.md"}
           ]
         }
       ]

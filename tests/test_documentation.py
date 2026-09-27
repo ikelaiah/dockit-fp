@@ -100,11 +100,11 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertNotIn('Development Status :: 3 - Alpha', pyproject)
         self.assertIn('Development Status :: 5 - Production/Stable', pyproject)
 
-    def test_beginner_guide_shows_complete_docs_and_root_readme_layouts(self) -> None:
+    def test_beginner_guide_explains_the_docs_index_home_choice(self) -> None:
         beginner = (self.root / "docs" / "beginners-guide.md").read_text(encoding="utf-8")
 
-        self.assertIn('"home": {\n    "path": "README.md",\n    "source": "root"\n  }', beginner)
-        self.assertIn('"home": {\n  "path": "index.md"\n}', beginner)
+        self.assertIn("for a project that starts with `docs/index.md`", beginner)
+        self.assertIn('"path": "index.md"', beginner)
         self.assertIn('"unlisted": "exclude"', beginner)
 
     def test_writing_guide_is_language_neutral_and_result_focused(self) -> None:
@@ -119,12 +119,18 @@ class DocumentationUsabilityTests(unittest.TestCase):
         beginner = (self.root / "docs" / "beginners-guide.md").read_text(encoding="utf-8")
         configuration = (self.root / "docs" / "configuration.md").read_text(encoding="utf-8")
 
-        self.assertIn("Keep the existing `home` entry unchanged", beginner)
-        self.assertIn("Before the change, the file may look like this", beginner)
-        self.assertIn("After adding the page, the file may look like this", beginner)
-        self.assertIn('"title": "Quick start",\n  "path": "quick-start.md"', beginner)
-        self.assertIn('},\n        {\n          "title": "Quick start"', beginner)
-        self.assertNotIn('{"title": "Overview", "path": "index.md"}', beginner)
+        add_page_section = beginner.split("## 5. Add one useful page", 1)[1].split("## 6.", 1)[0]
+        example = add_page_section.split("```json\n", 1)[1].split("\n```", 1)[0]
+        layout = json.loads(example)
+        self.assertEqual({"path": "README.md", "source": "root"}, layout["home"])
+        self.assertEqual("exclude", layout["unlisted"])
+        self.assertEqual(
+            [
+                {"title": "Overview", "path": "README.md", "source": "root"},
+                {"title": "Quick start", "path": "quick-start.md"},
+            ],
+            layout["navigation"][0]["pages"],
+        )
         root_policy = "Only the repository-root `README.md` has special root-source support."
         self.assertIn(root_policy, beginner)
         self.assertIn(root_policy, configuration)

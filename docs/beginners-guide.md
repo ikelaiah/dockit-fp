@@ -136,73 +136,30 @@ You should see `Created sky-map.html`.
 
 Open `docs/layout.json`. It is now maintainer-owned: DocSprout never silently
 adds Markdown, reorders sections, renames entries or removes pages after this
-file exists. The root-README project from step 2 starts with this generated
-layout. Keep the existing `home` entry unchanged while adding the page.
-
-Before the change, the file may look like this:
+file exists. For the root-README project from step 2, keep `home` as it is
+and add `quick-start.md` after the Overview page. The complete layout then
+looks like this:
 
 ```json
 {
   "schema_version": 1,
-  "home": {
-    "path": "README.md",
-    "source": "root"
-  },
+  "home": {"path": "README.md", "source": "root"},
   "unlisted": "exclude",
   "navigation": [
     {
       "title": "Overview",
       "pages": [
-        {
-          "title": "Overview",
-          "path": "README.md",
-          "source": "root"
-        }
+        {"title": "Overview", "path": "README.md", "source": "root"},
+        {"title": "Quick start", "path": "quick-start.md"}
       ]
     }
   ]
 }
 ```
 
-Add this new page object to the same `pages` list:
-
-```json
-{
-  "title": "Quick start",
-  "path": "quick-start.md"
-}
-```
-
-After adding the page, the file may look like this:
-
-```json
-{
-  "schema_version": 1,
-  "home": {
-    "path": "README.md",
-    "source": "root"
-  },
-  "unlisted": "exclude",
-  "navigation": [
-    {
-      "title": "Overview",
-      "pages": [
-        {
-          "title": "Overview",
-          "path": "README.md",
-          "source": "root"
-        },
-        {
-          "title": "Quick start",
-          "path": "quick-start.md"
-        }
-      ]
-    }
-  ]
-}
-```
-
-In JSON lists, put a comma after each item except the last one.
+One line per page keeps the list easy to scan. In JSON lists, put a comma
+after each item except the last one. Run `docsprout check` after saving; it
+points to syntax errors and missing page files.
 
 `"unlisted": "exclude"` means navigation is the complete publication decision:
 Markdown under `docs/` stays private until you list it. The generated layout

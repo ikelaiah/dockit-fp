@@ -34,6 +34,31 @@ def _root_argument(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Project root (default: current directory)")
 
 
+def _initial_layout_text(home: dict, navigation: list[dict[str, object]]) -> str:
+    """Keep generated navigation easy to scan as the page list grows."""
+    lines = [
+        "{",
+        '  "schema_version": 1,',
+        '  "unlisted": "exclude",',
+        f'  "home": {json.dumps(home)},',
+        '  "navigation": [',
+    ]
+    for section_index, section in enumerate(navigation):
+        lines.extend((
+            "    {",
+            f'      "title": {json.dumps(section["title"])},',
+            '      "pages": [',
+        ))
+        pages = section["pages"]
+        for page_index, page in enumerate(pages):
+            comma = "," if page_index < len(pages) - 1 else ""
+            lines.append(f"        {json.dumps(page)}{comma}")
+        comma = "," if section_index < len(navigation) - 1 else ""
+        lines.extend(("      ]", f"    }}{comma}"))
+    lines.extend(("  ]", "}"))
+    return "\n".join(lines) + "\n"
+
+
 def _init(root: Path) -> list[str]:
     docs = root / "docs"
     resolve_config_path(docs)
@@ -61,8 +86,8 @@ def _init(root: Path) -> list[str]:
         home = next((page for page in pages if page.get("source") == "root"), None)
         if home is None:
             home = next((page for page in pages if page["path"] == "index.md"), pages[0])
-        layout = {"schema_version": 1, "unlisted": "exclude", "home": {key: home[key] for key in ("path", "source") if key in home}, "navigation": navigation}
-        (docs / "layout.json").write_text(json.dumps(layout, indent=2) + "\n", encoding="utf-8")
+        home_entry = {key: home[key] for key in ("path", "source") if key in home}
+        (docs / "layout.json").write_text(_initial_layout_text(home_entry, navigation), encoding="utf-8")
         created.append("docs/layout.json")
     detected = ["Git repository" if discovery.is_git_repository else "non-Git project"]
     if discovery.github_remote_url:
@@ -78,7 +103,10 @@ def _init(root: Path) -> list[str]:
         messages.append(f"Created: {', '.join(created)}.")
     else:
         messages.append("Existing configuration was left authoritative; no files were changed.")
-    messages.append("Published automatically: README.md and Markdown under docs/ only.")
+    if discovery.has_layout:
+        messages.append("Existing layout controls published pages.")
+    else:
+        messages.append("Published automatically: README.md and Markdown under docs/ only.")
     if discovery.ancillary_documents:
         messages.append(f"Available for explicit inclusion: {', '.join(discovery.ancillary_documents)}.")
     messages.append("Existing Markdown was left untouched.")

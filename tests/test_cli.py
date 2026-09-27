@@ -56,6 +56,8 @@ class CliTests(unittest.TestCase):
 
             layout = json.loads((docs / "layout.json").read_text(encoding="utf-8"))
             self.assertEqual("exclude", layout["unlisted"])
+            layout_text = (docs / "layout.json").read_text(encoding="utf-8")
+            self.assertIn('        {"title": "Quick Start", "path": "getting-started/quick-start.md"}', layout_text)
             pages = [page for section in layout["navigation"] for page in section["pages"]]
             self.assertEqual(
                 [
@@ -93,6 +95,8 @@ class CliTests(unittest.TestCase):
             with redirect_stdout(io.StringIO()):
                 self.assertEqual(0, main(["init", "--root", str(root)]))
             self.assertEqual(layout_before, (docs / "layout.json").read_text(encoding="utf-8"))
+            self.assertIn("Existing layout controls published pages.", output.getvalue())
+            self.assertNotIn("Published automatically:", output.getvalue())
 
     def test_init_keeps_an_existing_docs_index_and_excludes_arbitrary_root_markdown(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

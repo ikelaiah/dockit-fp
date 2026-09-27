@@ -141,6 +141,10 @@ There are no DocSprout commands for these operations:
 | Change the home page | Change the top-level `"home"` object (its `path` must stay a listed page) |
 | Publish or unpublish a page | Add or remove its page object under `"unlisted": "exclude"` |
 
+Keep each page object on one line, as in the example above. This makes a
+long navigation list easier to scan and move. `docsprout init` now writes
+new layouts this way; it does not reformat an existing layout.
+
 Sections are static headers and always visible. Groups inside a section are
 collapsible: by default only the group containing the current page starts
 expanded; every other group starts collapsed but stays one click away. Add

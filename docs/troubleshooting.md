@@ -26,7 +26,7 @@ is the same.
 
 ### `required when modern documentation configuration exists`
 
-A `docs/layout.json` exists without its identity file. Create
+A `docs/layout.json` or `docs/layout.md` exists without its identity file. Create
 `docs/docsprout.json`, or remove the layout if the project should use
 configuration-free discovery. See [Configuration](configuration.md).
 
@@ -77,13 +77,14 @@ the path. Paths are relative to the repository root, so a logo saved in
 
 ### `navigation page '...' does not exist`
 
-`layout.json` lists a Markdown file that is not on disk. Create the file or
-correct its `path`.
+The navigation layout lists a Markdown file that is not on disk. Create the
+file or correct its path.
 
 ### `unlisted Markdown document '...'`
 
 A Markdown file under `docs/` is absent from the navigation. Add it to
-`layout.json`, or set `"unlisted": "exclude"` to keep drafts unpublished. See
+your navigation layout, or set `unlisted` to `exclude` to keep drafts
+unpublished. See
 [Pages, home page and navigation](configuration.md#pages-home-page-and-navigation).
 
 ## Build and output

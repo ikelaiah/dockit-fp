@@ -7,9 +7,10 @@ deliberately **not** stable.
 ## Schema-version-1 configuration
 
 The following field families are the stable customisation contract for 1.x.
-Every modern file starts with `"schema_version": 1`; unknown fields are
-errors rather than silently ignored. Optional fields may be omitted to keep the
-defaults.
+JSON configuration files use `"schema_version": 1`; the optional Markdown
+navigation layout uses `Layout-Version: 1`. Unknown fields and outline settings
+are errors rather than silently ignored. Optional fields may be omitted to
+keep the defaults.
 
 | File/object | Stable fields |
 | --- | --- |
@@ -21,6 +22,7 @@ defaults.
 | `identity` | `logo`, `footer`, `links` |
 | `homepage` | `capabilities`, `sections` (`capabilities`, `banner`, `introduction`, `release_context`) |
 | `layout.json` | `schema_version`, `home`, `unlisted`, `navigation` |
+| `layout.md` | `Layout-Version: 1`, optional `Home` and `Unlisted`, `#` sections, `##` groups, page links; one layout file per project |
 | page/section entries | `title`, `path`, `source`; section entries contain `pages` |
 | `docs/versions.json` | `schema_version`, `current`, `versions` (`release`, `source_ref`) |
 

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "project": {
+    "name": "Markdown layout example",
+    "description": "A small documentation site with navigation written as Markdown"
+  }
+}

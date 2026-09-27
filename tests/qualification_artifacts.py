@@ -29,7 +29,7 @@ def _check_wheel(path: Path, version: str, failures: list[str]) -> int:
         expected_modules = (
             "__init__.py", "__main__.py", "archive.py", "assets.py", "audit.py",
             "build.py", "cli.py", "config.py", "discovery.py", "errors.py",
-            "github_pages.py", "highlight.py", "markdown.py", "models.py",
+            "github_pages.py", "highlight.py", "layout_markdown.py", "markdown.py", "models.py",
             "safety.py", "versions.py",
         )
         for module in expected_modules:

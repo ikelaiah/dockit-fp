@@ -9,11 +9,11 @@ Git when possible.
 | File | What it controls | When you need it |
 | --- | --- | --- |
 | `docs/docsprout.json` | Project identity, appearance and home-page presentation | Created by `init` |
-| `docs/layout.json` | Published pages, navigation order, home page and unlisted policy | Created by `init` |
+| `docs/layout.json` or `docs/layout.md` | Published pages, navigation order, home page and unlisted policy | `init` creates JSON; Markdown is optional |
 | `docs/versions.json` | Published release history | Only for a historical site |
 
-These files use JSON. Keep the commas, quotation marks and braces exactly
-paired. Every file starts with `"schema_version": 1`; leave that value alone.
+The generated files use JSON. Keep the commas, quotation marks and braces exactly
+paired. Each JSON file starts with `"schema_version": 1`; leave that value alone.
 If the punctuation is wrong, `docsprout check` names the file and error.
 
 > [!NOTE] Upgrading from DocKit? The identity file may initially be named
@@ -55,7 +55,7 @@ with a preset. You can choose exact colours later in [Themes](themes.md).
 
 ## Pages, home page and navigation
 
-`docs/layout.json` decides what is public. **Navigation** is the ordered list
+Your navigation layout decides what is public. **Navigation** is the ordered list
 of published pages and sections. Its top-level `home` object selects which
 listed Markdown page becomes `index.html`, the page readers see at the site's
 root. `docsprout.json.homepage` is different: it only controls the presentation of
@@ -120,6 +120,53 @@ New layouts made by `docsprout init` use `"exclude"`. Existing layouts are
 never rewritten; add the field only when you want this explicit publication
 policy. There are no include/exclude patterns: the navigation list is the
 complete publication decision.
+
+## Authoring navigation in `layout.md`
+
+You can replace `docs/layout.json` with a small Markdown outline. Keep exactly
+one of those two files; DocSprout reports an error if both exist. `init` still
+creates JSON for new projects and leaves either existing layout untouched.
+To switch formats, write `docs/layout.md`, move `layout.json` out of `docs/`,
+then run `docsprout check` before discarding the old file.
+
+```markdown
+Layout-Version: 1
+Home: index.md
+Unlisted: exclude
+
+# Start here
+- [Overview](index.md)
+
+## Quickstart {expanded=true}
+  - [Your first site](beginners-guide.md)
+  - [Build and inspect](building.md)
+
+# Reference
+- [Configuration](configuration.md)
+```
+
+`#` headings are always visible section labels. `##` headings create groups
+that readers can fold. A group starts closed unless its page is active. Add
+`{expanded=true}` to keep it open on every page; `{expanded=false}` or no
+attribute keeps the default. The short form `{expanded}` also means true.
+Attributes belong only on group headings. Indent group pages by two spaces;
+leave pages directly under a section unindented. This lets a section page
+follow a group without changing its position. Links list page titles, paths
+and order.
+
+`Layout-Version: 1` is required. `Home:` selects a listed page; if omitted,
+DocSprout uses the same home inference as JSON. `Unlisted:` accepts `exclude`
+or `error` and defaults to `error`. For the repository-root README, use
+`../README.md` in both `Home:` and its page link. This exact target is the
+only allowed parent path. `layout.md` itself is configuration and never a page.
+
+Use one page link per line. Paths with spaces can use angle brackets, such as
+`- [First steps](<first steps.md>)`. In titles and bare paths, prefix literal
+brackets, parentheses or a backslash with `\`. Other indentation, deeper headings,
+freeform Markdown and extra attributes are unsupported. The parser reports
+malformed lines with their file and line number. The regular JSON layout
+remains supported and uses the same navigation validation. A complete small
+project lives at `examples/markdown-layout/` in the source repository.
 
 ## Editing `layout.json` directly
 

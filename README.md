@@ -1,6 +1,6 @@
 # 🌱 DocSprout
 
-[![CI](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml?query=branch%3Amain) [![Docs](https://img.shields.io/website?url=https%3A%2F%2Fikelaiah.github.io%2Fdocsprout%2F1.1.10%2F&label=docs)](https://ikelaiah.github.io/docsprout/1.1.10/) [![Latest release](https://img.shields.io/github/v/release/ikelaiah/docsprout?display_name=tag&sort=semver)](https://github.com/ikelaiah/docsprout/releases/latest) [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB?logo=python&logoColor=white)](https://github.com/ikelaiah/docsprout/blob/main/docs/qualification.md#supported-python-versions) [![License: MIT](https://img.shields.io/github/license/ikelaiah/docsprout)](https://github.com/ikelaiah/docsprout/blob/main/LICENSE)
+[![CI](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ikelaiah/docsprout/actions/workflows/ci.yml?query=branch%3Amain) [![Docs](https://img.shields.io/website?url=https%3A%2F%2Fikelaiah.github.io%2Fdocsprout%2F1.2.0%2F&label=docs)](https://ikelaiah.github.io/docsprout/1.2.0/) [![Latest release](https://img.shields.io/github/v/release/ikelaiah/docsprout?display_name=tag&sort=semver)](https://github.com/ikelaiah/docsprout/releases/latest) [![Python 3.10–3.14](https://img.shields.io/badge/python-3.10%E2%80%933.14-3776AB?logo=python&logoColor=white)](https://github.com/ikelaiah/docsprout/blob/main/docs/qualification.md#supported-python-versions) [![License: MIT](https://img.shields.io/github/license/ikelaiah/docsprout)](https://github.com/ikelaiah/docsprout/blob/main/LICENSE)
 
 ![DocSprout banner — Build documentation people can use.](docs/assets/docsprout-banner.svg)
 
@@ -23,7 +23,7 @@ Open a terminal in your project's top-level folder—the folder that normally
 contains files such as `README.md`, `src/` or `.git/`—and run:
 
 ```bash
-python -m pip install "https://github.com/ikelaiah/docsprout/archive/refs/tags/v1.1.10.zip"
+python -m pip install "https://github.com/ikelaiah/docsprout/archive/refs/tags/v1.2.0.zip"
 docsprout init
 docsprout serve
 ```
@@ -36,7 +36,7 @@ those documents:
 ```text
 docs/
 ├── docsprout.json   # project name and colours
-├── layout.json      # navigation order
+├── layout.json      # navigation order; layout.md is also supported
 └── index.md         # only for a project with no existing documentation
 ```
 
@@ -48,9 +48,9 @@ terminal to stop the preview server.
 
 That is a complete local documentation site. You can stop here and return when
 you are ready to add pages or publish it. `README.md` and `docs/**/*.md`
-are the only automatic candidates. `CHANGELOG.md`, `CONTRIBUTING.md`,
+(apart from `docs/layout.md`) are the only automatic candidates. `CHANGELOG.md`, `CONTRIBUTING.md`,
 `SECURITY.md` and `CODE_OF_CONDUCT.md` are reported for deliberate inclusion,
-never published by surprise. Once `docs/layout.json` exists it is entirely
+never published by surprise. Once a navigation layout exists it is entirely
 yours: add, remove, rename and reorder pages without DocSprout changing it.
 Newly generated layouts use `"unlisted": "exclude"`, so only listed pages are
 published; existing layouts retain their strict validation unless you
@@ -62,15 +62,14 @@ Commands perform actions. Configuration describes intent. There are no
 DocSprout commands for editing pages, sections or themes:
 
 - **Markdown** (`README.md`, `docs/*.md`) is your content.
-- **`docs/layout.json`** decides what is published: page objects, section
-  names, titles, order, the home page and the unlisted policy. Add a page by
-  adding one page object; reorder by moving objects; rename by changing
-  `"title"`; change the home page by editing the top-level `"home"`.
+- **`docs/layout.json` or `docs/layout.md`** decides what is published: sections,
+  titles, order, the home page and the unlisted policy. `init` creates JSON;
+  you can [switch to a Markdown outline](docs/configuration.md#authoring-navigation-in-layoutmd).
 - **`docs/docsprout.json`** decides how it looks: name, colours, visual theme,
   logo, footer, banner and homepage presentation.
 
 `docsprout init` explains exactly this when it finishes. `docsprout serve`
-watches `README.md` and everything under `docs/`, including `layout.json` and
+watches `README.md` and everything under `docs/`, including either layout and
 `docsprout.json`, so you edit, save and reload.
 
 For a slower walkthrough with explanations and expected results, follow

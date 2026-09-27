@@ -5,7 +5,7 @@ installed from a built wheel or sdist, from a working directory outside the
 source tree. Every path used here is a fresh temporary directory, so a passing
 run is evidence that the package does not depend on repository-only files.
 
-    python qualification_installed.py --expected-version 1.1.10
+    python qualification_installed.py --expected-version 1.2.0
 
 The script is deliberately self-contained (stdlib only) so it can be copied or
 run from any location without importing anything from the repository.
@@ -32,7 +32,7 @@ from docsprout.github_pages import CANONICAL_WORKFLOW_RELATIVE_PATH, render_work
 
 EXPECTED_MODULES = (
     "archive", "assets", "audit", "build", "cli", "config", "discovery", "errors",
-    "github_pages", "highlight", "markdown", "models", "safety", "versions",
+    "github_pages", "highlight", "layout_markdown", "markdown", "models", "safety", "versions",
 )
 
 
@@ -117,6 +117,7 @@ def qualify_installation(version: str) -> None:
     require(legacy_script_output.stdout.strip() == f"dockit-fp {version}", "legacy console script version mismatch")
 
     qualify_new_project()
+    qualify_markdown_layout()
     qualify_existing_repository()
     qualify_legacy_configuration()
     qualify_git_pages_walkthrough(version)
@@ -155,6 +156,29 @@ def qualify_new_project() -> None:
         katex_fonts = list((site / "assets" / "katex" / "fonts").glob("*.woff2"))
         require(len(katex_fonts) >= 3, f"built site lacks KaTeX fonts ({len(katex_fonts)} found)")
         _require_no_path_leak(site, root)
+
+
+def qualify_markdown_layout() -> None:
+    with tempfile.TemporaryDirectory(prefix="ds-installed-layout-md-") as temporary:
+        root = Path(temporary)
+        docs = root / "docs"
+        docs.mkdir()
+        (docs / "docsprout.json").write_text(json.dumps({
+            "schema_version": 1, "project": {"name": "Markdown layout"},
+        }), encoding="utf-8")
+        (docs / "index.md").write_text("# Home", encoding="utf-8")
+        (docs / "guide.md").write_text("# Guide", encoding="utf-8")
+        (docs / "layout.md").write_text(
+            "Layout-Version: 1\nHome: index.md\nUnlisted: exclude\n"
+            "# Start\n## Quickstart {expanded=true}\n  - [Guide](guide.md)\n"
+            "- [Home](index.md)\n",
+            encoding="utf-8",
+        )
+        require("2 page(s)" in require_run(root, "check"), "installed package did not load layout.md")
+        require_run(root, "build", "--output", str(root / "site"))
+        home = (root / "site" / "index.html").read_text(encoding="utf-8")
+        require('<details class="nav-group" open>' in home, "expanded Markdown group did not render")
+        require(not (root / "site" / "layout.html").exists(), "layout.md was published as a page")
 
 
 def qualify_existing_repository() -> None:

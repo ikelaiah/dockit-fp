@@ -1,7 +1,7 @@
-# Qualification evidence for DocSprout v1.1.10
+# Qualification evidence for DocSprout v1.2.0
 
-DocSprout v1.1.10 is a layout authoring and guidance patch with the v1.0.0
-stable contract preserved. The claims below
+DocSprout v1.2.0 adds a Markdown navigation outline while preserving JSON
+layout compatibility and the v1.0.0 stable contract. The claims below
 are the contract that CI and the maintained fixtures exercise. Every row names
 how it is verified. "Supported" means the combination is run by automated
 qualification on every pull request and release, not merely believed to work.
@@ -17,7 +17,8 @@ image-alt escaping and custom-CSS contract evidence, v1.1.7 adds the
 inline-code literalness and documentation-accuracy evidence, v1.1.8 adds
 the protected math/resolver/auditor evidence, and v1.1.9 adds the audit,
 preview and release-safety regressions below. v1.1.10 adds compact generated
-navigation and accurate `init` publication guidance.
+navigation and accurate `init` publication guidance. v1.2.0 adds Markdown
+layout parsing, group expansion, and a full-site migration from JSON.
 
 Evidence levels: **automated** rows run in CI with no browser or network
 dependency; **manual** rows are explicit review steps; **unavailable** rows are
@@ -272,6 +273,16 @@ site configuration; no schema, route or token value changes:
   the customisation pages state a reading order, the two recipe pages
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
+
+## v1.2.0 additions
+
+- **Compatible authoring formats**: `layout.md` and `layout.json` produce the
+  same validated navigation model; projects with both files fail explicitly.
+  Tests cover the home page, root README, groups, expansion, escaping, unlisted
+  policy, malformed lines, `init`, normal builds and historical builds.
+- **Maintained site migration**: DocSprout's 41-page layout is now Markdown.
+  Documentation tests check its page order, section membership, home page and
+  Quickstart expansion; `check` and strict audit run on this format in CI.
 
 ## v1.1.10 additions
 

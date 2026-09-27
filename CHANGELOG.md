@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.2.1
+
+A reading-layout patch. No configuration, route, theme-specific CSS or public
+token changes are required. Update package and workflow pins to `v1.2.1` and
+rebuild the site.
+
+### Changed
+
+- Show each reading page's section and subsection above its title, and show
+  destination context in Previous and Next links.
+- Keep the page outline in a closed disclosure at 1024px and below. Its active
+  section now matches the desktop outline, including `aria-current`.
+- Remove the empty outline column on reading pages without section headings.
+
+### Fixed
+
+- Keep headings reached through the small-screen outline clear of the sticky
+  header.
+
 ## 1.2.0
 
 An optional Markdown navigation format. Existing JSON layouts keep working;

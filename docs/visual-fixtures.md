@@ -47,11 +47,14 @@ that Previous names its destination's section. Expand the inline outline with
 the keyboard at 1024px and below, follow a nested heading link, and check that
 the heading is visible below the sticky header. Reopen the outline and check
 that the current section is marked, as it is in the desktop outline. On
-`build/minimal/quick-start.html`,
-check that a page without section headings has no empty outline or reserved
-right column, and that Previous names the destination's section. Repeat these
-checks in print preview: the section label remains, while page navigation and
-both versions of the outline are omitted.
+`build/minimal/quick-start.html`, check that a page without section headings
+has no empty outline or reserved right column, and that Previous names the
+destination's section. Repeat these checks in print preview: the section label
+remains, while page navigation and both versions of the outline are omitted.
+
+With a screen reader, confirm that the disclosure announces its collapsed and
+expanded state, the "Page outline" navigation is labelled, and the current
+section link is announced after opening it.
 
 The fixture sets `layout.content_width` to `wide` so table and code behavior is
 easy to inspect. The maintained minimal example uses `compact`; DocSprout's own

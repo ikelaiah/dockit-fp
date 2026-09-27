@@ -9,7 +9,8 @@ easier to repair than a broken public tag.
 ## Before either kind of site
 
 - [ ] Read the changed pages as someone new to the project.
-- [ ] Run `docsprout doctor` and resolve every line beginning with `ERROR`.
+- [ ] Run `docsprout doctor` and resolve every line beginning with `ERROR`,
+      except the pending tag described below for a historical-release PR.
 - [ ] Run `docsprout check` and confirm the reported page total makes sense.
 - [ ] Run `docsprout audit --strict` and resolve every error and warning.
 - [ ] Run `docsprout build --output build/docs-site` and open the local site.
@@ -20,6 +21,11 @@ easier to repair than a broken public tag.
       looking at the page source (the `custom.css` link must come after
       `site.css`).
 - [ ] Confirm **Settings → Pages → Source** is **GitHub Actions**.
+
+During a historical-release PR, `doctor` reports the new `vX.Y.Z` tag as
+missing because the tag must point to the merged commit. Do not tag the PR
+branch to silence that expected message. Resolve other errors before the PR,
+then rerun `doctor` after the merge and tag.
 
 ### Optional offline archive
 
@@ -56,17 +62,18 @@ This path updates the public site from a branch such as `main`.
 ## Historical site
 
 This path publishes an immutable site for every listed release. In the example
-below, replace `1.2.0` with your version.
+below, replace `1.2.1` with your version.
 
-1. Add release `1.2.0` and source ref `v1.2.0` to `docs/versions.json`. Set
-   `current` to `1.2.0`.
+1. Add release `1.2.1` and source ref `v1.2.1` to `docs/versions.json`. Set
+   `current` to `1.2.1`.
 2. Run `docsprout check`.
-3. Commit all release files, including the documentation, manifest and workflow,
-   on a branch named `release/vX.Y.Z`:
+3. Commit all release files, including package metadata, documentation,
+   examples and workflows, on a branch named `release/vX.Y.Z`:
 
    ```bash
-   git add docs .github/workflows
-   git commit -m "Prepare v1.2.0 documentation"
+   git add pyproject.toml src/docsprout/__init__.py README.md CHANGELOG.md docs .github examples tests
+   git diff --cached --check
+   git commit -m "Prepare v1.2.1 documentation"
    ```
 
 4. Push the qualified branch and open a PR against `main`. Wait for every
@@ -76,7 +83,7 @@ below, replace `1.2.0` with your version.
 5. Check out the merged `main` commit and create the tag on that exact commit:
 
    ```bash
-   git tag -a v1.2.0 -m "v1.2.0"
+   git tag -a v1.2.1 -m "v1.2.1"
    ```
 
 6. Run the release checks and historical build:
@@ -93,7 +100,7 @@ below, replace `1.2.0` with your version.
 8. Push the annotated tag (the merge commit is already on `main`):
 
    ```bash
-   git push origin v1.2.0
+   git push origin v1.2.1
    ```
 
 9. Create the GitHub Release from the tag. Confirm both CI and the Documentation
@@ -104,9 +111,9 @@ below, replace `1.2.0` with your version.
 ## If you find a mistake
 
 If the tag exists only on your computer, correct and commit the files, delete
-the local tag with `git tag -d v1.2.0`, then create it again on the corrected
+the local tag with `git tag -d v1.2.1`, then create it again on the corrected
 commit.
 
 If the tag has been pushed, do not move or replace it. Publish the correction
-as a new patch release, such as `v1.2.1`, so links and historical documentation
+as a new patch release, such as `v1.2.2`, so links and historical documentation
 remain trustworthy.

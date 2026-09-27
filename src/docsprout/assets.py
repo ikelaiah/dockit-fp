@@ -139,7 +139,7 @@ html[data-visual-theme="e-ink"] ::selection,html[data-visual-theme="e-ink"]::sel
 .search-results a{display:block;padding:.7rem .75rem;border-radius:.25rem;color:var(--dk-text);text-decoration:none}.search-results small{display:block;margin-top:.2rem;color:var(--dk-muted);font-size:.76rem;line-height:1.45}.search-results mark{padding:0 .1em;background:color-mix(in srgb,var(--dk-accent) 22%,transparent);border-radius:.1rem;color:var(--dk-text);font-weight:700}.search-empty{margin:.25rem;padding:.7rem .75rem;color:var(--dk-muted);font-size:.82rem}
 .mobile-nav{display:none}.toc{position:sticky;top:6rem;align-self:start;max-height:calc(100vh - 7rem);overflow:auto;padding-left:1rem;border-left:1px solid var(--dk-border);font-size:.8rem;line-height:1.4;color:var(--dk-muted);scrollbar-color:var(--dk-border) transparent;scrollbar-width:thin}
 .inline-toc{display:none}
-.inline-toc summary{font-family:var(--dk-font-ui);font-size:.86rem;font-weight:700}
+.inline-toc summary{padding:.65rem 0;font-family:var(--dk-font-ui);font-size:.86rem;font-weight:700}
 .inline-toc nav{margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--dk-border)}
 .prose .inline-toc a{display:block;padding:.5rem .25rem;color:var(--dk-text);font-family:var(--dk-font-ui);font-size:.85rem;font-weight:500;line-height:1.4;text-decoration:none;overflow-wrap:anywhere}
 .prose .inline-toc a:hover{color:var(--dk-interactive);text-decoration:underline}

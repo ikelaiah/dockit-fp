@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.2.2
+
+A reading and link-validation patch. No configuration, route, machine-format,
+public CSS token or dependency change is required. Update package and workflow
+pins to `v1.2.2`, then rebuild.
+
+### Changed
+
+- Add a keyboard skip link to every generated page. On phones, the sticky
+  header reduces its brand row after scrolling while keeping search and
+  settings available.
+- Measure reading progress against article content instead of the whole page.
+- Lead the qualification guide with current support information and clarify
+  the maintainer architecture path.
+
+### Fixed
+
+- Reject broken same-page heading fragments during `check` and `build`.
+- Reject links to missing or unpublished Markdown instead of copying a private
+  Markdown file into the output as an asset.
+
 ## 1.2.1
 
 A reading-layout patch. No configuration, route, theme-specific CSS or public

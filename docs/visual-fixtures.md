@@ -30,7 +30,7 @@ errors or warnings.
 
 | View | Width | Checks |
 | --- | ---: | --- |
-| Phone | 320px, 360px and 390px | Native navigation disclosure, visible copy control, no page overflow; the hero stacks its banner band above the copy, action buttons wrap, oversized Markdown images stay within the prose column and small badges remain intrinsic |
+| Phone | 320px, 360px and 390px | Native navigation disclosure, visible copy control, no page overflow; the header loses its brand row after scrolling while search and settings stay available; the hero stacks its banner band above the copy, action buttons wrap, oversized Markdown images stay within the prose column and small badges remain intrinsic |
 | Tablet | 768px | Search and controls wrap cleanly, readable table scrolling, responsive Markdown images; the long-form page has a closed, keyboard-operable “On this page” disclosure after its title |
 | Narrow desktop | 1024px | Article measure and heading rhythm remain balanced; the long-form page uses the inline outline instead of a right rail |
 | Desktop | 1440px | Sidebar, article and on-page outline align without crowding; the hero banner spans the content width without cutting its text; card icons align on the card baseline; oversized Markdown images stay within the prose column |
@@ -51,6 +51,13 @@ that the current section is marked, as it is in the desktop outline. On
 has no empty outline or reserved right column, and that Previous names the
 destination's section. Repeat these checks in print preview: the section label
 remains, while page navigation and both versions of the outline are omitted.
+
+From the top of each page, press Tab once and use **Skip to content**. Focus
+should move to the article below the header. On a phone, scroll until the
+brand row collapses, then focus the brand with the keyboard to reveal it
+without hiding search or settings. On the long-form page, the progress bar
+should reach its end as the last article content reaches the viewport bottom,
+before the page navigation and footer.
 
 With a screen reader, confirm that the disclosure announces its collapsed and
 expanded state, the "Page outline" navigation is labelled, and the current

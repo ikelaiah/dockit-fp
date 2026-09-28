@@ -93,13 +93,13 @@ class DocumentationUsabilityTests(unittest.TestCase):
     def test_release_metadata_and_version_manifest_agree(self) -> None:
         manifest = json.loads((self.root / "docs" / "versions.json").read_text(encoding="utf-8"))
 
-        self.assertEqual("1.2.1", __version__)
+        self.assertEqual("1.2.2", __version__)
         self.assertEqual(__version__, manifest["current"])
         self.assertEqual(f"v{__version__}", manifest["versions"][0]["source_ref"])
 
         pyproject = (self.root / "pyproject.toml").read_text(encoding="utf-8")
         self.assertIn('name = "docsprout"', pyproject)
-        self.assertIn('version = "1.2.1"', pyproject)
+        self.assertIn('version = "1.2.2"', pyproject)
         self.assertIn('license = "MIT"', pyproject)
         self.assertIn('name = "DocSprout contributors"', pyproject)
         self.assertNotIn('Development Status :: 3 - Alpha', pyproject)
@@ -111,6 +111,15 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertIn("for a project that starts with `docs/index.md`", beginner)
         self.assertIn('"path": "index.md"', beginner)
         self.assertIn('"unlisted": "exclude"', beginner)
+
+    def test_qualification_leads_with_current_support(self) -> None:
+        qualification = (self.root / "docs" / "qualification.md").read_text(encoding="utf-8")
+        introduction = qualification.split("## Supported Python versions", 1)[0]
+
+        self.assertIn("## Current support at a glance", introduction)
+        self.assertIn("Python 3.10–3.14", introduction)
+        self.assertIn("Linux, Windows and macOS", introduction)
+        self.assertNotIn("The v0.17 and v0.18 matrices", introduction)
 
     def test_writing_guide_is_language_neutral_and_result_focused(self) -> None:
         guide = (self.root / "docs" / "writing-great-docs.md").read_text(encoding="utf-8")
@@ -286,7 +295,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         self.assertIn("wheel", qualification)
         self.assertIn("sdist", qualification)
         self.assertIn("## Manual browser/keyboard matrix", qualification)
-        self.assertIn("# Qualification evidence for DocSprout v1.2.1", qualification)
+        self.assertIn("# Qualification evidence for DocSprout v1.2.2", qualification)
         self.assertIn("Browser automation is not part of CI", qualification)
         self.assertIn("ruff check", qualification)
         self.assertIn("ruff check .", ci)
@@ -339,7 +348,7 @@ class DocumentationUsabilityTests(unittest.TestCase):
         guide = (self.root / "docs" / "building.md").read_text(encoding="utf-8")
         readme = (self.root / "README.md").read_text(encoding="utf-8")
 
-        self.assertIn("docsprout build --release 1.2.1 --offline-archive", guide)
+        self.assertIn("docsprout build --release 1.2.2 --offline-archive", guide)
         self.assertIn("`--root <folder>`", guide)
         self.assertIn("Status: preview-ready", guide)
         self.assertIn("docs/building.md", readme)

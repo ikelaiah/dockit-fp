@@ -81,7 +81,7 @@ class AccessibilityQualificationTests(unittest.TestCase):
         for name, site in (("fixture", self.fixture), ("DocSprout", self.docsprout)):
             with self.subTest(site=name):
                 for route, page in site.files.items():
-                    self.assertNotRegex(page, INTERACTIVE_ATTRIBUTE, route)
+                    self.assertNotRegex(page.replace('id="content" tabindex="-1"', 'id="content"'), INTERACTIVE_ATTRIBUTE, route)
                     interactive = {tag for tag in _open_tags(page) if tag in NATIVE_INTERACTIVE}
                     self.assertTrue({"input", "select", "summary", "a"} <= interactive, route)
 
@@ -95,6 +95,14 @@ class AccessibilityQualificationTests(unittest.TestCase):
             self.assertIn(f'html[data-visual-theme="{theme}"]', css)
         self.assertIn("@media(forced-colors:active)", css)
         self.assertIn("outline-color:Highlight", css)
+
+    def test_keyboard_readers_can_skip_repeated_navigation(self) -> None:
+        for name, site in (("fixture", self.fixture), ("DocSprout", self.docsprout)):
+            with self.subTest(site=name):
+                for route, page in site.files.items():
+                    self.assertLess(page.index('<a class="skip-link" href="#content">Skip to content</a>'), page.index('<header class="site-header">'), route)
+                    self.assertIn('<main class="prose" id="content" tabindex="-1"', page, route)
+                self.assertIn('.skip-link:focus{', site.css)
 
     def test_search_is_keyboard_operable_and_announced(self) -> None:
         page = self.fixture.files["index.html"]

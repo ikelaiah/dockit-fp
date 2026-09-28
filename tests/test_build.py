@@ -552,6 +552,38 @@ class BuildSiteTests(unittest.TestCase):
             with self.assertRaisesRegex(DocSproutError, "unsafe URL"):
                 build_site(root=root, output=root / "site", release="1.0.0")
 
+    def test_rejects_broken_same_page_heading_fragment(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home\n\n[Missing](#absent)\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(DocSproutError, "heading fragment #absent"):
+                build_site(root=root, output=root / "site", release="dev")
+
+    def test_rejects_links_to_unpublished_or_missing_markdown(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            docs.mkdir()
+            (docs / "index.md").write_text("# Home\n\n[Private](private.md)\n", encoding="utf-8")
+            (docs / "private.md").write_text("# Private\n", encoding="utf-8")
+            (docs / "docsprout.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "home": {"path": "index.md"},
+                "unlisted": "exclude",
+                "navigation": [{"title": "Docs", "pages": [{"title": "Home", "path": "index.md"}]}],
+            }), encoding="utf-8")
+
+            with self.assertRaisesRegex(DocSproutError, "unpublished Markdown"):
+                build_site(root=root, output=root / "site", release="dev")
+
+            (docs / "index.md").write_text("# Home\n\n[Missing](missing.md)\n", encoding="utf-8")
+            with self.assertRaisesRegex(DocSproutError, "Markdown page 'missing.md' does not exist"):
+                build_site(root=root, output=root / "site", release="dev")
+
     def test_escapes_configuration_values_in_the_html_shell(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

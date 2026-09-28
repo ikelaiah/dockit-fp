@@ -269,6 +269,7 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
         "</head><body>"
     )
     site_header = (
+        '<a class="skip-link" href="#content">Skip to content</a>'
         '<div class="reading-progress" aria-hidden="true"><span></span></div>'
         '<header class="site-header"><div class="topbar">'
         f'<a class="brand" href="{home_route}">{brand_identity}<span>{html.escape(config.name)}</span> <em>docs</em></a>'
@@ -289,7 +290,7 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
     toc_aside = f'<aside class="toc" aria-label="On this page">{toc}</aside>' if homepage or toc_links else ""
     document_body = (
         f'<div class="{shell_class}"><nav class="sidebar" aria-label="Documentation navigation">{nav}</nav>'
-        f'<main class="prose" id="content"{main_context}>{hero}{body}{page_navigation}</main>'
+        f'<main class="prose" id="content" tabindex="-1"{main_context}>{hero}{body}{page_navigation}</main>'
         f'{toc_aside}</div>'
     )
     document_close = (
@@ -367,7 +368,11 @@ def build_site(
         def resolve(target: str) -> str:
             target = _safe_url(target)
             parsed = urlsplit(target)
-            if parsed.scheme or target.startswith("#"):
+            if parsed.scheme:
+                return target
+            if target.startswith("#"):
+                if target[1:] not in anchors[page.path]:
+                    raise DocSproutError(f"{docs / page.path}: heading fragment {target} does not exist in {page.path}")
                 return target
             document, marker, fragment = target.partition("#")
             current_source = page_source_reference(page)
@@ -379,6 +384,12 @@ def build_site(
                 if requested_source == "README.md" or not requested_source.startswith("docs/"):
                     raise DocSproutError(f"Markdown: unsafe local link {target!r}")
                 source_asset = root / requested_source
+                if requested_source.lower().endswith(".md"):
+                    if source_asset.is_file():
+                        raise DocSproutError(
+                            f"{docs / page.path}: link to unpublished Markdown {document!r}; add it to the navigation layout"
+                        )
+                    raise DocSproutError(f"{docs / page.path}: linked Markdown page {document!r} does not exist")
                 try:
                     resolved_asset = source_asset.resolve()
                 except OSError as error:

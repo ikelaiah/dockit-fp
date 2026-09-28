@@ -43,6 +43,7 @@ class ReadingLayoutTests(unittest.TestCase):
             "index.html", "plain.html", "one.html", "long.html"
         )}
         cls.css = (output / "assets" / "site.css").read_text(encoding="utf-8")
+        cls.js = (output / "assets" / "site.js").read_text(encoding="utf-8")
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -87,6 +88,14 @@ class ReadingLayoutTests(unittest.TestCase):
         self.assertIn('<small>Next</small><span class="page-nav-context">Guides &amp; use / Quickstart</span><span>One section</span>', plain)
         one = self.pages["one.html"]
         self.assertIn('<small>Next</small><span class="page-nav-context">Reference</span><span>Long guide</span>', one)
+
+    def test_phone_header_and_progress_follow_the_reading_article(self) -> None:
+        page = self.pages["long.html"]
+        self.assertIn('<main class="prose" id="content"', page)
+        self.assertIn('.site-header.is-compact .brand:not(:focus){position:absolute', self.css)
+        self.assertIn("document.querySelector('main.prose')", self.js)
+        self.assertIn("header.classList.toggle('is-compact'", self.js)
+        self.assertNotIn('document.documentElement.scrollHeight-window.innerHeight', self.js)
 
 
 if __name__ == "__main__":

@@ -1,30 +1,24 @@
-# Qualification evidence for DocSprout v1.2.1
+# Qualification evidence for DocSprout v1.2.2
 
-DocSprout v1.2.1 improves reading-page orientation and small-screen outlines
+DocSprout v1.2.2 improves keyboard access and reading-page behavior
 while preserving JSON and Markdown layout compatibility and the v1.0.0 stable
 contract. The claims below are the contract that CI and the maintained fixtures
 exercise. Every row names how it is verified. "Supported" means the combination
 is run by automated qualification on every pull request and release, not merely
 believed to work.
 
-The v0.17 and v0.18 matrices are retained as historical evidence for the
-contract candidate that v1.0.0 freezes. v1 adds the Five Promises assessment,
-clean-room package rehearsal and the explicit compatibility policy; v1.1 adds
-the rebrand compatibility evidence and the quality-gate additions; v1.1.2 adds
-the typography evidence, v1.1.3 adds the documentation-quality evidence,
-v1.1.4 adds the brand-hero, contrast and four-style evidence, v1.1.5 adds
-the grouped-navigation and Markdown-coverage evidence, v1.1.6 adds the
-image-alt escaping and custom-CSS contract evidence, v1.1.7 adds the
-inline-code literalness and documentation-accuracy evidence, v1.1.8 adds
-the protected math/resolver/auditor evidence, and v1.1.9 adds the audit,
-preview and release-safety regressions below. v1.1.10 adds compact generated
-navigation and accurate `init` publication guidance. v1.2.0 adds Markdown
-layout parsing, group expansion, and a full-site migration from JSON. v1.2.1
-adds reading-page context, responsive outlines and active-section parity.
-
 Evidence levels: **automated** rows run in CI with no browser or network
 dependency; **manual** rows are explicit review steps; **unavailable** rows are
 not claimed as completed when the required browser tooling is absent.
+
+## Current support at a glance
+
+| Reader question | Current answer | Details |
+| --- | --- | --- |
+| Which Python versions? | Python 3.10–3.14 | [Supported Python versions](#supported-python-versions) |
+| Which operating systems? | Linux, Windows and macOS | [Qualified operating systems](#qualified-operating-systems) |
+| What is checked automatically? | The unit suite, package artifacts and generated-site contracts | [Package qualification](#package-qualification) and [accessibility qualification](#accessibility-qualification) |
+| What still needs a person? | Browser, keyboard, touch and screen-reader checks | [Manual browser/keyboard matrix](#manual-browserkeyboard-matrix) and [known limitations](#known-limitations) |
 
 ## Supported Python versions
 
@@ -152,6 +146,23 @@ DocSprout's own built documentation:
 - Light/Dark/System coherence and the shared semantic token contract for
   Classic, Paper, E-ink and Glassmorphic
 
+## Evidence history
+
+The v0.17 and v0.18 matrices are retained as historical evidence for the
+contract candidate that v1.0.0 freezes. v1 adds the Five Promises assessment,
+clean-room package rehearsal and the explicit compatibility policy; v1.1 adds
+the rebrand compatibility evidence and the quality-gate additions; v1.1.2 adds
+the typography evidence, v1.1.3 adds the documentation-quality evidence,
+v1.1.4 adds the brand-hero, contrast and four-style evidence, v1.1.5 adds
+the grouped-navigation and Markdown-coverage evidence, v1.1.6 adds the
+image-alt escaping and custom-CSS contract evidence, v1.1.7 adds the
+inline-code literalness and documentation-accuracy evidence, v1.1.8 adds
+the protected math/resolver/auditor evidence, and v1.1.9 adds the audit,
+preview and release-safety regressions below. v1.1.10 adds compact generated
+navigation and accurate `init` publication guidance. v1.2.0 adds Markdown
+layout parsing, group expansion, and a full-site migration from JSON. v1.2.1
+adds reading-page context, responsive outlines and active-section parity.
+
 ## v0.18 additions
 
 The v0.17 matrix above is unchanged. v0.18 adds:
@@ -275,6 +286,16 @@ site configuration; no schema, route or token value changes:
   the customisation pages state a reading order, the two recipe pages
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
+
+## v1.2.2 additions
+
+- Generated-page tests cover the skip link, focusable article target, compact
+  phone-header styling and article-based progress calculation.
+- Build tests cover missing same-page heading fragments and links to missing or
+  unpublished Markdown. The strict documentation audit and site build exercise
+  the same checks on this project's pages.
+- The visual fixture checklist records the manual keyboard, phone-width and
+  progress checks. Browser and screen-reader checks remain manual release steps.
 
 ## v1.2.1 additions
 
@@ -481,11 +502,11 @@ automated contract above.
 
 | # | Check |
 | --- | --- |
-| 1 | Tab from the address bar through search, version, style and mode controls, copy buttons, previous/next and every sidebar link; focus is always visible. |
+| 1 | Tab once to reveal Skip to content, activate it, and confirm focus reaches the article below the header. Continue through search, version, style and mode controls, copy buttons, previous/next and every sidebar link; focus is always visible. |
 | 2 | `/` focuses search; type a query; ArrowDown/ArrowUp, Home, End, Enter and Escape behave as described; Tab leaves the result region predictably. |
-| 3 | At phone width the mobile navigation opens and closes with Enter/Space on the disclosure and every section link is reachable by keyboard. |
+| 3 | At phone width the mobile navigation opens and closes with Enter/Space on the disclosure and every section link is reachable by keyboard. Scroll until the brand row collapses; search and settings remain available, and keyboard focus reveals the brand link. |
 | 4 | Screenshot phone/tablet/desktop widths in Classic, Paper, E-ink and Glassmorphic × System, Light and Dark; nothing overlaps and no page-level horizontal scroll appears. |
 | 5 | With the OS reduced-motion preference on, search results, the reading-progress bar and theme changes do not animate. |
 | 6 | With Windows high-contrast / forced-colors enabled, focus outlines and the reading-progress indicator remain visible. |
 | 7 | At desktop and phone widths the home-page hero keeps its copy readable, the derived actions stay keyboard reachable, and a configured banner spans the content width without cutting its text. |
-| 8 | On a long reading page, open the phone outline by touch and keyboard, confirm its current section and labelled navigation with a screen reader, follow a nested heading link, and check that the heading clears the sticky header. On desktop, confirm the rail marks the same section. |
+| 8 | On a long reading page, open the phone outline by touch and keyboard, confirm its current section and labelled navigation with a screen reader, follow a nested heading link, and check that the heading clears the sticky header. On desktop, confirm the rail marks the same section. Check that reading progress completes at the article end, before page navigation and footer. |

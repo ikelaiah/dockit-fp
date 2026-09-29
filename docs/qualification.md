@@ -1,6 +1,6 @@
-# Qualification evidence for DocSprout v1.2.2
+# Qualification evidence for DocSprout v1.2.3
 
-DocSprout v1.2.2 improves keyboard access and reading-page behavior
+DocSprout v1.2.3 improves reading-page navigation, search and style freshness
 while preserving JSON and Markdown layout compatibility and the v1.0.0 stable
 contract. The claims below are the contract that CI and the maintained fixtures
 exercise. Every row names how it is verified. "Supported" means the combination
@@ -286,6 +286,18 @@ site configuration; no schema, route or token value changes:
   the customisation pages state a reading order, the two recipe pages
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
+
+## v1.2.3 additions
+
+- Generated-page tests cover linked breadcrumb navigation, the always-present
+  footer with back-to-top link, hover heading anchors, a search popover
+  anchored to the search control with multi-term highlighting and result
+  counts, the mobile navigation landmark and auto-opening inline outline.
+- Build tests cover stable content-hash `?v=` asset URLs, print rules that
+  hide navigation chrome while keeping the footer in ink, and the shared
+  z-index and sticky-offset token contract.
+- The visual fixture checklist records the manual keyboard, phone-width and
+  progress checks. Browser and screen-reader checks remain manual release steps.
 
 ## v1.2.2 additions
 

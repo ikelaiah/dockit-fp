@@ -227,7 +227,8 @@ class RepositoryShapeQualificationTests(unittest.TestCase):
             self.assertIn('class="page-previous" href="../guides/two.html"', api)
             self.assertNotIn("page-next", api)
             sidebar = (output / "index.html").read_text(encoding="utf-8")
-            sidebar_navigation = sidebar[sidebar.index('<nav class="sidebar"'):sidebar.index("</nav>")]
+            start = sidebar.index('<nav class="sidebar"')
+            sidebar_navigation = sidebar[start : sidebar.index("</nav>", start)]
             self.assertEqual(3, sidebar_navigation.count("<h2>"))
             self.assertNotIn('<details class="nav-group"', sidebar_navigation)
             self.assertEqual(5, sidebar_navigation.count('<a class='))
@@ -254,13 +255,15 @@ class RepositoryShapeQualificationTests(unittest.TestCase):
             self.assertEqual(4, result.page_count)
             self.assertEqual(3, result.section_count)
             guide = (output / "guides" / "one.html").read_text(encoding="utf-8")
-            sidebar_navigation = guide[guide.index('<nav class="sidebar"'):guide.index("</nav>")]
+            start = guide.index('<nav class="sidebar"')
+            sidebar_navigation = guide[start : guide.index("</nav>", start)]
             self.assertEqual(3, sidebar_navigation.count("<h2>"))
             self.assertEqual(1, sidebar_navigation.count('<details class="nav-group" open>'))
             self.assertIn('<details class="nav-group" open><summary><span>Basics</span></summary>', sidebar_navigation)
             self.assertIn('aria-current="page"', sidebar_navigation)
             home = (output / "index.html").read_text(encoding="utf-8")
-            home_navigation = home[home.index('<nav class="sidebar"'):home.index("</nav>")]
+            home_start = home.index('<nav class="sidebar"')
+            home_navigation = home[home_start : home.index("</nav>", home_start)]
             self.assertIn('<details class="nav-group"><summary><span>Basics</span></summary>', home_navigation)
 
     def test_expanded_groups_start_open_on_every_page(self) -> None:
@@ -280,7 +283,8 @@ class RepositoryShapeQualificationTests(unittest.TestCase):
             output, _ = _build(root)
 
             api = (output / "reference" / "api.html").read_text(encoding="utf-8")
-            sidebar_navigation = api[api.index('<nav class="sidebar"'):api.index("</nav>")]
+            start = api.index('<nav class="sidebar"')
+            sidebar_navigation = api[start : api.index("</nav>", start)]
             # Active page has no group, but the configured expanded group stays open.
             self.assertEqual(1, sidebar_navigation.count('<details class="nav-group" open>'))
             self.assertIn('<details class="nav-group" open><summary><span>Pinned</span></summary>', sidebar_navigation)

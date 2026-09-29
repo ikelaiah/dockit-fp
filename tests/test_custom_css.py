@@ -57,7 +57,7 @@ class CustomCssTests(unittest.TestCase):
                 copied.read_text(encoding="utf-8"),
             )
             home = (root / "site" / "index.html").read_text(encoding="utf-8")
-            site_css = home.index('href="assets/site.css"')
+            site_css = home.index("assets/site.css?v=")
             katex_css = home.index('href="assets/katex/katex.min.css"')
             custom_link = home.index('href="assets/custom.css"')
             self.assertGreater(custom_link, site_css, "custom CSS must load after site.css")

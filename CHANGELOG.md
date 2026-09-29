@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.3.0
+
+A visual-theme modernisation minor. No configuration, route, machine-format,
+public CSS token or dependency change is required. Update package and workflow
+pins to `v1.3.0`, then rebuild.
+
+### Changed
+
+- Glassmorphic is the flagship: a glowing hero stage, specular panel edges
+  with an inner bottom shade, hover-glowing cards and an accent-tinted hero
+  border in dark mode.
+- Classic gains an accent-ruled hero and an accent edge on hovered cards;
+  paper gains pull-quote callouts and stacked-sheet cards.
+- E-ink gains uppercase subheads, double-rule dividers, flat table rows and
+  ink-toned callout rails as documented.
+- Code blocks gain a language-labelled bar with dots and the copy control;
+  anchor scrolling is smooth while honouring `prefers-reduced-motion`.
+- No reading-surface colour changed, so every contrast proof still holds.
+
 ## 1.2.3
 
 A reading-navigation and style-freshness patch. No configuration, route,

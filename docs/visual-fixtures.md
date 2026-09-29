@@ -3,7 +3,8 @@
 The maintained project in `examples/visual-fixtures` exercises the automatic
 hero with its derived actions and card icons, typography,
 ordered and nested lists, the full `h1`–`h6` heading and outline scale,
-typographic punctuation, inline code, definition lists, fenced Pascal, wide
+typographic punctuation, inline code, definition lists, fenced Pascal with
+language-labelled code bars, wide
 tables, callouts, search, theme controls, page navigation, a long document,
 the reading-progress indicator, responsive Markdown images and a home-page
 banner. Its checked-in

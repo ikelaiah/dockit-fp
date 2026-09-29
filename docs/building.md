@@ -24,7 +24,7 @@ asset is local, and `index.html` opens directly in a browser.
 ## Ship a ZIP
 
 ```bash
-docsprout build --release 1.2.3 --offline-archive dist/docsprout-docs-1.2.3.zip
+docsprout build --release 1.3.0 --offline-archive dist/docsprout-docs-1.3.0.zip
 ```
 
 The release label used for an offline archive must start with a letter or

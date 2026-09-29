@@ -1,8 +1,7 @@
-# Qualification evidence for DocSprout v1.2.3
+# Qualification evidence for DocSprout v1.3.0
 
-DocSprout v1.2.3 improves reading-page navigation, search and style freshness
-while preserving JSON and Markdown layout compatibility and the v1.0.0 stable
-contract. The claims below are the contract that CI and the maintained fixtures
+DocSprout v1.3.0 modernises every visual style while preserving JSON and
+Markdown layout compatibility and the v1.0.0 stable contract. The claims below are the contract that CI and the maintained fixtures
 exercise. Every row names how it is verified. "Supported" means the combination
 is run by automated qualification on every pull request and release, not merely
 believed to work.
@@ -286,6 +285,17 @@ site configuration; no schema, route or token value changes:
   the customisation pages state a reading order, the two recipe pages
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
+
+## v1.3.0 additions
+
+- Generated-page tests cover the glassmorphic hero glow, specular panel
+  edges, hover-glowing cards, classic accent rules, paper pull-quote
+  callouts, e-ink uppercase subheads with ink callout rails, and
+  language-labelled code bars with labelled copy controls.
+- The contrast proof still covers every reading surface: no surface hex
+  changed, so the palette regression suite passes unchanged.
+- The visual fixture checklist records the manual keyboard, phone-width and
+  progress checks. Browser and screen-reader checks remain manual release steps.
 
 ## v1.2.3 additions
 

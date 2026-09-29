@@ -25,13 +25,16 @@ configure modes.
 You choose the site's starting **Style**:
 
 - **Classic** (`classic`) pairs crisp surfaces with accent-edged section
-  headings;
+  headings, an accent-ruled hero and an accent edge on hovered cards;
 - **Paper** (`paper`) sets long guides on a warm, layered reading sheet with
-  lighter serif headings, italic introductory copy and an editorial drop cap;
-- **E-ink** (`e-ink`) pairs square, flat surfaces with monospace controls,
-  a double-rule page title and still, shadow-free cards;
-- **Glassmorphic** (`glassmorphic`) adds softly lit, frosted panels, rounded
-  controls and a gradient hero title.
+  lighter serif headings, italic introductory copy, an editorial drop cap,
+  pull-quote callouts and stacked-sheet cards;
+- **E-ink** (`e-ink`) pairs square, flat surfaces with uppercase subheads,
+  double rules, ink-toned callout rails, grid-bordered tables and still,
+  shadow-free cards;
+- **Glassmorphic** (`glassmorphic`) stages a glowing hero, softly lit frosted
+  panels with specular edges, rounded controls, hover-glowing cards and a
+  gradient hero title.
 
 Visitors can switch the Style too. DocSprout remembers both choices in
 the browser when storage is available.
@@ -43,7 +46,7 @@ footer—never underlines, signalling hover with a background tint or colour
 shift instead, and buttons never underline.
 
 The maintained
-[single-version example](https://github.com/ikelaiah/docsprout/tree/v1.2.3/examples/single-version)
+[single-version example](https://github.com/ikelaiah/docsprout/tree/v1.3.0/examples/single-version)
 starts in Paper (`"style": "paper"`), so its built opening page shows the
 warm reading surface before a visitor changes the control.
 
@@ -60,20 +63,26 @@ CSS and system fonts, with no additional downloads.
 ## E-ink and Glassmorphic in practice
 
 **E-ink** is an ink-on-paper manual: flat white or near-black surfaces, ruled
-headings, square corners, permanently underlined links, grid-bordered
-tables and an undecorated hero—no shadows, no gradients. Brand decorations such
+headings with uppercase subheads, double-rule titles and dividers, square
+corners, permanently underlined links, grid-bordered tables with flat rows
+and an undecorated hero—no shadows, no gradients. Brand decorations such
 as the reading-progress bar, callout rails and text selection stay ink-toned
-rather than accent-coloured. Code blocks stay dark panels so syntax highlighting
-remains readable. It suits long-form reading and displays where colour is
+rather than accent-coloured. Code blocks stay dark panels with a flat
+language bar so syntax highlighting remains readable. It suits long-form
+reading and displays where colour is
 unreliable; its dark variant is a dimmed night-reading surface rather than a
 saturated dark theme.
 
 **Glassmorphic** puts a viewport-anchored mesh of soft accent tints behind
 frosted chrome: the header, hero, navigation panels, cards and search float on
-translucent, blurred layers with specular edges and larger rounded corners. The
+translucent, blurred layers with specular edges, an inner bottom shade and
+larger rounded corners. The hero is a glowing stage rather than a panel: accent
+veils replace the dot texture, and cards answer hover with an accent glow and
+a gentle lift. The
 hero title carries an accent gradient where the browser supports background
 text clipping, and falls back to the solid text colour elsewhere. Titles that
-open with an emoji keep solid ink everywhere so the glyph survives. The
+open with an emoji keep solid ink everywhere so the glyph survives. In dark
+mode the hero border picks up an accent tint for an aurora feel. The
 mesh tint is capped per stop and translucent surfaces stay mostly opaque, so
 every text combination is covered by the same build-time contrast proof as the
 other styles; browsers without `backdrop-filter` fall back to the solid surface
@@ -110,7 +119,7 @@ hexadecimal values:
 Test custom colours in both Light and Dark mode. Links, selected navigation and
 keyboard focus must remain easy to see. A preset is safer when you are unsure.
 The maintained
-[minimal example](https://github.com/ikelaiah/docsprout/tree/v1.2.3/examples/minimal)
+[minimal example](https://github.com/ikelaiah/docsprout/tree/v1.3.0/examples/minimal)
 uses the exact teal values shown above; its built links, selected navigation
 and focus state use that accent.
 

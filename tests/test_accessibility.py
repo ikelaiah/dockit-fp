@@ -276,7 +276,10 @@ class AccessibilityQualificationTests(unittest.TestCase):
     def test_accessible_copy_controls_use_button_with_a_label(self) -> None:
         for cross_check in ("button.type='button'", "setCopyLabel('Copy code')", "aria-label", "Copy unavailable"):
             self.assertIn(cross_check, SITE_JS)
-        self.assertIn(".copy-code", SITE_CSS)
+        for bar_check in ("code-bar", "code-lang", "code-dots", "block.prepend(bar)", "aria-hidden"):
+            self.assertIn(bar_check, SITE_JS, bar_check)
+        for bar_style in (".code-bar", ".code-dots", ".code-lang", ".code-bar .copy-code"):
+            self.assertIn(bar_style, SITE_CSS, bar_style)
 
     def test_docsprout_own_site_builds_the_shared_accessibility_contract(self) -> None:
         self.assertTrue(self.docsprout.files)

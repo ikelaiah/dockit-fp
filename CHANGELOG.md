@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.2.3
+
+A reading-navigation and style-freshness patch. No configuration, route,
+machine-format, public CSS token or dependency change is required. Update
+package and workflow pins to `v1.2.3`, then rebuild.
+
+### Changed
+
+- Reading pages gain linked breadcrumb navigation, an always-present footer
+  with a back-to-top link, and hover heading anchors on sections.
+- Search highlights every query term with a result count, and the results
+  popover anchors to the search control instead of the page shell.
+- The mobile navigation carries a landmark, and the inline outline opens
+  automatically on the active section.
+- Generated `site.css`, `site.js` and `math.js` carry stable content-hash
+  `?v=` URLs, so rebuilt sites can never serve stale styles or scripts.
+- Tables, admonitions, hero, capability cards and print output are polished;
+  print hides navigation chrome including the sidebar while keeping the
+  footer in ink.
+
+### Fixed
+
+- Breadcrumb separators align on the text baseline with even gutters.
+- The glassmorphic hero title no longer prints as invisible transparent text.
+- Narrow tables no longer force a scroll frame; small tables fit their column.
+
 ## 1.2.2
 
 A reading and link-validation patch. No configuration, route, machine-format,

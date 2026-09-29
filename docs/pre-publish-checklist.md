@@ -62,10 +62,10 @@ This path updates the public site from a branch such as `main`.
 ## Historical site
 
 This path publishes an immutable site for every listed release. In the example
-below, replace `1.2.2` with your version.
+below, replace `1.2.3` with your version.
 
-1. Add release `1.2.2` and source ref `v1.2.2` to `docs/versions.json`. Set
-   `current` to `1.2.2`.
+1. Add release `1.2.3` and source ref `v1.2.3` to `docs/versions.json`. Set
+   `current` to `1.2.3`.
 2. Run `docsprout check`.
 3. Commit all release files, including package metadata, documentation,
    examples and workflows, on a branch named `release/vX.Y.Z`:
@@ -73,7 +73,7 @@ below, replace `1.2.2` with your version.
    ```bash
    git add pyproject.toml src/docsprout/__init__.py README.md CHANGELOG.md docs .github examples tests
    git diff --cached --check
-   git commit -m "Prepare v1.2.2 documentation"
+   git commit -m "Prepare v1.2.3 documentation"
    ```
 
 4. Push the qualified branch and open a PR against `main`. Wait for every
@@ -83,7 +83,7 @@ below, replace `1.2.2` with your version.
 5. Check out the merged `main` commit and create the tag on that exact commit:
 
    ```bash
-   git tag -a v1.2.2 -m "v1.2.2"
+   git tag -a v1.2.3 -m "v1.2.3"
    ```
 
 6. Run the release checks and historical build:
@@ -100,7 +100,7 @@ below, replace `1.2.2` with your version.
 8. Push the annotated tag (the merge commit is already on `main`):
 
    ```bash
-   git push origin v1.2.2
+   git push origin v1.2.3
    ```
 
 9. Create the GitHub Release from the tag. Confirm both CI and the Documentation
@@ -111,7 +111,7 @@ below, replace `1.2.2` with your version.
 ## If you find a mistake
 
 If the tag exists only on your computer, correct and commit the files, delete
-the local tag with `git tag -d v1.2.2`, then create it again on the corrected
+the local tag with `git tag -d v1.2.3`, then create it again on the corrected
 commit.
 
 If the tag has been pushed, do not move or replace it. Publish the correction

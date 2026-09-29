@@ -51,7 +51,9 @@ class ReadingLayoutTests(unittest.TestCase):
 
     def test_context_precedes_reading_title_and_homepage_is_unchanged(self) -> None:
         plain = self.pages["plain.html"]
-        self.assertIn('<div class="page-context">Guides &amp; use / Quickstart</div>', plain)
+        self.assertIn('<nav class="page-context" aria-label="Breadcrumb"><ol>', plain)
+        self.assertIn("<li><span>Guides &amp; use</span></li>", plain)
+        self.assertIn("<li><span>Quickstart</span></li>", plain)
         self.assertLess(plain.index('class="page-context"'), plain.index('<h1 id="plain-page">'))
         self.assertNotIn('class="page-context"', self.pages["index.html"])
         self.assertNotIn('class="inline-toc"', self.pages["index.html"])

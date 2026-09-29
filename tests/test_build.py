@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
+from docsprout.assets import MATH_JS_HASH, SITE_CSS_HASH, SITE_JS_HASH
 from docsprout.build import build_site
 from docsprout.errors import DocSproutError
 
@@ -26,6 +28,38 @@ class BuildSiteTests(unittest.TestCase):
             page = (root / "site" / "index.html").read_text(encoding="utf-8")
             self.assertIn('<img src="assets/content/images/architecture.svg" alt="Architecture">', page)
             self.assertEqual("<svg/>", (root / "site" / "assets" / "content" / "images" / "architecture.svg").read_text(encoding="utf-8"))
+
+    def test_generated_asset_urls_carry_a_stable_content_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "docs"
+            (docs / "guides").mkdir(parents=True)
+            (docs / "index.md").write_text("# Home\n", encoding="utf-8")
+            (docs / "guides" / "advanced.md").write_text("# Advanced\n", encoding="utf-8")
+            (docs / "docsprout.json").write_text(json.dumps({"schema_version": 1, "project": {"name": "Demo"}}), encoding="utf-8")
+            (docs / "layout.json").write_text(json.dumps({
+                "schema_version": 1,
+                "navigation": [{"title": "Docs", "pages": [
+                    {"title": "Home", "path": "index.md"},
+                    {"title": "Advanced", "path": "guides/advanced.md"},
+                ]}],
+            }), encoding="utf-8")
+
+            build_site(root=root, output=root / "site", release="dev")
+
+            home = (root / "site" / "index.html").read_text(encoding="utf-8")
+            self.assertIn(f'href="assets/site.css?v={SITE_CSS_HASH}"', home)
+            self.assertIn(f'src="assets/site.js?v={SITE_JS_HASH}"', home)
+            self.assertIn(f'src="assets/math.js?v={MATH_JS_HASH}"', home)
+            nested = (root / "site" / "guides" / "advanced.html").read_text(encoding="utf-8")
+            self.assertIn(f'href="../assets/site.css?v={SITE_CSS_HASH}"', nested)
+            for digest in (SITE_CSS_HASH, SITE_JS_HASH, MATH_JS_HASH):
+                self.assertRegex(digest, r"^[0-9a-f]{12}$")
+                self.assertEqual(1, home.count(f"?v={digest}"))
+            rebuild = re.sub(r"\?v=[0-9a-f]{12}", "?v=", home)
+            build_site(root=root, output=root / "second", release="dev")
+            twice = (root / "second" / "index.html").read_text(encoding="utf-8")
+            self.assertEqual(rebuild, re.sub(r"\?v=[0-9a-f]{12}", "?v=", twice))
 
     def test_publishes_nested_page_assets_under_a_non_colliding_content_path(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -105,7 +139,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('href="assets/custom.css"', home)
             self.assertGreater(
                 home.index('href="assets/custom.css"'),
-                home.index('href="assets/site.css"'),
+                home.index("assets/site.css?v="),
             )
 
     def test_copies_an_identity_logo_into_the_header(self) -> None:
@@ -179,8 +213,9 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn("<script>try{const root=document.documentElement,readStored=(primary,legacy)=>{const value=localStorage.getItem(primary);if(value!==null)return value;const previous=localStorage.getItem(legacy);", home)
             self.assertLess(
                 home.index("readStored('docsprout-visual-theme','dockit-fp-visual-theme')"),
-                home.index('<link rel="stylesheet" href="assets/site.css">'),
+                home.index('<link rel="stylesheet" href="assets/site.css?v='),
             )
+            self.assertRegex(home, r'<link rel="stylesheet" href="assets/site\.css\?v=[0-9a-f]{12}">')
             self.assertIn('class="header-controls"', home)
             self.assertIn('aria-current="page"', home)
             self.assertIn('aria-label="Demo-FP capabilities"', home)
@@ -232,7 +267,7 @@ class BuildSiteTests(unittest.TestCase):
             self.assertIn('--dk-control-height:2.5rem', site_css)
             self.assertIn('.capability-strip[data-card-count="3"]', site_css)
             self.assertIn('align-items:stretch;grid-template-rows:minmax(0,1fr)', site_css)
-            self.assertIn('.capability-strip li{display:flex;flex-direction:column;align-self:stretch;min-height:0;padding:1.1rem 1.15rem;border:1px solid var(--dk-border);border-radius:var(--dk-radius)', site_css)
+            self.assertIn('.capability-strip li{display:flex;flex-direction:column;align-self:stretch;min-height:0;padding:1.15rem 1.2rem;border:1px solid var(--dk-border);border-radius:var(--dk-radius)', site_css)
             self.assertIn('.capability-strip li+li{margin-top:0}', site_css)
             self.assertIn('.header-controls', site_css)
             self.assertIn('.topbar{display:grid;grid-template-columns:auto minmax(12rem,30rem) max-content;grid-template-rows:auto var(--dk-control-height)', site_css)

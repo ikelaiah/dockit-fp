@@ -12,7 +12,7 @@ import shutil
 import unicodedata
 from urllib.parse import quote, urlsplit
 
-from .assets import MATH_JS, SITE_CSS, SITE_JS
+from .assets import MATH_JS, MATH_JS_HASH, SITE_CSS, SITE_CSS_HASH, SITE_JS, SITE_JS_HASH
 from .config import load_config, page_source_path, page_source_reference
 from .errors import DocSproutError
 from .markdown import render_markdown
@@ -115,6 +115,32 @@ def _page_navigation(*, page: Page, config, current_route: str, include_context:
 def _page_context(page: Page) -> str:
     location = " / ".join(part for part in (page.section, page.subsection) if part)
     return html.escape(location)
+
+
+def _page_context_nav(*, page: Page, config, current_route: str) -> str:
+    crumbs: list[str] = []
+    if page.section:
+        target = next((item for item in config.pages if item.section == page.section and item.subsection is None), None)
+        if target is None:
+            target = next((item for item in config.pages if item.section == page.section), None)
+        if target is not None and target.path != page.path:
+            href = html.escape(_relative(current_route, _route(target.path, config.home_document)), quote=True)
+            crumbs.append(f'<li><a href="{href}">{html.escape(page.section)}</a></li>')
+        else:
+            crumbs.append(f"<li><span>{html.escape(page.section)}</span></li>")
+    if page.subsection:
+        target = next(
+            (item for item in config.pages if item.section == page.section and item.subsection == page.subsection),
+            None,
+        )
+        if target is not None and target.path != page.path:
+            href = html.escape(_relative(current_route, _route(target.path, config.home_document)), quote=True)
+            crumbs.append(f'<li><a href="{href}">{html.escape(page.subsection)}</a></li>')
+        else:
+            crumbs.append(f"<li><span>{html.escape(page.subsection)}</span></li>")
+    if not crumbs:
+        return ""
+    return f'<nav class="page-context" aria-label="Breadcrumb"><ol>{"".join(crumbs)}</ol></nav>'
 
 
 def _hero_title_has_emoji(body: str) -> bool:
@@ -233,7 +259,7 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
     )
     toc = f'<p class="toc-title">On this page</p>{toc_links}' if toc_links else '<p class="toc-title">Documentation</p><p class="toc-empty-copy">Browse the sections in the navigation.</p>'
     if not homepage:
-        context = f'<div class="page-context">{_page_context(page)}</div>'
+        context = _page_context_nav(page=page, config=config, current_route=current_route)
         if toc_links:
             inline_toc = f'<details class="inline-toc"><summary>On this page</summary><nav aria-label="Page outline">{toc_links}</nav></details>'
             before_title, title_end, after_title = body.partition("</h1>")
@@ -241,18 +267,22 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
         body = context + body
     page_navigation = _page_navigation(page=page, config=config, current_route=current_route, include_context=not homepage)
     footer_links = "".join(f'<a href="{html.escape(url, quote=True)}">{html.escape(label)}</a>' for label, url in config.project_links)
-    footer = f'<footer class="site-footer"><span>{html.escape(config.footer or config.name)}</span>{footer_links}</footer>' if config.footer or footer_links else ""
+    footer = (
+        f'<footer class="site-footer"><span>{html.escape(config.footer or config.name)}</span>'
+        f"{footer_links}"
+        '<a class="back-to-top" href="#content">Back to top</a></footer>'
+    )
     header_controls = f'''<div class="header-controls" aria-label="Site controls"><label class="header-control"><span>Version</span><select id="version-select" aria-label="Documentation version">{version_options}</select></label><label class="header-control"><span>Style</span><select id="visual-theme" aria-label="Documentation visual theme"><option value="classic">Classic</option><option value="paper">Paper</option><option value="e-ink">E-ink</option><option value="glassmorphic">Glassmorphic</option></select></label><label class="header-control"><span>Mode</span><select id="theme-select" aria-label="Colour theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div>'''
     main_context = ' data-homepage="true"' if homepage else ' data-homepage="false"'
     theme_bootstrap = """<script>try{const root=document.documentElement,readStored=(primary,legacy)=>{const value=localStorage.getItem(primary);if(value!==null)return value;const previous=localStorage.getItem(legacy);if(previous!==null){localStorage.setItem(primary,previous);localStorage.removeItem(legacy);return previous}return null},theme=readStored('docsprout-theme','dockit-fp-theme'),visualTheme=readStored('docsprout-visual-theme','dockit-fp-visual-theme');if(theme==='light'||theme==='dark')root.dataset.theme=theme;if(['classic','paper','e-ink','glassmorphic'].includes(visualTheme))root.dataset.visualTheme=visualTheme}catch(_){}</script>"""
     custom_css_link = f'<link rel="stylesheet" href="{html.escape(_relative(current_route, "assets/custom.css"), quote=True)}">' if custom_css else ""
     home_route = html.escape(_relative(current_route, "index.html"), quote=True)
     search_index_route = html.escape(_relative(current_route, "search-index.json"), quote=True)
-    site_css_route = html.escape(_relative(current_route, "assets/site.css"), quote=True)
+    site_css_route = html.escape(f"{_relative(current_route, 'assets/site.css')}?v={SITE_CSS_HASH}", quote=True)
     katex_css_route = html.escape(_relative(current_route, "assets/katex/katex.min.css"), quote=True)
     katex_js_route = html.escape(_relative(current_route, "assets/katex/katex.min.js"), quote=True)
-    math_js_route = html.escape(_relative(current_route, "assets/math.js"), quote=True)
-    site_js_route = html.escape(_relative(current_route, "assets/site.js"), quote=True)
+    math_js_route = html.escape(f"{_relative(current_route, 'assets/math.js')}?v={MATH_JS_HASH}", quote=True)
+    site_js_route = html.escape(f"{_relative(current_route, 'assets/site.js')}?v={SITE_JS_HASH}", quote=True)
     favicon = "data:image/svg+xml," + quote(BRAND_SVG, safe="")
     document_head = (
         f'<!doctype html><html lang="en" data-visual-theme="{html.escape(config.theme_style, quote=True)}"'
@@ -280,12 +310,13 @@ def _shell(*, body: str, headings: tuple[tuple[int, str, str], ...], page: Page,
         f' data-search-index="{search_index_route}">'
         '<kbd aria-hidden="true" title="Press / to search">/</kbd>'
         '<span id="search-help" class="visually-hidden">Type to search. Use the arrow keys to move'
-        " through results, Enter to open, and Escape to close.</span></div>"
+        ' through results, Enter to open, and Escape to close.</span>'
+        '<div id="search-results" class="search-results" role="region"'
+        ' aria-label="Search results" aria-live="polite" hidden></div></div>'
         f"{header_controls}"
-        '</div><div id="search-results" class="search-results" role="region"'
-        ' aria-label="Search results" aria-live="polite" hidden></div></header>'
+        '</div></header>'
     )
-    mobile_navigation = f'<details class="mobile-nav"><summary>Browse documentation</summary>{nav}</details>'
+    mobile_navigation = f'<details class="mobile-nav"><summary>Browse documentation</summary><nav aria-label="Documentation navigation">{nav}</nav></details>'
     shell_class = "shell" if homepage or toc_links else "shell shell-no-toc"
     toc_aside = f'<aside class="toc" aria-label="On this page">{toc}</aside>' if homepage or toc_links else ""
     document_body = (

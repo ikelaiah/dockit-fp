@@ -123,7 +123,7 @@ class ResponsiveProseImageTests(unittest.TestCase):
             build_site(root=root, output=root / "site", release="preview")
 
             page = (root / "site" / "index.html").read_text(encoding="utf-8")
-            site_css = page.index('href="assets/site.css"')
+            site_css = page.index("assets/site.css?v=")
             custom_link = page.index('href="assets/custom.css"')
             self.assertGreater(custom_link, site_css)
             self.assertEqual(custom, (root / "site" / "assets" / "custom.css").read_text(encoding="utf-8"))

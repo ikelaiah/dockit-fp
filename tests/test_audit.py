@@ -238,6 +238,29 @@ class AuditTests(unittest.TestCase):
 
             self.assertEqual(["DK001", "DK004"], [finding.code for finding in findings])
 
+    def test_audit_reports_missing_local_assets_linked_from_prose(self) -> None:
+        from docsprout.audit import audit_project
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_project(root, {"index.md": "# Home\n\n[Download](files/manual.zip)\n"})
+
+            findings = audit_project(root).findings
+
+        self.assertEqual(["DK004"], [finding.code for finding in findings])
+        self.assertEqual("docs/index.md", findings[0].file)
+        self.assertEqual(3, findings[0].line)
+        self.assertEqual("files/manual.zip", findings[0].target)
+
+    def test_audit_accepts_existing_linked_local_assets(self) -> None:
+        from docsprout.audit import audit_project
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            _write_project(root, {"index.md": "# Home\n\n[Download](files/manual.zip)\n", "files/manual.zip": "archive"})
+
+            self.assertEqual((), audit_project(root).findings)
+
     def test_audit_reports_unsafe_url_schemes_instead_of_treating_them_as_external(self) -> None:
         from docsprout.audit import audit_project
 

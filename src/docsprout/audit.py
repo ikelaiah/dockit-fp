@@ -86,6 +86,17 @@ def _is_safe_local_file(root: Path, reference: str) -> bool:
     return candidate.is_relative_to(root) and candidate.is_file()
 
 
+def _missing_local_asset(page: _AuditPage, line: int, target: str, root: Path) -> Finding | None:
+    """Report a local reference that cannot be published as a content asset."""
+    requested_source = _source_target(page, target.partition("#")[0])
+    if _is_safe_document_reference(requested_source) and _is_safe_local_file(root, requested_source):
+        return None
+    return _finding(
+        "DK004", "error", page, line, "Missing local image or asset",
+        "Add the asset under the documentation content path or correct the reference.", target,
+    )
+
+
 def _audit_link(page: _AuditPage, line: int, target: str, pages: dict[str, _AuditPage], root: Path) -> Finding | None:
     parsed = urlsplit(target)
     if _is_external(target):
@@ -98,7 +109,7 @@ def _audit_link(page: _AuditPage, line: int, target: str, pages: dict[str, _Audi
     elif document.lower().endswith(".md"):
         requested_source = _source_target(page, document)
     else:
-        return None
+        return _missing_local_asset(page, line, target, root)
     if not _is_safe_document_reference(requested_source):
         return _finding("DK005", "error", page, line, "Local link escapes documentation paths", "Use a published docs page or the repository README.", target)
     target_page = pages.get(requested_source)
@@ -124,9 +135,9 @@ def _audit_image(page: _AuditPage, line: int, alt: str, target: str, root: Path)
     asset = target.partition("#")[0]
     if not asset:
         return findings
-    requested_source = _source_target(page, asset)
-    if not _is_safe_document_reference(requested_source) or not _is_safe_local_file(root, requested_source):
-        findings.append(_finding("DK004", "error", page, line, "Missing local image or asset", "Add the asset under the documentation content path or correct the reference.", target))
+    finding = _missing_local_asset(page, line, target, root)
+    if finding is not None:
+        findings.append(finding)
     return findings
 
 

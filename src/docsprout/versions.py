@@ -20,6 +20,7 @@ from .safety import prepare_output
 MOVING_REFS = {"head", "main", "master", "develop", "development", "latest"}
 COMMIT = re.compile(r"^[0-9a-fA-F]{40}$")
 RELEASE_NAME = re.compile(r"^[0-9A-Za-z][0-9A-Za-z._-]*$")
+RESERVED_RELEASE_NAMES = {"index.html", "versions.json"}
 
 
 def _valid_source_ref(value: str) -> bool:
@@ -78,6 +79,10 @@ def load_manifest(root: Path) -> VersionManifest:
             raise DocSproutError(
                 f"{path}: versions[{index}].release must be a safe name using letters, numbers, dots, underscores, or hyphens"
             )
+        if release.casefold() in RESERVED_RELEASE_NAMES:
+            raise DocSproutError(
+                f"{path}: versions[{index}].release {release!r} is reserved for generated site output; choose another release name"
+            )
         if not _valid_source_ref(source_ref):
             raise DocSproutError(f"{path}: versions[{index}].source_ref must be a safe tag or full commit SHA")
         versions.append(Version(release, source_ref))
@@ -85,11 +90,23 @@ def load_manifest(root: Path) -> VersionManifest:
     source_refs = [entry.source_ref for entry in versions]
     if len(set(releases)) != len(releases) or len(set(source_refs)) != len(source_refs) or current not in releases:
         raise DocSproutError(f"{path}: releases and source refs must be unique, and releases must include current {current!r}")
+    folded_releases = [release.casefold() for release in releases]
+    if len(set(folded_releases)) != len(folded_releases):
+        raise DocSproutError(
+            f"{path}: releases must be unique even on case-insensitive filesystems; rename one of the duplicated releases"
+        )
     return VersionManifest(current, tuple(versions))
 
 
+def _git_completed(root: Path, *arguments: str, binary: bool = False) -> subprocess.CompletedProcess:
+    try:
+        return subprocess.run(["git", *arguments], cwd=root, capture_output=True, text=not binary)
+    except OSError as error:
+        raise DocSproutError("Git is required for build-all and check-release; install Git and try again.") from error
+
+
 def _run_git(root: Path, *arguments: str, binary: bool = False) -> str | bytes:
-    completed = subprocess.run(["git", *arguments], cwd=root, capture_output=True, text=not binary)
+    completed = _git_completed(root, *arguments, binary=binary)
     if completed.returncode:
         detail = completed.stderr.decode() if binary else completed.stderr
         raise DocSproutError(f"Git {' '.join(arguments)} failed: {detail.strip()}")
@@ -101,7 +118,7 @@ def _is_immutable(root: Path, source_ref: str) -> bool:
         return False
     if COMMIT.fullmatch(source_ref):
         return True
-    completed = subprocess.run(["git", "show-ref", "--verify", "--quiet", f"refs/tags/{source_ref}"], cwd=root)
+    completed = _git_completed(root, "show-ref", "--verify", "--quiet", f"refs/tags/{source_ref}")
     return completed.returncode == 0
 
 

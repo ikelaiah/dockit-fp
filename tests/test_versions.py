@@ -267,6 +267,51 @@ class VersionedBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(DocSproutError, r"does not exist.*Create the tag"):
             check_release(root)
 
+    def test_check_release_reports_a_missing_git_binary_as_a_docsprout_error(self) -> None:
+        from unittest.mock import patch
+
+        root = self._repository()
+
+        with patch("docsprout.versions.subprocess.run", side_effect=FileNotFoundError("git")):
+            with self.assertRaisesRegex(DocSproutError, "Git is required"):
+                check_release(root)
+
+    def test_run_git_reports_a_missing_git_binary_as_a_docsprout_error(self) -> None:
+        from unittest.mock import patch
+
+        import docsprout.versions as versions_module
+
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch("docsprout.versions.subprocess.run", side_effect=FileNotFoundError("git")):
+                with self.assertRaisesRegex(DocSproutError, "Git is required"):
+                    versions_module._run_git(Path(temporary), "rev-parse", "HEAD")
+
+    def test_manifest_rejects_release_names_reserved_for_generated_output(self) -> None:
+        root = self._repository()
+        manifest = root / "docs" / "versions.json"
+
+        for reserved in ("versions.json", "Index.html"):
+            with self.subTest(reserved=reserved):
+                data = json.loads(manifest.read_text(encoding="utf-8"))
+                data["current"] = reserved
+                data["versions"][0]["release"] = reserved
+                manifest.write_text(json.dumps(data), encoding="utf-8")
+
+                with self.assertRaisesRegex(DocSproutError, r"reserved"):
+                    load_manifest(root)
+
+    def test_manifest_rejects_case_insensitive_duplicate_releases(self) -> None:
+        root = self._repository()
+        manifest = root / "docs" / "versions.json"
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        data["versions"][0]["release"] = "Stable"
+        data["versions"][1]["release"] = "stable"
+        data["current"] = "stable"
+        manifest.write_text(json.dumps(data), encoding="utf-8")
+
+        with self.assertRaisesRegex(DocSproutError, r"case-insensitive"):
+            load_manifest(root)
+
     def test_check_release_rejects_uncommitted_documentation(self) -> None:
         root = self._repository()
         (root / "docs" / "new.md").write_text("# Changed after tagging", encoding="utf-8")

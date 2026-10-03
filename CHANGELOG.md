@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.3.1
+
+A diagnostics and release-validation patch. No configuration, route,
+machine-format, public CSS token or dependency change is required. Update
+package and workflow pins to `v1.3.1`, then rebuild.
+
+### Fixed
+
+- `audit` now reports a missing local non-Markdown asset, such as a linked ZIP
+  or PDF, as DK004, matching the documented rule and `check`'s build
+  behaviour. Previously `audit` could report "Ready to publish" while `build`
+  failed.
+- `check-release` and `build-all` report an actionable "Git is required" error
+  when Git is not installed, instead of an unhandled traceback.
+- `versions.json` rejects release names reserved for generated site output
+  (`versions.json`, `index.html`) and release names that differ only by case,
+  which previously crashed `build-all` on case-insensitive filesystems.
+
 ## 1.3.0
 
 A visual-theme modernisation minor. No configuration, route, machine-format,

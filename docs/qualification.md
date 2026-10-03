@@ -1,7 +1,7 @@
-# Qualification evidence for DocSprout v1.3.0
+# Qualification evidence for DocSprout v1.3.1
 
-DocSprout v1.3.0 modernises every visual style while preserving JSON and
-Markdown layout compatibility and the v1.0.0 stable contract. The claims below are the contract that CI and the maintained fixtures
+DocSprout v1.3.1 is a diagnostics and release-validation patch that preserves
+JSON and Markdown layout compatibility and the v1.0.0 stable contract. The claims below are the contract that CI and the maintained fixtures
 exercise. Every row names how it is verified. "Supported" means the combination
 is run by automated qualification on every pull request and release, not merely
 believed to work.
@@ -285,6 +285,16 @@ site configuration; no schema, route or token value changes:
   the customisation pages state a reading order, the two recipe pages
   distinguish page structure from home-page presentation, and the glossary
   covers the navigation, theme and command vocabulary.
+
+## v1.3.1 additions
+
+- Audit tests cover a missing local non-Markdown asset linked from prose
+  (DK004) and an existing asset that stays quiet, matching the documented
+  DK004 rule and `check`'s build behaviour.
+- Version tests cover an actionable "Git is required" error for `check-release`
+  and `_run_git` when Git is unavailable, plus manifest rejection of release
+  names reserved for generated output (`versions.json`, `index.html`) and
+  names that differ only by case on case-insensitive filesystems.
 
 ## v1.3.0 additions
 
